@@ -20,6 +20,7 @@ Why Qt/PySide6?
  - LaTeX math rendering via MathJax/KaTeX in a WebEngine view, or static rendering via matplotlib/QtSvg
  - Embeddable code editor widgets (QPlainTextEdit with syntax highlighting, or third‑party QScintilla/QCodeEditor)
  - Spreadsheet-like UIs via QTableWidget/QTableView (+ model/view), with sorting, editing, delegates. Or WebEngine view to host web grids (e.g., Handsontable) or use third‑party Qt components.
+ - Interactive geometry cells via Qt WebEngine + JSXGraph for a GeoGebra‑like experience; offline‑friendly and can sync with Python via Qt WebChannel.
 
 CAS options
 - SymPy (pure‑Python CAS)
