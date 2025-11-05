@@ -24,3 +24,7 @@ Why Qt/PySide6?
 CAS options
 - SymPy (pure‑Python CAS)
 - GIAC/Xcas: Python bindings exist (e.g., giacpy/pygiac) and can be explored to integrate GIAC as the CAS backend.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
