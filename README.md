@@ -29,3 +29,5 @@ CAS options
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+See also: `THIRD_PARTY_NOTICES.md` for third‑party dependencies and licenses.
