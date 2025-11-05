@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.mypy_cache/
+.pytype/
+.pytest_cache/
+.coverage*
+htmlcov/
+
+# Virtual environments
+.venv/
+lunaqt/.venv/
+venv/
+ENV/
+
+# Editors/IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+*.log
+
+# PyInstaller (keep .spec tracked if present)
+# *.spec  # do NOT ignore; LunaQt.spec is part of the repo
+
+# AppImage / packaging scratch
+AppDir/
+*.AppImage
+lunaqt/app-image-scripts/squashfs-root/
+
+# Qt WebEngine cache (runtime, should not be committed)
+qtwebengine_dictionaries/
+QtWebEngineProcess.exe*
