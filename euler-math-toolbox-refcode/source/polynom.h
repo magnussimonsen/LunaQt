@@ -1,0 +1,16 @@
+#ifndef POLYNOMH
+#define POLYNOMH
+
+void polyval (header *hd);
+void polyadd (header *hd);
+void polymult (header *hd);
+void polydiv (header *hd);
+void dd (header *hd);
+void ddval (header *hd);
+void polydd (header *hd);
+void polyzeros (header *hd);
+void polytrunc (header *hd);
+void mzeros (header *hd);
+void mzeros1 (header *hd);
+
+#endif

@@ -1,0 +1,2497 @@
+run_testsuite ([<options>])
+testsuite_files
+bug_report ()
+build_info ()
+apropos (<string>)
+demo (<filename>)
+describe
+example
+manual_demo
+__
+_
+%
+%%
+%th (<i>)
+?
+??
+$
+;
+inchar
+infolists
+kill
+labels (<symbol>)
+labels
+linechar
+linenum
+myoptions
+nolabels
+optionset
+outchar
+playback
+prompt
+quit ()
+read (<expr_1>, ..., <expr_n>)
+readonly (<expr_1>, ..., <expr_n>)
+reset ()
+showtime
+to_lisp ()
+values
+%edispflag
+absboxchar
+disp (<expr_1>, <expr_2>, ...)
+display (<expr_1>, <expr_2>, ...)
+display2d
+display_format_internal
+dispterms (<expr>)
+expt (<a>, <b>)
+ncexpt (<a>, <b>)
+exptdispflag
+grind (<expr>)
+grind
+ibase
+ldisp (<expr_1>, ..., <expr_n>)
+ldisplay (<expr_1>, ..., <expr_n>)
+leftjust
+linel
+lispdisp
+negsumdispflag
+obase
+pfeformat
+powerdisp
+print (<expr_1>, ..., <expr_n>)
+sqrtdispflag
+stardisp
+ttyoff
+bfloat (<expr>)
+bfloatp (<expr>)
+bftorat
+bftrunc
+evenp (<expr>)
+float (<expr>)
+float2bf
+floatnump (<expr>)
+fpprec
+fpprintprec
+integerp (<expr>)
+m1pbranch
+nonnegintegerp (<n>)
+numberp (<expr>)
+numer
+numer_pbranch
+numerval (<x_1>, <expr_1>, ..., <var_n>, <expr_n>)
+oddp (<expr>)
+promote_float_to_bigfloat
+ratepsilon
+rationalize (<expr>)
+ratnump (<expr>)
+concat (<arg_1>, <arg_2>, ...)
+sconcat (<arg_1>, <arg_2>, ...)
+string (<expr>)
+stringdisp
+%e
+%i
+false
+%gamma
+ind
+inf
+infinity
+minf
+%phi
+%pi
+true
+und
+zeroa
+zerob
+[
+]
+append (<list_1>, ..., <list_n>)
+assoc
+cons
+copylist (<list>)
+create_list (<form>, <x_1>, <list_1>, ..., <x_n>, <list_n>)
+delete
+eighth (<expr>)
+endcons
+fifth (<expr>)
+first (<expr>)
+fourth (<expr>)
+join (<l>, <m>)
+last (<expr>)
+length (<expr>)
+listarith
+listp (<expr>)
+makelist
+member (<expr_1>, <expr_2>)
+ninth (<expr>)
+pop (<list>)
+push (<item>, <list>)
+rest
+reverse (<list>)
+second (<expr>)
+seventh (<expr>)
+sixth (<expr>)
+sort
+sublist (<list>, <p>)
+sublist_indices (<L>, <P>)
+unique (<L>)
+tenth (<expr>)
+third (<expr>)
+array
+arrayapply (<A>, [<i_1>, ..., <i_n>])
+arrayinfo (<A>)
+arraymake (<A>, [<i_1>, ..., <i_n>])
+arrays
+arraysetapply (<A>, [<i_1>, ..., <i_n>], <x>)
+fillarray (<A>, <B>)
+listarray (<A>)
+make_array (<type>, <dim_1>, ..., <dim_n>)
+rearray (<A>, <dim_1>, ..., <dim_n>)
+remarray
+subvar (<x>, <i>)
+subvarp (<expr>)
+use_fast_arrays
+structures
+defstruct
+new
+@
+alias (<new_name_1>, <old_name_1>, ..., <new_name_n>, <old_name_n>)
+aliases
+allbut
+args (<expr>)
+atom (<expr>)
+box
+boxchar
+collapse (<expr>)
+disolate (<expr>, <x_1>, ..., <x_n>)
+dispform
+dpart (<expr>, <n_1>, ..., <n_k>)
+exptisolate
+exptsubst
+freeof (<x_1>, ..., <x_n>, <expr>)
+inflag
+inpart (<expr>, <n_1>, ..., <n_k>)
+isolate (<expr>, <x>)
+isolate_wrt_times
+listconstvars
+listdummyvars
+listofvars (<expr>)
+lfreeof (<list>, <expr>)
+lpart (<label>, <expr>, <n_1>, ..., <n_k>)
+mainvar
+noun
+noundisp
+nounify (<f>)
+nterms (<expr>)
+op (<expr>)
+operatorp
+opsubst
+optimize (<expr>)
+optimprefix
+ordergreat (<v_1>, ..., <v_n>)
+orderless (<v_1>, ..., <v_n>)
+ordergreatp (<expr_1>, <expr_2>)
+orderlessp (<expr_1>, <expr_2>)
+part (<expr>, <n_1>, ..., <n_k>)
+partition (<expr>, <x>)
+partswitch
+pickapart (<expr>, <n>)
+piece
+psubst
+rembox
+reveal (<expr>, <depth>)
+sublis (<list>, <expr>)
+sublis_apply_lambda
+subnumsimp
+subst (<a>, <b>, <c>)
+substinpart (<x>, <expr>, <n_1>, ..., <n_k>)
+substpart (<x>, <expr>, <n_1>, ..., <n_k>)
+symbolp (<expr>)
+unorder ()
+verbify (<f>)
++
+-
+*
+/
+^
+**
+^^
+.
+<
+<=
+>=
+>
+and
+not
+or
+#
+=
+:
+::
+::=
+:=
+infix
+matchfix
+nary
+nofix
+postfix
+prefix
+'
+"
+ev (<expr>, <arg_1>, ..., <arg_n>)
+eval
+evflag
+evfun
+infeval
+noeval
+nouns
+pred
+additive
+antisymmetric
+combine (<expr>)
+commutative
+demoivre (<expr>)
+demoivre
+distrib (<expr>)
+distribute_over
+domain
+evenfun
+oddfun
+expand
+expandwrt (<expr>, <x_1>, ..., <x_n>)
+expandwrt_denom
+expandwrt_factored (<expr>, <x_1>, ..., <x_n>)
+expon
+exponentialize (<expr>)
+exponentialize
+expop
+lassociative
+linear
+maxnegex
+maxposex
+multiplicative
+multthru
+nary
+negdistrib
+opproperties
+outative
+radcan (<expr>)
+radexpand
+rassociative
+scsimp (<expr>, <rule_1>, ..., <rule_n>)
+simp
+symmetric
+xthru (<expr>)
+abs (<z>)
+ceiling (<x>)
+entier (<x>)
+floor (<x>)
+fix (<x>)
+lmax (<L>)
+lmin (<L>)
+max (<x_1>, ..., <x_n>)
+min (<x_1>, ..., <x_n>)
+round (<x>)
+signum (<x>)
+truncate (<x>)
+cabs (<expr>)
+carg (<z>)
+conjugate (<x>)
+imagpart (<expr>)
+polarform (<expr>)
+realpart (<expr>)
+rectform (<expr>)
+!!
+binomial (<x>, <y>)
+factcomb (<expr>)
+factorial
+!
+factlim
+factorial_expand
+genfact (<x>, <y>, <z>)
+minfactorial (<expr>)
+sumsplitfact
+%e_to_numlog
+%emode
+%enumer
+exp (<x>)
+li [<s>] (<z>)
+log (<x>)
+logabs
+logarc
+logarc (<expr>)
+logconcoeffp
+logcontract (<expr>)
+logexpand
+lognegint
+logsimp
+plog (<x>)
+sqrt (<x>)
+%piargs
+%iargs
+acos (<x>)
+acosh (<x>)
+acot (<x>)
+acoth (<x>)
+acsc (<x>)
+acsch (<x>)
+asec (<x>)
+asech (<x>)
+asin (<x>)
+asinh (<x>)
+atan (<x>)
+atan2 (<y>, <x>)
+atanh (<x>)
+atrig1
+cos (<x>)
+cosh (<x>)
+cot (<x>)
+coth (<x>)
+csc (<x>)
+csch (<x>)
+halfangles
+ntrig
+sec (<x>)
+sech (<x>)
+sin (<x>)
+sinh (<x>)
+tan (<x>)
+tanh (<x>)
+trigexpand (<expr>)
+trigexpandplus
+trigexpandtimes
+triginverses
+trigreduce
+trigsign
+trigsimp (<expr>)
+trigrat (<expr>)
+make_random_state
+set_random_state (<s>)
+random (<x>)
+alphabetic
+bindtest
+constant
+constantp (<expr>)
+declare (<a_1>, <p_1>, <a_2>, <p_2>, ...)
+decreasing
+increasing
+even
+odd
+feature
+featurep (<a>, <f>)
+features
+get (<a>, <i>)
+integer
+noninteger
+integervalued
+nonarray
+nonscalar
+nonscalarp (<expr>)
+posfun
+printprops
+properties (<a>)
+props
+propvars (<prop>)
+put (<atom>, <value>, <indicator>)
+qput (<atom>, <value>, <indicator>)
+rational
+irrational
+real
+imaginary
+complex
+rem (<atom>, <indicator>)
+remove
+scalar
+scalarp (<expr>)
+activate (<context_1>, ..., <context_n>)
+activecontexts
+askinteger
+asksign (<expr>)
+assume (<pred_1>, ..., <pred_n>)
+assumescalar
+assume_pos
+assume_pos_pred
+context
+contexts
+deactivate (<context_1>, ..., <context_n>)
+facts
+forget
+is (<expr>)
+killcontext (<context_1>, ..., <context_n>)
+maybe (<expr>)
+newcontext
+sign (<expr>)
+supcontext
+charfun (<p>)
+compare (<x>, <y>)
+equal (<a>, <b>)
+notequal (<a>, <b>)
+unknown (<expr>)
+zeroequiv (<expr>, <v>)
+contour_plot (<expr>, <x_range>, <y_range>, <options>, ...)
+get_plot_option (<keyword>, <index>)
+gnuplot_command
+gnuplot_file_args
+gnuplot_view_args
+implicit_plot
+julia (<x>, <y>, ...<options>...)
+make_transform ([<var1>, <var2>, <var3>], <fx>, <fy>, <fz>)
+mandelbrot (<options>)
+polar_to_xy
+plot2d
+plot3d
+plot_options
+remove_plot_option (<name>)
+set_plot_option (<option>)
+spherical_to_xyz
+adapt_depth [adapt_depth, <integer>]
+axes [axes, <symbol>]
+azimuth [azimuth, <number>]
+box [box, <symbol>]
+color [color, <color_1>, ..., <color_n>]
+color_bar [color_bar, <symbol>]
+color_bar_tics [color_bar_tics, <x1>, <x2>, <x3>]
+elevation [elevation, <number>]
+grid [grid, <integer>, <integer>]
+grid2d [grid, <value>]
+iterations [grid, <value>]
+label [label, [<string>, <x>, <y>], ...]
+legend
+logx [logx, <value>]
+logy [logy, <value>]
+mesh_lines_color [mesh_lines_color, <color>]
+nticks [nticks, <integer>]
+palette
+plot_format [plot_format, <format>]
+plot_realpart [plot_realpart, <symbol>]
+point_type [point_type, <type_1>, ..., <type_n>]
+pdf_file [pdf_file, <file_name>]
+png_file [png_file, <file_name>]
+ps_file [ps_file, <file_name>]
+run_viewer [run_viewer, <symbol>]
+same_xy [same_xy , <value>]
+same_xyz [same_xyz , <value>]
+style
+svg_file [svg_file, <file_name>]
+t [t, <min>, <max>]
+title [title, <text>]
+transform_xy [transform_xy, <symbol>]
+x [x, <min>, <max>]
+xlabel [xlabel, <string>]
+xtics [xtics, <x1>, <x2>, <x3>]
+xy_scale [xy_scale, <sx>, <sy>]
+y [y, <min>, <max>]
+ylabel [ylabel, <string>]
+ytics [ytics, <y1>, <y2>, <y3>]
+yx_ratio [yx_ratio, <r>]
+z [z, <min>, <max>]
+zlabel [zlabel, <string>]
+zmin [zmin, <z>]
+gnuplot_term [gnuplot_term, <terminal_name>]
+gnuplot_out_file [gnuplot_out_file, <file_name>]
+gnuplot_pm3d [gnuplot_pm3d, <value>]
+gnuplot_preamble [gnuplot_preamble, <string>]
+gnuplot_postamble [gnuplot_postamble, <string>]
+gnuplot_default_term_command
+gnuplot_dumb_term_command
+gnuplot_pdf_term_command [gnuplot_pdf_term_command, <command>]
+gnuplot_png_term_command [gnuplot_png_term_command, <command>]
+gnuplot_ps_term_command [gnuplot_ps_term_command, <command>]
+gnuplot_svg_term_command [gnuplot_svg_term_command, <command>]
+gnuplot_curve_titles
+gnuplot_curve_styles
+gnuplot_start ()
+gnuplot_close ()
+gnuplot_restart ()
+gnuplot_replot
+gnuplot_reset ()
+appendfile (<filename>)
+batch
+batchload (<filename>)
+closefile ()
+file_output_append
+filename_merge (<path>, <filename>)
+file_search
+file_search_maxima
+file_search_lisp
+file_search_demo
+file_search_usage
+file_search_tests
+file_type (<filename>)
+file_type_lisp
+file_type_maxima
+load (<filename>)
+load_pathname
+loadfile (<filename>)
+loadprint
+pathname_directory (<pathname>)
+pathname_name (<pathname>)
+pathname_type (<pathname>)
+printfile (<path>)
+save
+stringout
+with_stdout
+writefile (<filename>)
+tex
+tex1 (<e>)
+texput
+get_tex_environment (<op>)
+set_tex_environment (<op>, <before>, <after>)
+get_tex_environment_default ()
+set_tex_environment_default (<before>, <after>)
+fortindent
+fortran (<expr>)
+fortspaces
+algebraic
+berlefact
+bezout (<p1>, <p2>, <x>)
+bothcoef (<expr>, <x>)
+coeff
+content (<p_1>, <x_1>, ..., <x_n>)
+denom (<expr>)
+divide (<p_1>, <p_2>, <x_1>, ..., <x_n>)
+eliminate ([<eqn_1>, ..., <eqn_n>], [<x_1>, ..., <x_k>])
+ezgcd (<p_1>, <p_2>, <p_3>, ...)
+facexpand
+factor
+factorflag
+factorout (<expr>, <x_1>, <x_2>, ...)
+factorsum (<expr>)
+fasttimes (<p_1>, <p_2>)
+fullratsimp (<expr>)
+fullratsubst (<a>, <b>, <c>)
+gcd (<p_1>, <p_2>, <x_1>, ...)
+gcdex
+gcfactor (<n>)
+gfactor (<expr>)
+gfactorsum (<expr>)
+hipow (<expr>, <x>)
+intfaclim
+keepfloat
+lopow (<expr>, <x>)
+lratsubst (<L>, <expr>)
+modulus
+num (<expr>)
+polydecomp (<p>, <x>)
+polymod
+quotient
+rat
+ratalgdenom
+ratcoef
+ratdenom (<expr>)
+ratdenomdivide
+ratdiff (<expr>, <x>)
+ratdisrep (<expr>)
+ratexpand (<expr>)
+ratexpand
+ratfac
+ratnumer (<expr>)
+ratp (<expr>)
+ratprint
+ratsimp (<expr>)
+ratsimp (<expr>, <x_1>, ..., <x_n>)
+ratsimpexpons
+radsubstflag
+ratsubst (<a>, <b>, <c>)
+ratvars (<x_1>, ..., <x_n>)
+ratvars ()
+ratvars
+ratvarswitch
+ratweight
+ratweights
+ratwtlvl
+remainder
+resultant (<p_1>, <p_2>, <x>)
+resultant
+savefactors
+showratvars (<expr>)
+sqfr (<expr>)
+tellrat
+totaldisrep (<expr>)
+untellrat (<x_1>, ..., <x_n>)
+bessel_j (<v>, <z>)
+bessel_y (<v>, <z>)
+bessel_i (<v>, <z>)
+bessel_k (<v>, <z>)
+hankel_1 (<v>, <z>)
+hankel_2 (<v>, <z>)
+besselexpand
+scaled_bessel_i (<v>, <z>)
+scaled_bessel_i0 (<z>)
+scaled_bessel_i1 (<z>)
+%s [<u>,<v>] (<z>)
+airy_ai (<x>)
+airy_dai (<x>)
+airy_bi (<x>)
+airy_dbi (<x>)
+bffac (<expr>, <n>)
+bfpsi (<n>, <z>, <fpprec>)
+bfpsi0 (<z>, <fpprec>)
+cbffac (<z>, <fpprec>)
+gamma (<z>)
+log_gamma (<z>)
+gamma_greek (<a>, <z>)
+gamma_incomplete (<a>, <z>)
+gamma_incomplete_regularized (<a>, <z>)
+gamma_incomplete_generalized (<a>, <z1>, <z1>)
+gamma_expand
+gammalim
+makegamma (<expr>)
+beta (<a>, <b>)
+beta_incomplete (<a>, <b>, <z>)
+beta_incomplete_regularized (<a>, <b>, <z>)
+beta_incomplete_generalized (<a>, <b>, <z1>, <z2>)
+beta_expand
+beta_args_sum_to_integer
+psi [<n>](<x>)
+maxpsiposint
+maxpsinegint
+maxpsifracnum
+maxpsifracdenom
+makefact (<expr>)
+numfactor (<expr>)
+expintegral_e1 (<z>)
+expintegral_ei (<z>)
+expintegral_li (<z>)
+expintegral_e (<n>,<z>)
+expintegral_si (<z>)
+expintegral_ci (<z>)
+expintegral_shi (<z>)
+expintegral_chi (<z>)
+expintrep
+expintexpand
+erf (<z>)
+erfc (<z>)
+erfi (<z>)
+erf_generalized (<z1>,<z2>)
+fresnel_c (<z>)
+fresnel_s (<z>)
+erf_representation
+hypergeometric_representation
+struve_h (<v>, <z>)
+struve_l (<v>, <z>)
+%m [<k>,<u>] (<z>)
+%w [<k>,<u>] (<z>)
+%f [<p>,<q>] (<[a],[b],z>)
+hypergeometric ([<a1>, ..., <ap>],[<b1>, ... ,<bq>], x)
+parabolic_cylinder_d (<v>, <z>)
+specint (exp(- s*<t>) * <expr>, <t>)
+hgfred (<a>, <b>, <t>)
+lambert_w (<z>)
+generalized_lambert_w (<k>, <z>)
+nzeta (<z>)
+nzetar (<z>)
+nzetai (<z>)
+jacobi_sn (<u>, <m>)
+jacobi_cn (<u>, <m>)
+jacobi_dn (<u>, <m>)
+jacobi_ns (<u>, <m>)
+jacobi_sc (<u>, <m>)
+jacobi_sd (<u>, <m>)
+jacobi_nc (<u>, <m>)
+jacobi_cs (<u>, <m>)
+jacobi_cd (<u>, <m>)
+jacobi_nd (<u>, <m>)
+jacobi_ds (<u>, <m>)
+jacobi_dc (<u>, <m>)
+inverse_jacobi_sn (<u>, <m>)
+inverse_jacobi_cn (<u>, <m>)
+inverse_jacobi_dn (<u>, <m>)
+inverse_jacobi_ns (<u>, <m>)
+inverse_jacobi_sc (<u>, <m>)
+inverse_jacobi_sd (<u>, <m>)
+inverse_jacobi_nc (<u>, <m>)
+inverse_jacobi_cs (<u>, <m>)
+inverse_jacobi_cd (<u>, <m>)
+inverse_jacobi_nd (<u>, <m>)
+inverse_jacobi_ds (<u>, <m>)
+inverse_jacobi_dc (<u>, <m>)
+elliptic_f (<phi>, <m>)
+elliptic_e (<phi>, <m>)
+elliptic_eu (<u>, <m>)
+elliptic_pi (<n>, <phi>, <m>)
+elliptic_kc (<m>)
+elliptic_ec (<m>)
+lhospitallim
+limit
+limsubst
+tlimit
+tlimswitch
+antid (<expr>, <x>, <u(x)>)
+antidiff (<expr>, <x>, <u>(<x>))
+at
+atomgrad
+atvalue
+cartan
+del (<x>)
+delta (<t>)
+dependencies
+dependencies (<f_1>, ..., <f_n>)
+depends (<f_1>, <x_1>, ..., <f_n>, <x_n>)
+derivabbrev
+derivdegree (<expr>, <y>, <x>)
+derivlist (<var_1>, ..., <var_k>)
+derivsubst
+diff
+diff
+dscalar (<f>)
+express (<expr>)
+gradef
+gradefs
+laplace (<expr>, <t>, <s>)
+changevar (<expr>, <f(x,y)>, <y>, <x>)
+dblint (<f>, <r>, <s>, <a>, <b>)
+defint (<expr>, <x>, <a>, <b>)
+erfflag
+ilt (<expr>, <s>, <t>)
+intanalysis
+integrate
+integration_constant
+integration_constant_counter
+integrate_use_rootsof
+ldefint (<expr>, <x>, <a>, <b>)
+potential (<givengradient>)
+residue (<expr>, <z>, <z_0>)
+risch (<expr>, <x>)
+tldefint (<expr>, <x>, <a>, <b>)
+quad_qag
+quad_qags
+quad_qagi
+quad_qawc
+quad_qawf
+quad_qawo
+quad_qaws
+quad_qagp
+quad_control (<parameter>, [<value>])
+%rnum_list
+algepsilon
+algexact
+algsys
+allroots
+bfallroots
+backsubst
+breakup
+dimension
+dispflag
+funcsolve (<eqn>, <g>(<t>))
+globalsolve
+ieqn (<ie>, <unk>, <tech>, <n>, <guess>)
+ieqnprint
+lhs (<expr>)
+linsolve ([<expr_1>, ..., <expr_m>], [<x_1>, ..., <x_n>])
+linsolvewarn
+linsolve_params
+multiplicities
+nroots (<p>, <low>, <high>)
+nthroot (<p>, <n>)
+polyfactor
+programmode
+realonly
+realroots
+rhs (<expr>)
+rootsconmode
+rootscontract (<expr>)
+rootsepsilon
+solve
+solvedecomposes
+solveexplicit
+solvefactors
+solvenullwarn
+solveradcan
+solvetrigwarn
+bc2 (<solution>, <xval1>, <yval1>, <xval2>, <yval2>)
+desolve
+ic1 (<solution>, <xval>, <yval>)
+ic2 (<solution>, <xval>, <yval>, <dval>)
+ode2 (<eqn>, <dvar>, <ivar>)
+polartorect (<r>, <t>)
+recttopolar (<a>, <b>)
+inverse_fft (<y>)
+fft (<x>)
+horner
+find_root (<expr>, <x>, <a>, <b>, [<abserr>, <relerr>])
+find_root (<f>, <a>, <b>, [<abserr>, <relerr>])
+bf_find_root (<expr>, <x>, <a>, <b>, [<abserr>, <relerr>])
+bf_find_root (<f>, <a>, <b>, [<abserr>, <relerr>])
+find_root_error
+find_root_abs
+find_root_rel
+newton (<expr>, <x>, <x_0>, <eps>)
+plotdf
+ploteq (<exp>, ...options...)
+rk
+addcol (<M>, <list_1>, ..., <list_n>)
+addrow (<M>, <list_1>, ..., <list_n>)
+adjoint (<M>)
+augcoefmatrix ([<eqn_1>, ..., <eqn_m>], [<x_1>, ..., <x_n>])
+cauchy_matrix
+charpoly (<M>, <x>)
+coefmatrix ([<eqn_1>, ..., <eqn_m>], [<x_1>, ..., <x_n>])
+col (<M>, <i>)
+columnvector (<L>)
+covect (<L>)
+copymatrix (<M>)
+determinant (<M>)
+detout
+diagmatrix (<n>, <x>)
+doallmxops
+domxexpt
+domxmxops
+domxnctimes
+dontfactor
+doscmxops
+doscmxplus
+dot0nscsimp
+dot0simp
+dot1simp
+dotassoc
+dotconstrules
+dotdistrib
+dotexptsimp
+dotident
+dotscrules
+echelon (<M>)
+eigenvalues (<M>)
+eivals (<M>)
+eigenvectors (<M>)
+eivects (<M>)
+ematrix (<m>, <n>, <x>, <i>, <j>)
+entermatrix (<m>, <n>)
+genmatrix
+gramschmidt
+ident (<n>)
+innerproduct (<x>, <y>)
+inprod (<x>, <y>)
+invert_by_adjoint (<M>)
+invert (<M>)
+list_matrix_entries (<M>)
+lmxchar
+matrix (<row_1>, ..., <row_n>)
+matrixmap (<f>, <M>)
+matrixp (<expr>)
+matrix_element_add
+matrix_element_mult
+matrix_element_transpose
+mattrace (<M>)
+minor (<M>, <i>, <j>)
+ncharpoly (<M>, <x>)
+newdet (<M>)
+permanent (<M>)
+rank (<M>)
+ratmx
+row (<M>, <i>)
+rmxchar
+scalarmatrixp
+scalefactors (<coordinatetransform>)
+setelmx (<x>, <i>, <j>, <M>)
+similaritytransform (<M>)
+simtran (<M>)
+sparse
+submatrix
+transpose (<M>)
+triangularize (<M>)
+uniteigenvectors (<M>)
+ueivects (<M>)
+unitvector (<x>)
+uvect (<x>)
+vectorpotential (<givencurl>)
+vectorsimp (<expr>)
+vect_cross
+zeromatrix (<m>, <n>)
+fast_linsolve ([<expr_1>, ..., <expr_m>], [<x_1>, ..., <x_n>])
+grobner_basis ([<expr_1>, ..., <expr_m>])
+set_up_dot_simplifications
+declare_weights (<x_1>, <w_1>, ..., <x_n>, <w_n>)
+nc_degree (<p>)
+dotsimp (<f>)
+fast_central_elements ([<x_1>, ..., <x_n>], <n>)
+check_overlaps (<n>, <add_to_simps>)
+mono ([<x_1>, ..., <x_n>], <n>)
+monomial_dimensions (<n>)
+extract_linear_equations ([<p_1>, ..., <p_n>], [<m_1>, ..., <m_n>])
+list_nc_monomials
+all_dotsimp_denoms
+dispcon
+entertensor (<name>)
+changename (<old>, <new>, <expr>)
+listoftens
+ishow (<expr>)
+indices (<expr>)
+rename
+show (<expr>)
+flipflag
+defcon
+remcon
+contract (<expr>)
+indexed_tensor (<tensor>)
+components (<tensor>, <expr>)
+remcomps (<tensor>)
+showcomps (<tensor>)
+idummy ()
+idummyx
+icounter
+kdelta (<L1>, <L2>)
+kdels (<L1>, <L2>)
+levi_civita (<L>)
+lc2kdt (<expr>)
+lc_l
+lc_u
+canten (<expr>)
+concan (<expr>)
+allsym
+decsym (<tensor>, <m>, <n>, [<cov_1>, <cov_2>, ...], [<contr_1>, <contr_2>, ...])
+remsym (<tensor>, <m>, <n>)
+canform
+diff (<expr>, <v_1>, [<n_1>, [<v_2>, <n_2>] ...])
+idiff (<expr>, <v_1>, [<n_1>, [<v_2>, <n_2>] ...])
+liediff (<v>, <ten>)
+rediff (<ten>)
+undiff (<expr>)
+evundiff (<expr>)
+flush (<expr>, <tensor_1>, <tensor_2>, ...)
+flushd (<expr>, <tensor_1>, <tensor_2>, ...)
+flushnd (<expr>, <tensor>, <n>)
+coord (<tensor_1>, <tensor_2>, ...)
+remcoord
+makebox (<expr>)
+conmetderiv (<expr>, <tensor>)
+simpmetderiv
+flush1deriv (<expr>, <tensor>)
+imetric (<g>)
+imetric
+idim (<n>)
+ichr1 ([<i>, <j>, <k>])
+ichr2 ([<i>, <j>], [<k>])
+icurvature ([<i>, <j>, <k>], [<h>])
+covdiff (<expr>, <v_1>, <v_2>, ...)
+lorentz_gauge (<expr>)
+igeodesic_coords (<expr>, <name>)
+iframes ()
+ifb
+icc1
+icc2
+ifc1
+ifc2
+ifr
+ifri
+ifg
+ifgi
+iframe_bracket_form
+inm
+inmc1
+inmc2
+ikt1
+ikt2
+itr
+~
+|
+extdiff (<expr>, <i>)
+hodge (<expr>)
+igeowedge_flag
+tentex (<expr>)
+ic_convert (<eqn>)
+csetup ()
+cmetric
+ct_coordsys
+init_ctensor ()
+christof (<dis>)
+ricci (<dis>)
+uricci (<dis>)
+scurvature ()
+einstein (<dis>)
+leinstein (<dis>)
+riemann (<dis>)
+lriemann (<dis>)
+uriemann (<dis>)
+rinvariant ()
+weyl (<dis>)
+ctaylor ()
+frame_bracket (<fr>, <fri>, <diagframe>)
+nptetrad ()
+psi (<dis>)
+petrov ()
+contortion (<tr>)
+nonmetricity (<nm>)
+ctransform (<M>)
+findde (<A>, <n>)
+cograd ()
+contragrad ()
+dscalar ()
+checkdiv ()
+cgeodesic (<dis>)
+bdvac (<f>)
+invariant1 ()
+invariant2 ()
+bimetric ()
+diagmatrixp (<M>)
+symmetricp (<M>, <n>)
+ntermst (<f>)
+cdisplay (<ten>)
+deleten (<L>, <n>)
+dim
+diagmetric
+ctrgsimp
+cframe_flag
+ctorsion_flag
+cnonmet_flag
+ctayswitch
+ctayvar
+ctaypov
+ctaypt
+gdet
+ratchristof
+rateinstein
+ratriemann
+ratweyl
+lfg
+ufg
+riem
+lriem
+uriem
+ric
+uric
+lg
+ug
+weyl
+fb
+kinvariant
+np
+npi
+tr
+kt
+nm
+nmc
+tensorkill
+ct_coords
+init_atensor
+atensimp (<expr>)
+alg_type
+adim
+aform
+asymbol
+sf (<u>, <v>)
+af (<u>, <v>)
+av (<u>, <v>)
+abasep (<v>)
+bashindices (<expr>)
+lsum (<expr>, <x>, <L>)
+intosum (<expr>)
+product (<expr>, <i>, <i_0>, <i_1>)
+simpsum
+sum (<expr>, <i>, <i_0>, <i_1>)
+sumcontract (<expr>)
+sumexpand
+cauchysum
+deftaylor (<f_1>(<x_1>), <expr_1>, ..., <f_n>(<x_n>), <expr_n>)
+maxtayorder
+niceindices (<expr>)
+niceindicespref
+nusum (<expr>, <x>, <i_0>, <i_1>)
+pade (<taylor_series>, <numer_deg_bound>, <denom_deg_bound>)
+powerseries (<expr>, <x>, <a>)
+psexpand
+revert (<expr>, <x>)
+revert2 (<expr>, <x>, <n>)
+taylor
+taylordepth
+taylorinfo (<expr>)
+taylorp (<expr>)
+taylor_logexpand
+taylor_order_coefficients
+taylor_simplifier (<expr>)
+taylor_truncate_polynomials
+taytorat (<expr>)
+trunc (<expr>)
+unsum (<f>, <n>)
+verbose
+equalp (<x>, <y>)
+remfun
+funp
+absint
+fourier (<f>, <x>, <p>)
+foursimp (<l>)
+sinnpiflag
+cosnpiflag
+fourexpand (<l>, <x>, <p>, <limit>)
+fourcos (<f>, <x>, <p>)
+foursin (<f>, <x>, <p>)
+totalfourier (<f>, <x>, <p>)
+fourint (<f>, <x>)
+fourintcos (<f>, <x>)
+fourintsin (<f>, <x>)
+intopois (<a>)
+outofpois (<a>)
+poisdiff (<a>, <b>)
+poisexpt (<a>, <b>)
+poisint (<a>, <b>)
+poislim
+poismap (<series>, <sinfn>, <cosfn>)
+poisplus (<a>, <b>)
+poissimp (<a>)
+poisson
+poissubst (<a>, <b>, <c>)
+poistimes (<a>, <b>)
+poistrim ()
+printpois (<a>)
+bern (<n>)
+bernpoly (<x>, <n>)
+bfzeta (<s>, <n>)
+bfhzeta (<s>, <h>, <n>)
+burn (<n>)
+chinese ([<r_1>, ..., <r_n>], [<m_1>, ..., <m_n>])
+cf (<expr>)
+cfdisrep (<list>)
+cfexpand (<x>)
+cflength
+divsum
+euler (<n>)
+factors_only
+fib (<n>)
+fibtophi (<expr>)
+ifactors (<n>)
+igcdex (<n>, <k>)
+inrt (<x>, <n>)
+inv_mod (<n>, <m>)
+isqrt (<x>)
+jacobi (<p>, <q>)
+lcm (<expr_1>, ..., <expr_n>)
+lucas (<n>)
+mod (<x>, <y>)
+next_prime (<n>)
+partfrac (<expr>, <var>)
+power_mod (<a>, <n>, <m>)
+primep (<n>)
+primep_number_of_tests
+prev_prime (<n>)
+qunit (<n>)
+totient (<n>)
+zerobern
+zeta (<n>)
+zeta%pi
+zn_add_table (<n>)
+zn_determinant (<matrix>, <p>)
+zn_invert_by_lu (<matrix>, <p>)
+zn_log
+zn_mult_table
+zn_order
+zn_power_table
+zn_primroot
+zn_primroot_limit
+zn_primroot_p
+zn_primroot_pretest
+zn_primroot_verbose
+comp2pui (<n>, <L>)
+ele2pui (<m>, <L>)
+ele2comp (<m>, <L>)
+elem (<ele>, <sym>, <lvar>)
+mon2schur (<L>)
+multi_elem (<l_elem>, <multi_pc>, <l_var>)
+multi_pui
+pui (<L>, <sym>, <lvar>)
+pui2comp (<n>, <lpui>)
+pui2ele (<n>, <lpui>)
+puireduc (<n>, <lpui>)
+schur2comp (<P>, <l_var>)
+cont2part (<pc>, <lvar>)
+contract (<psym>, <lvar>)
+explose (<pc>, <lvar>)
+part2cont (<ppart>, <lvar>)
+partpol (<psym>, <lvar>)
+tcontract (<pol>, <lvar>)
+tpartpol (<pol>, <lvar>)
+direct ([<p_1>, ..., <p_n>], <y>, <f>, [<lvar_1>, ..., <lvar_n>])
+multi_orbit (<P>, [<lvar_1>, <lvar_2>,..., <lvar_p>])
+multsym (<ppart_1>, <ppart_2>, <n>)
+orbit (<P>, <lvar>)
+pui_direct (<orbite>, [<lvar_1>, ..., <lvar_n>], [<d_1>, <d_2>, ..., <d_n>])
+kostka (<part_1>, <part_2>)
+lgtreillis (<n>, <m>)
+ltreillis (<n>, <m>)
+treillis (<n>)
+treinat (<part>)
+ele2polynome (<L>, <z>)
+polynome2ele (<P>, <x>)
+prodrac (<L>, <k>)
+pui2polynome (<x>, <lpui>)
+somrac (<L>, <k>)
+resolvante (<P>, <x>, <f>, [<x_1>,..., <x_d>])
+resolvante_alternee1 (<P>, <x>)
+resolvante_bipartite (<P>, <x>)
+resolvante_diedrale (<P>, <x>)
+resolvante_klein (<P>, <x>)
+resolvante_klein3 (<P>, <x>)
+resolvante_produit_sym (<P>, <x>)
+resolvante_unitaire (<P>, <Q>, <x>)
+resolvante_vierer (<P>, <x>)
+multinomial (<r>, <part>)
+permut (<L>)
+todd_coxeter
+maxima_tempdir
+maxima_userdir
+room
+sstatus (<keyword>, <item>)
+status
+system (<command>)
+time (%o1, %o2, %o3, ...)
+timedate
+absolute_real_time ()
+elapsed_real_time ()
+elapsed_run_time ()
+askexp
+genindex
+gensumnum
+gensym
+packagefile
+remvalue
+rncombine (<expr>)
+setup_autoload (<filename>, <function_1>, ..., <function_n>)
+tcl_output
+apply1 (<expr>, <rule_1>, ..., <rule_n>)
+apply2 (<expr>, <rule_1>, ..., <rule_n>)
+applyb1 (<expr>, <rule_1>, ..., <rule_n>)
+current_let_rule_package
+default_let_rule_package
+defmatch
+defrule (<rulename>, <pattern>, <replacement>)
+disprule
+let
+letrat
+letrules
+letsimp
+let_rule_packages
+matchdeclare (<a_1>, <pred_1>, ..., <a_n>, <pred_n>)
+maxapplydepth
+maxapplyheight
+remlet
+remrule
+tellsimp (<pattern>, <replacement>)
+tellsimpafter (<pattern>, <replacement>)
+clear_rules ()
+adjoin (<x>, <a>)
+belln (<n>)
+cardinality (<a>)
+cartesian_product (<b_1>, ... , <b_n>)
+disjoin (<x>, <a>)
+disjointp (<a>, <b>)
+divisors (<n>)
+elementp (<x>, <a>)
+emptyp (<a>)
+equiv_classes (<s>, <F>)
+every
+extremal_subset
+flatten (<expr>)
+full_listify (<a>)
+fullsetify (<a>)
+identity (<x>)
+integer_partitions
+intersect (<a_1>, ..., <a_n>)
+intersection (<a_1>, ..., <a_n>)
+kron_delta (<x1>, <x2>, ..., <xp>)
+listify (<a>)
+lreduce
+makeset (<expr>, <x>, <s>)
+moebius (<n>)
+multinomial_coeff
+num_distinct_partitions
+num_partitions
+partition_set (<a>, <f>)
+permutations (<a>)
+powerset
+random_permutation (<a>)
+rreduce
+setdifference (<a>, <b>)
+setequalp (<a>, <b>)
+setify (<a>)
+setp (<a>)
+set
+some
+stirling1 (<n>, <m>)
+stirling2 (<n>, <m>)
+subset (<a>, <f>)
+subsetp (<a>, <b>)
+symmdifference (<a_1>, ..., <a_n>)
+tree_reduce
+union (<a_1>, ..., <a_n>)
+xreduce
+buildq (<L>, <expr>)
+macroexpand (<expr>)
+macroexpand1 (<expr>)
+macros
+splice (<a>)
+apply (<F>, [<x_1>, ..., <x_n>])
+block
+break (<expr_1>, ..., <expr_n>)
+catch (<expr_1>, ..., <expr_n>)
+compfile
+compile
+define
+define_variable (<name>, <default_value>, <mode>)
+dispfun
+fullmap (<f>, <expr_1>, ...)
+fullmapl (<f>, <list_1>, ...)
+functions
+fundef (<f>)
+funmake (<F>, [<arg_1>, ..., <arg_n>])
+lambda
+local (<v_1>, ..., <v_n>)
+macroexpansion
+mode_checkp
+mode_check_errorp
+mode_check_warnp
+mode_declare (<y_1>, <mode_1>, ..., <y_n>, <mode_n>)
+mode_identity (<arg_1>, <arg_2>)
+remfunction
+savedef
+transcompile
+translate
+translate_file
+transrun
+tr_array_as_ref
+tr_bound_function_applyp
+tr_file_tty_messagesp
+tr_float_can_branch_complex
+tr_function_call_default
+tr_numer
+tr_optimize_max_loop
+tr_semicompile
+tr_state_vars
+tr_warnings_get ()
+tr_warn_bad_function_calls
+tr_warn_fexpr
+tr_warn_meval
+tr_warn_mode
+tr_warn_undeclared
+tr_warn_undefined_variable
+compile_file
+declare_translated (<f_1>, <f_2>, ...)
+backtrace
+do
+in
+errcatch (<expr_1>, ..., <expr_n>)
+error (<expr_1>, ..., <expr_n>)
+error
+error_size
+error_syms
+errormsg ()
+errormsg
+for
+go (<tag>)
+if
+map (<f>, <expr_1>, ..., <expr_n>)
+mapatom (<expr>)
+maperror
+mapprint
+maplist (<f>, <expr_1>, ..., <expr_n>)
+prederror
+return (<value>)
+scanmap
+throw (<expr>)
+while
+unless
+outermap (<f>, <a_1>, ..., <a_n>)
+debugmode
+refcheck
+setcheck
+setcheckbreak
+setval
+timer (<f_1>, ..., <f_n>)
+untimer (<f_1>, ..., <f_n>)
+timer_devalue
+timer_info (<f_1>, ..., <f_n>)
+trace (<f_1>, ..., <f_n>)
+trace_options (<f>, <option_1>, ..., <option_n>)
+untrace
+define_alt_display (<function>(<input>), <expr>)
+info_display (<form>)
+mathml_display (<form>)
+tex_display (<form>)
+multi_display_for_texinfo (<form>)
+reset_displays ()
+set_alt_display (<num>, <display-function>)
+set_prompt (<fix>, <expr>)
+asympa
+augmented_lagrangian_method
+bernstein_poly (<k>, <n>, <x>)
+bernstein_explicit
+multibernstein_poly (<[k1,k2,..., kp]>, <[n1,n2,..., np]>, <[x1,x2,..., xp]>)
+bernstein_approx (<f>, <[x1, x1, ..., xn]>, n)
+bernstein_expand (<e>, <[x1, x1, ..., xn]>)
+bode_gain (<H>, <range>, ...<plot_opts>...)
+bode_phase (<H>, <range>, ...<plot_opts>...)
+clebsch_gordan (<j1>, <j2>, <m1>, <m2>, <j>, <m>)
+racah_v (<a>, <b>, <c>, <a1>, <b1>, <c1>)
+racah_w (<j1>, <j2>, <j5>, <j4>, <j3>, <j6>)
+wigner_3j (<j1>, <j2>, <j3>, <m1>, <m2>, <m3>)
+wigner_6j (<j1>, <j2>, <j3>, <j4>, <j5>, <j6>)
+wigner_9j (<a>, <b>, <c>, <d>, <e>, <f>, <g>, <h>, <i>, <j>,)
+fmin_cobyla
+bf_fmin_cobyla
+contrib_ode (<eqn>, <y>, <x>)
+odelin (<eqn>, <y>, <x>)
+ode_check (<eqn>, <soln>)
+method
+%c
+%k1
+%k2
+gauss_a (<a>, <b>, <c>, <x>)
+gauss_b (<a>, <b>, <c>, <x>)
+dgauss_a (<a>, <b>, <c>, <x>)
+dgauss_b (<a>, <b>, <c>, <x>)
+kummer_m (<a>, <b>, <x>)
+kummer_u (<a>, <b>, <x>)
+dkummer_m (<a>, <b>, <x>)
+dkummer_u (<a>, <b>, <x>)
+build_sample
+continuous_freq
+discrete_freq (<list>)
+standardize
+subsample
+transform_sample (<matrix>, <varlist>, <exprlist>)
+mean
+var
+var1
+std
+std1
+noncentral_moment
+central_moment
+cv
+smin
+smax
+range
+quantile
+median
+qrange
+mean_deviation
+median_deviation
+harmonic_mean
+geometric_mean
+kurtosis
+skewness
+pearson_skewness
+quartile_skewness
+cov (<matrix>)
+cov1 (<matrix>)
+global_variances
+cor
+list_correlations
+principal_components
+barsplot (<data1>, <data2>, ..., <option_1>, <option_2>, ...)
+barsplot_description (...)
+boxplot (<data>)
+boxplot_description (...)
+histogram
+histogram_description (...)
+piechart
+piechart_description (...)
+scatterplot
+scatterplot_description (...)
+starplot (<data1>, <data2>, ..., <option_1>, <option_2>, ...)
+starplot_description (...)
+stemplot
+diag (<lm>)
+JF (<lambda>,<n>)
+jordan (<mat>)
+dispJordan (<l>)
+minimalPoly (<l>)
+ModeMatrix (<A>, [<jordan_info>])
+mat_function (<f>,<A>)
+pdf_normal (<x>,<m>,<s>)
+cdf_normal (<x>,<m>,<s>)
+quantile_normal (<q>,<m>,<s>)
+mean_normal (<m>,<s>)
+var_normal (<m>,<s>)
+std_normal (<m>,<s>)
+skewness_normal (<m>,<s>)
+kurtosis_normal (<m>,<s>)
+random_normal (<m>,<s>)
+pdf_student_t (<x>,<n>)
+cdf_student_t (<x>,<n>)
+quantile_student_t (<q>,<n>)
+mean_student_t (<n>)
+var_student_t (<n>)
+std_student_t (<n>)
+skewness_student_t (<n>)
+kurtosis_student_t (<n>)
+random_student_t (<n>)
+pdf_noncentral_student_t (<x>,<n>,<ncp>)
+cdf_noncentral_student_t (<x>,<n>,<ncp>)
+quantile_noncentral_student_t (<q>,<n>,<ncp>)
+mean_noncentral_student_t (<n>,<ncp>)
+var_noncentral_student_t (<n>,<ncp>)
+std_noncentral_student_t (<n>,<ncp>)
+skewness_noncentral_student_t (<n>,<ncp>)
+kurtosis_noncentral_student_t (<n>,<ncp>)
+random_noncentral_student_t (<n>,<ncp>)
+pdf_chi2 (<x>,<n>)
+cdf_chi2 (<x>,<n>)
+quantile_chi2 (<q>,<n>)
+mean_chi2 (<n>)
+var_chi2 (<n>)
+std_chi2 (<n>)
+skewness_chi2 (<n>)
+kurtosis_chi2 (<n>)
+random_chi2 (<n>)
+pdf_noncentral_chi2 (<x>,<n>,<ncp>)
+cdf_noncentral_chi2 (<x>,<n>,<ncp>)
+quantile_noncentral_chi2 (<q>,<n>,<ncp>)
+mean_noncentral_chi2 (<n>,<ncp>)
+var_noncentral_chi2 (<n>,<ncp>)
+std_noncentral_chi2 (<n>,<ncp>)
+skewness_noncentral_chi2 (<n>,<ncp>)
+kurtosis_noncentral_chi2 (<n>,<ncp>)
+random_noncentral_chi2 (<n>,<ncp>)
+pdf_f (<x>,<m>,<n>)
+cdf_f (<x>,<m>,<n>)
+quantile_f (<q>,<m>,<n>)
+mean_f (<m>,<n>)
+var_f (<m>,<n>)
+std_f (<m>,<n>)
+skewness_f (<m>,<n>)
+kurtosis_f (<m>,<n>)
+random_f (<m>,<n>)
+pdf_exp (<x>,<m>)
+cdf_exp (<x>,<m>)
+quantile_exp (<q>,<m>)
+mean_exp (<m>)
+var_exp (<m>)
+std_exp (<m>)
+skewness_exp (<m>)
+kurtosis_exp (<m>)
+random_exp (<m>)
+pdf_lognormal (<x>,<m>,<s>)
+cdf_lognormal (<x>,<m>,<s>)
+quantile_lognormal (<q>,<m>,<s>)
+mean_lognormal (<m>,<s>)
+var_lognormal (<m>,<s>)
+std_lognormal (<m>,<s>)
+skewness_lognormal (<m>,<s>)
+kurtosis_lognormal (<m>,<s>)
+random_lognormal (<m>,<s>)
+pdf_gamma (<x>,<a>,<b>)
+cdf_gamma (<x>,<a>,<b>)
+quantile_gamma (<q>,<a>,<b>)
+mean_gamma (<a>,<b>)
+var_gamma (<a>,<b>)
+std_gamma (<a>,<b>)
+skewness_gamma (<a>,<b>)
+kurtosis_gamma (<a>,<b>)
+random_gamma (<a>,<b>)
+pdf_beta (<x>,<a>,<b>)
+cdf_beta (<x>,<a>,<b>)
+quantile_beta (<q>,<a>,<b>)
+mean_beta (<a>,<b>)
+var_beta (<a>,<b>)
+std_beta (<a>,<b>)
+skewness_beta (<a>,<b>)
+kurtosis_beta (<a>,<b>)
+random_beta (<a>,<b>)
+pdf_continuous_uniform (<x>,<a>,<b>)
+cdf_continuous_uniform (<x>,<a>,<b>)
+quantile_continuous_uniform (<q>,<a>,<b>)
+mean_continuous_uniform (<a>,<b>)
+var_continuous_uniform (<a>,<b>)
+std_continuous_uniform (<a>,<b>)
+skewness_continuous_uniform (<a>,<b>)
+kurtosis_continuous_uniform (<a>,<b>)
+random_continuous_uniform (<a>,<b>)
+pdf_logistic (<x>,<a>,<b>)
+cdf_logistic (<x>,<a>,<b>)
+quantile_logistic (<q>,<a>,<b>)
+mean_logistic (<a>,<b>)
+var_logistic (<a>,<b>)
+std_logistic (<a>,<b>)
+skewness_logistic (<a>,<b>)
+kurtosis_logistic (<a>,<b>)
+random_logistic (<a>,<b>)
+pdf_pareto (<x>,<a>,<b>)
+cdf_pareto (<x>,<a>,<b>)
+quantile_pareto (<q>,<a>,<b>)
+mean_pareto (<a>,<b>)
+var_pareto (<a>,<b>)
+std_pareto (<a>,<b>)
+skewness_pareto (<a>,<b>)
+kurtosis_pareto (<a>,<b>)
+random_pareto (<a>,<b>)
+pdf_weibull (<x>,<a>,<b>)
+cdf_weibull (<x>,<a>,<b>)
+quantile_weibull (<q>,<a>,<b>)
+mean_weibull (<a>,<b>)
+var_weibull (<a>,<b>)
+std_weibull (<a>,<b>)
+skewness_weibull (<a>,<b>)
+kurtosis_weibull (<a>,<b>)
+random_weibull (<a>,<b>)
+pdf_rayleigh (<x>,<b>)
+cdf_rayleigh (<x>,<b>)
+quantile_rayleigh (<q>,<b>)
+mean_rayleigh (<b>)
+var_rayleigh (<b>)
+std_rayleigh (<b>)
+skewness_rayleigh (<b>)
+kurtosis_rayleigh (<b>)
+random_rayleigh (<b>)
+pdf_laplace (<x>,<a>,<b>)
+cdf_laplace (<x>,<a>,<b>)
+quantile_laplace (<q>,<a>,<b>)
+mean_laplace (<a>,<b>)
+var_laplace (<a>,<b>)
+std_laplace (<a>,<b>)
+skewness_laplace (<a>,<b>)
+kurtosis_laplace (<a>,<b>)
+random_laplace (<a>,<b>)
+pdf_cauchy (<x>,<a>,<b>)
+cdf_cauchy (<x>,<a>,<b>)
+quantile_cauchy (<q>,<a>,<b>)
+random_cauchy (<a>,<b>)
+pdf_gumbel (<x>,<a>,<b>)
+cdf_gumbel (<x>,<a>,<b>)
+quantile_gumbel (<q>,<a>,<b>)
+mean_gumbel (<a>,<b>)
+var_gumbel (<a>,<b>)
+std_gumbel (<a>,<b>)
+skewness_gumbel (<a>,<b>)
+kurtosis_gumbel (<a>,<b>)
+random_gumbel (<a>,<b>)
+pdf_general_finite_discrete (<x>,<v>)
+cdf_general_finite_discrete (<x>,<v>)
+quantile_general_finite_discrete (<q>,<v>)
+mean_general_finite_discrete (<v>)
+var_general_finite_discrete (<v>)
+std_general_finite_discrete (<v>)
+skewness_general_finite_discrete (<v>)
+kurtosis_general_finite_discrete (<v>)
+random_general_finite_discrete (<v>)
+pdf_binomial (<x>,<n>,<p>)
+cdf_binomial (<x>,<n>,<p>)
+quantile_binomial (<q>,<n>,<p>)
+mean_binomial (<n>,<p>)
+var_binomial (<n>,<p>)
+std_binomial (<n>,<p>)
+skewness_binomial (<n>,<p>)
+kurtosis_binomial (<n>,<p>)
+random_binomial (<n>,<p>)
+pdf_poisson (<x>,<m>)
+cdf_poisson (<x>,<m>)
+quantile_poisson (<q>,<m>)
+mean_poisson (<m>)
+var_poisson (<m>)
+std_poisson (<m>)
+skewness_poisson (<m>)
+kurtosis_poisson (<m>)
+random_poisson (<m>)
+pdf_bernoulli (<x>,<p>)
+cdf_bernoulli (<x>,<p>)
+quantile_bernoulli (<q>,<p>)
+mean_bernoulli (<p>)
+var_bernoulli (<p>)
+std_bernoulli (<p>)
+skewness_bernoulli (<p>)
+kurtosis_bernoulli (<p>)
+random_bernoulli (<p>)
+pdf_geometric (<x>,<p>)
+cdf_geometric (<x>,<p>)
+quantile_geometric (<q>,<p>)
+mean_geometric (<p>)
+var_geometric (<p>)
+std_geometric (<p>)
+skewness_geometric (<p>)
+kurtosis_geometric (<p>)
+random_geometric (<p>)
+pdf_discrete_uniform (<x>,<n>)
+cdf_discrete_uniform (<x>,<n>)
+quantile_discrete_uniform (<q>,<n>)
+mean_discrete_uniform (<n>)
+var_discrete_uniform (<n>)
+std_discrete_uniform (<n>)
+skewness_discrete_uniform (<n>)
+kurtosis_discrete_uniform (<n>)
+random_discrete_uniform (<n>)
+pdf_hypergeometric (<x>,<n1>,<n2>,<n>)
+cdf_hypergeometric (<x>,<n1>,<n2>,<n>)
+quantile_hypergeometric (<q>,<n1>,<n2>,<n>)
+mean_hypergeometric (<n1>,<n2>,<n>)
+var_hypergeometric (<n1>,<n2>,<n>)
+std_hypergeometric (<n1>,<n2>,<n>)
+skewness_hypergeometric (<n1>,<n2>,<n>)
+kurtosis_hypergeometric (<n1>,<n2>,<n>)
+random_hypergeometric (<n1>,<n2>,<n>)
+pdf_negative_binomial (<x>,<n>,<p>)
+cdf_negative_binomial (<x>,<n>,<p>)
+quantile_negative_binomial (<q>,<n>,<p>)
+mean_negative_binomial (<n>,<p>)
+var_negative_binomial (<n>,<p>)
+std_negative_binomial (<n>,<p>)
+skewness_negative_binomial (<n>,<p>)
+kurtosis_negative_binomial (<n>,<p>)
+random_negative_binomial (<n>,<p>)
+gr2d (<graphic option>, ..., <graphic object>, ...)
+gr3d (<graphic option>, ..., <graphic object>, ...)
+draw (<gr2d>, ..., <gr3d>, ..., <options>, ...)
+draw2d (<option>, <graphic_object>, ...)
+draw3d (<option>, <graphic_object>, ...)
+draw_file (<graphic option>, ..., <graphic object>, ...)
+multiplot_mode (<term>)
+set_draw_defaults (<graphic option>, ..., <graphic
+adapt_depth
+allocation
+axis_3d
+axis_bottom
+axis_left
+axis_right
+axis_top
+background_color
+border
+cbrange
+cbtics
+color
+colorbox
+columns
+contour
+contour_levels
+data_file_name
+delay
+dimensions
+draw_realpart
+enhanced3d
+error_type
+file_name
+fill_color
+fill_density
+filled_func
+font
+font_size
+gnuplot_file_name
+grid
+head_angle
+head_both
+head_length
+head_type
+interpolate_color
+ip_grid
+ip_grid_in
+key
+key_pos
+label_alignment
+label_orientation
+line_type
+line_width
+logcb
+logx
+logx_secondary
+logy
+logy_secondary
+logz
+nticks
+palette
+point_size
+point_type
+points_joined
+proportional_axes
+surface_hide
+terminal
+title
+transform
+transparent
+tube_extremes
+unit_vectors
+user_preamble
+view
+wired_surface
+x_voxel
+xaxis
+xaxis_color
+xaxis_secondary
+xaxis_type
+xaxis_width
+xlabel
+xlabel_secondary
+xrange
+xrange_secondary
+xtics
+xtics_axis
+xtics_rotate
+xtics_rotate_secondary
+xtics_secondary
+xtics_secondary_axis
+xu_grid
+xy_file
+xyplane
+y_voxel
+yaxis
+yaxis_color
+yaxis_secondary
+yaxis_type
+yaxis_width
+ylabel
+ylabel_secondary
+yrange
+yrange_secondary
+ytics
+ytics_axis
+ytics_rotate
+ytics_rotate_secondary
+ytics_secondary
+ytics_secondary_axis
+yv_grid
+z_voxel
+zaxis
+zaxis_color
+zaxis_type
+zaxis_width
+zlabel
+zrange
+ztics
+ztics_axis
+ztics_rotate
+bars ([<x1>,<h1>,<w1>], [<x2>,<h2>,<w2>, ...])
+cylindrical (<radius>, <z>, <minz>, <maxz>, <azi>, <minazi>, <maxazi>)
+elevation_grid (<mat>,<x0>,<y0>,<width>,<height>)
+ellipse (<xc>, <yc>, <a>, <b>, <ang1>, <ang2>)
+errors ([<x1>, <x2>, ...], [<y1>, <y2>, ...])
+explicit
+image (<im>,<x0>,<y0>,<width>,<height>)
+implicit
+label
+mesh (<row_1>,<row_2>,...)
+parametric
+parametric_surface (<xfun>, <yfun>, <zfun>, <par1>, <par1min>, <par1max>, <par2>, <par2min>, <par2max>)
+points
+polar (<radius>,<ang>,<minang>,<maxang>)
+polygon
+quadrilateral (<point_1>, <point_2>, <point_3>, <point_4>)
+rectangle ([<x1>,<y1>], [<x2>,<y2>])
+region
+spherical (<radius>, <azi>, <minazi>, <maxazi>, <zen>, <minzen>, <maxzen>)
+triangle (<point_1>, <point_2>, <point_3>)
+tube (<xfun>,<yfun>,<zfun>,<rfun>,<p>,<pmin>,<pmax>)
+vector
+get_pixel (<pic>,<x>,<y>)
+make_level_picture
+make_rgb_picture (<redlevel>,<greenlevel>,<bluelevel>)
+negative_picture (<pic>)
+picture_equalp (<x>,<y>)
+picturep (<x>)
+read_xpm (<xpm_file>)
+rgb2level (<pic>)
+take_channel (<im>,<color>)
+boundaries_array
+numbered_boundaries (<nlist>)
+make_poly_continent
+make_poly_country (<country_name>)
+make_polygon (<nlist>)
+region_boundaries (<x1>,<y1>,<x2>,<y2>)
+region_boundaries_plus (<x1>,<y1>,<x2>,<y2>)
+geomap
+drawdf
+chaosgame ([[<x1>, <y1>]...[<xm>, <ym>]], [<x0>, <y0>], <b>, <n>, <options>, ...);
+evolution (<F>, <y0>, <n>, ..., <options>, ...);
+evolution2d ([<F>, <G>], [<u>, <v>], [<u0>, <y0>], <n>, <options>, ...);
+ifs ([<r1>, ..., <rm>], [<A1>,..., <Am>], [[<x1>, <y1>], ..., [<xm>, <ym>]], [<x0>, <y0>], <n>, <options>, ...);
+orbits (<F>, <y0>, <n1>, <n2>, [<x>, <x0>, <xf>, <xstep>], <options>, ...);
+staircase (<F>, <y0>, <n>,<options>,...);
+scene (<objects>, ..., <options>, ...);
+azimuth [azimuth, <angle>]
+background [background, <color>]
+elevation [elevation, <angle>]
+height [height, <pixels>]
+restart [restart, <value>]
+tstep [tstep, <time>]
+width [width, <pixels>]
+windowname [windowtitle, <name>]
+windowtitle [windowtitle, <name>]
+cone [cone, <options>]
+cube [cube, <options>]
+cylinder [cylinder, <options>]
+sphere [sphere, <options>]
+animation [animation, <property>, <positions>]
+capping [capping, <number>]
+center [center, <point>]
+color [color, <colorname>]
+endphi [endphi, <angle>]
+endtheta [endtheta, <angle>]
+height [height, <value>]
+linewidth [linewidth, <value>]
+opacity [opacity, <value>]
+orientation [orientation, <angles>]
+origin [origin, <point>]
+phiresolution [phiresolution, <num>]
+points [points]
+pointsize [pointsize, <value>]
+position [position, <point>]
+radius [radius, <value>]
+resolution [resolution, <number>]
+scale [scale, <factors>]
+startphi [startphi, <angle>]
+starttheta [starttheta, <angle>]
+surface [surface]
+thetaresolution [thetaresolution, <num>]
+track [track, <positions>]
+xlength [xlength, <length>]
+ylength [ylength, <length>]
+zlength [zlength, <length>]
+wireframe [wireframe]
+`
+``
+constvalue (<x>)
+declare_constvalue (<a>, <x>)
+remove_constvalue (<a>)
+units (<x>)
+declare_units (<a>, <u>)
+qty (<x>)
+declare_qty (<a>, <x>)
+unitp (<x>)
+declare_unit_conversion (<u> = <v>, ...)
+declare_dimensions (<a_1>, <d_1>, ..., <a_n>, <d_n>)
+remove_dimensions (<a_1>, ..., <a_n>)
+declare_fundamental_dimensions (<d_1>, <d_2>, <d_3>, ...)
+remove_fundamental_dimensions (<d_1>, <d_2>, <d_3>, ...)
+fundamental_dimensions
+declare_fundamental_units (<u_1>, <d_1>, ..., <u_n>, <d_n>)
+remove_fundamental_units (<u_1>, ..., <u_n>)
+dimensions (<x>)
+dimensions_as_list (<x>)
+fundamental_units
+dimensionless (<L>)
+natural_unit (<expr>, [<v_1>, ..., <v_n>])
+f90 (<expr_1>, ..., <expr_n>)
+days360 (<year1>,<month1>,<day1>,<year2>,<month2>,<day2>)
+fv (<rate>,<PV>,<num>)
+pv (<rate>,<FV>,<num>)
+graph_flow (<val>)
+annuity_pv (<rate>,<PV>,<num>)
+annuity_fv (<rate>,<FV>,<num>)
+geo_annuity_pv (<rate>,<growing_rate>,<PV>,<num>)
+geo_annuity_fv (<rate>,<growing_rate>,<FV>,<num>)
+amortization (<rate>,<amount>,<num>)
+arit_amortization (<rate>,<increment>,<amount>,<num>)
+geo_amortization (<rate>,<growing_rate>,<amount>,<num>)
+saving (<rate>,<amount>,<num>)
+npv (<rate>,<val>)
+irr (<val>,<IO>)
+benefit_cost (<rate>,<input>,<output>)
+sierpinskiale (<n>)
+treefale (<n>)
+fernfale (<n>)
+mandelbrot_set (<x>, <y>)
+julia_set (<x>, <y>)
+julia_parameter
+julia_sin (<x>, <y>)
+snowmap (<ent>, <nn>)
+hilbertmap (<nn>)
+sierpinskimap (<nn>)
+GGFINFINITY
+GGFCFMAX
+ggf (<l>)
+create_graph
+copy_graph (<g>)
+circulant_graph (<n>, <d>)
+clebsch_graph ()
+complement_graph (<g>)
+complete_bipartite_graph (<n>, <m>)
+complete_graph (<n>)
+cycle_digraph (<n>)
+cycle_graph (<n>)
+cuboctahedron_graph (<n>)
+cube_graph (<n>)
+dodecahedron_graph ()
+empty_graph (<n>)
+flower_snark (<n>)
+from_adjacency_matrix (<A>)
+frucht_graph ()
+graph_product (<g1>, <g1>)
+graph_union (<g1>, <g1>)
+grid_graph (<n>, <m>)
+great_rhombicosidodecahedron_graph ()
+great_rhombicuboctahedron_graph ()
+grotzch_graph ()
+heawood_graph ()
+icosahedron_graph ()
+icosidodecahedron_graph ()
+induced_subgraph (<V>, <g>)
+line_graph (<g>)
+make_graph
+mycielski_graph (<g>)
+new_graph ()
+path_digraph (<n>)
+path_graph (<n>)
+petersen_graph
+random_bipartite_graph (<a>, <b>, <p>)
+random_digraph (<n>, <p>)
+random_regular_graph
+random_graph (<n>, <p>)
+random_graph1 (<n>, <m>)
+random_network (<n>, <p>, <w>)
+random_tournament (<n>)
+random_tree (<n>)
+small_rhombicosidodecahedron_graph ()
+small_rhombicuboctahedron_graph ()
+snub_cube_graph ()
+snub_dodecahedron_graph ()
+truncated_cube_graph ()
+truncated_dodecahedron_graph ()
+truncated_icosahedron_graph ()
+truncated_tetrahedron_graph ()
+tutte_graph ()
+underlying_graph (<g>)
+wheel_graph (<n>)
+adjacency_matrix (<gr>)
+average_degree (<gr>)
+biconnected_components (<gr>)
+bipartition (<gr>)
+chromatic_index (<gr>)
+chromatic_number (<gr>)
+clear_edge_weight (<e>, <gr>)
+clear_vertex_label (<v>, <gr>)
+connected_components (<gr>)
+diameter (<gr>)
+edge_coloring (<gr>)
+degree_sequence (<gr>)
+edge_connectivity (<gr>)
+edges (<gr>)
+get_edge_weight
+get_vertex_label (<v>, <gr>)
+graph_charpoly (<gr>, <x>)
+graph_center (<gr>)
+graph_eigenvalues (<gr>)
+graph_periphery (<gr>)
+graph_size (<gr>)
+graph_order (<gr>)
+girth (<gr>)
+hamilton_cycle (<gr>)
+hamilton_path (<gr>)
+isomorphism (<gr1>, <gr2>)
+in_neighbors (<v>, <gr>)
+is_biconnected (<gr>)
+is_bipartite (<gr>)
+is_connected (<gr>)
+is_digraph (<gr>)
+is_edge_in_graph (<e>, <gr>)
+is_graph (<gr>)
+is_graph_or_digraph (<gr>)
+is_isomorphic (<gr1>, <gr2>)
+is_planar (<gr>)
+is_sconnected (<gr>)
+is_vertex_in_graph (<v>, <gr>)
+is_tree (<gr>)
+laplacian_matrix (<gr>)
+max_clique (<gr>)
+max_degree (<gr>)
+max_flow (<net>, <s>, <t>)
+max_independent_set (<gr>)
+max_matching (<gr>)
+min_degree (<gr>)
+min_edge_cut (<gr>)
+min_vertex_cover (<gr>)
+min_vertex_cut (<gr>)
+minimum_spanning_tree (<gr>)
+neighbors (<v>, <gr>)
+odd_girth (<gr>)
+out_neighbors (<v>, <gr>)
+planar_embedding (<gr>)
+print_graph (<gr>)
+radius (<gr>)
+set_edge_weight (<e>, <w>, <gr>)
+set_vertex_label (<v>, <l>, <gr>)
+shortest_path (<u>, <v>, <gr>)
+shortest_weighted_path (<u>, <v>, <gr>)
+strong_components (<gr>)
+topological_sort (<dag>)
+vertex_connectivity (<g>)
+vertex_degree (<v>, <gr>)
+vertex_distance (<u>, <v>, <gr>)
+vertex_eccentricity (<v>, <gr>)
+vertex_in_degree (<v>, <gr>)
+vertex_out_degree (<v>, <gr>)
+vertices (<gr>)
+vertex_coloring (<gr>)
+wiener_index (<gr>)
+add_edge (<e>, <gr>)
+add_edges (<e_list>, <gr>)
+add_vertex (<v>, <gr>)
+add_vertices (<v_list>, <gr>)
+connect_vertices (<v_list>, <u_list>, <gr>)
+contract_edge (<e>, <gr>)
+remove_edge (<e>, <gr>)
+remove_vertex (<v>, <gr>)
+dimacs_export
+dimacs_import (<fl>)
+graph6_decode (<str>)
+graph6_encode (<gr>)
+graph6_export (<gr_list>, <fl>)
+graph6_import (<fl>)
+sparse6_decode (<str>)
+sparse6_encode (<gr>)
+sparse6_export (<gr_list>, <fl>)
+sparse6_import (<fl>)
+draw_graph
+draw_graph_program
+show_id
+show_label
+label_alignment
+show_weight
+vertex_type
+vertex_size
+vertex_color
+show_vertices
+show_vertex_type
+show_vertex_size
+show_vertex_color
+vertex_partition
+vertex_coloring
+edge_color
+edge_width
+edge_type
+show_edges
+show_edge_color
+show_edge_width
+show_edge_type
+edge_partition
+edge_coloring
+redraw
+head_angle
+head_length
+spring_embedding_depth
+terminal
+file_name
+program
+fixed_vertices
+vertices_to_path (<v_list>)
+vertices_to_cycle (<v_list>)
+poly_monomial_order
+poly_coefficient_ring
+poly_primary_elimination_order
+poly_secondary_elimination_order
+poly_elimination_order
+poly_return_term_list
+poly_grobner_debug
+poly_grobner_algorithm
+poly_top_reduction_only
+poly_add (<poly1>, <poly2>, <varlist>)
+poly_subtract (<poly1>, <poly2>, <varlist>)
+poly_multiply (<poly1>, <poly2>, <varlist>)
+poly_s_polynomial (<poly1>, <poly2>, <varlist>)
+poly_primitive_part (<poly1>, <varlist>)
+poly_normalize (<poly>, <varlist>)
+poly_expand (<poly>, <varlist>)
+poly_expt (<poly>, <number>, <varlist>)
+poly_content (<poly>. <varlist>)
+poly_pseudo_divide (<poly>, <polylist>, <varlist>)
+poly_exact_divide (<poly1>, <poly2>, <varlist>)
+poly_normal_form (<poly>, <polylist>, <varlist>)
+poly_buchberger_criterion (<polylist>, <varlist>)
+poly_buchberger (<polylist_fl> <varlist>)
+poly_reduction (<polylist>, <varlist>)
+poly_minimization (<polylist>, <varlist>)
+poly_normalize_list (<polylist>, <varlist>)
+poly_grobner (<polylist>, <varlist>)
+poly_reduced_grobner (<polylist>, <varlist>)
+poly_depends_p (<poly>, <var>, <varlist>)
+poly_elimination_ideal (<polylist>, <number>, <varlist>)
+poly_colon_ideal (<polylist1>, <polylist2>, <varlist>)
+poly_ideal_intersection (<polylist1>, <polylist2>, <varlist>)
+poly_lcm (<poly1>, <poly2>, <varlist>)
+poly_gcd (<poly1>, <poly2>, <varlist>)
+poly_grobner_equal (<polylist1>, <polylist2>, <varlist>)
+poly_grobner_subsetp (<polylist1>, <polylist2>, <varlist>)
+poly_grobner_member (<poly>, <polylist>, <varlist>)
+poly_ideal_saturation1 (<polylist>, <poly>, <varlist>)
+poly_ideal_saturation (<polylist1>, <polylist2>, <varlist>)
+poly_ideal_polysaturation1 (<polylist1>, <polylist2>, <varlist>)
+poly_ideal_polysaturation (<polylist>, <polylistlist>, <varlist>)
+poly_saturation_extension (<poly>, <polylist>, <varlist1>, <varlist2>)
+poly_polysaturation_extension (<poly>, <polylist>, <varlist1>, <varlist2>)
+implicit_derivative
+lagrange
+charfun2 (<x>, <a>, <b>)
+linearinterpol
+cspline
+ratinterpol
+dgeev
+dgeqrf (<A>)
+dgesv (<A>, <b>)
+dgesvd
+dlange (<norm>, <A>)
+zlange (<norm>, <A>)
+dgemm
+zgeev
+zheev
+lbfgs
+lbfgs_nfeval_max
+lbfgs_ncorrections
+Lindstedt (<eq>,<pvar>,<torder>,<ic>)
+addmatrices (<f>, <M_1>, ..., <M_n>)
+blockmatrixp (<M>)
+columnop (<M>, <i>, <j>, <theta>)
+columnswap (<M>, <i>, <j>)
+columnspace (<M>)
+copy (<e>)
+cholesky
+ctranspose (<M>)
+diag_matrix (<d_1>, <d_2>, ..., <d_n>)
+dotproduct (<u>, <v>)
+eigens_by_jacobi
+get_lu_factors (<x>)
+hankel
+hessian (<f>, <x>)
+hilbert_matrix (<n>)
+identfor
+invert_by_lu (<M>, <(rng generalring)>)
+jacobian (<f>, <x>)
+kronecker_product (<A>, <B>)
+listp
+locate_matrix_entry (<M>, <r_1>, <c_1>, <r_2>, <c_2>, <f>, <rel>)
+lu_backsub (<M>, <b>)
+lu_factor (<M>, <field>)
+mat_cond
+mat_norm
+matrixp
+matrix_size (<M>)
+mat_fullunblocker (<M>)
+mat_trace (<M>)
+mat_unblocker (<M>)
+nullspace (<M>)
+nullity (<M>)
+orthogonal_complement (<v_1>, ..., <v_n>)
+polynomialp
+polytocompanion (<p>, <x>)
+ptriangularize (<M>, <v>)
+rowop (<M>, <i>, <j>, <theta>)
+rank (<M>)
+rowswap (<M>, <i>, <j>)
+toeplitz
+vandermonde_matrix ([<x_1>, ..., <x_n>])
+zerofor
+zeromatrixp (<M>)
+lsquares_estimates
+lsquares_estimates_exact (<MSE>, <a>)
+lsquares_estimates_approximate (<MSE>, <a>, initial =
+lsquares_mse (<D>, <x>, <e>)
+lsquares_residuals (<D>, <x>, <e>, <a>)
+lsquares_residual_mse (<D>, <x>, <e>, <a>)
+plsquares
+minpack_lsquares (<flist>, <varlist>, <guess> [, <tolerance>, <jacobian>])
+minpack_solve (<flist>, <varlist>, <guess> [, <tolerance>, <jacobian>])
+makeOrders (<indvarlist>,<orderlist>)
+newtonepsilon
+newtonmaxiter
+mnewton (<FuncList>,<VarList>,<GuessList>)
+read_matrix
+read_array
+read_hashed_array
+read_nested_list
+read_list
+write_data
+assume_external_byte_order (<byte_order_flag>)
+openr_binary (<file_name>)
+openw_binary (<file_name>)
+opena_binary (<file_name>)
+read_binary_matrix (<S>, <M>)
+read_binary_array (<S>, <A>)
+read_binary_list
+write_binary_data (<X>, <D>)
+opsubst
+assoc_legendre_p (<n>, <m>, <x>)
+assoc_legendre_q (<n>, <m>, <x>)
+chebyshev_t (<n>, <x>)
+chebyshev_u (<n>, <x>)
+gen_laguerre (<n>, <a>, <x>)
+hermite (<n>, <x>)
+intervalp (<e>)
+jacobi_p (<n>, <a>, <b>, <x>)
+laguerre (<n>, <x>)
+legendre_p (<n>, <x>)
+legendre_q (<n>, <x>)
+orthopoly_recur (<f>, <args>)
+orthopoly_returns_intervals
+orthopoly_weight (<f>, <args>)
+pochhammer (<x>, <n>)
+pochhammer_max_index
+spherical_bessel_j (<n>, <x>)
+spherical_bessel_y (<n>, <x>)
+spherical_hankel1 (<n>, <x>)
+spherical_hankel2 (<n>, <x>)
+spherical_harmonic (<n>, <m>, <x>, <y>)
+unit_step (<x>)
+ultraspherical (<n>, <a>, <x>)
+romberg
+rombergabs
+rombergit
+rombergmin
+rombergtol
+epsilon_lp
+linear_program (<A>, <b>, <c>)
+maximize_lp (<obj>, <cond>, [<pos>])
+minimize_lp (<obj>, <cond>, [<pos>])
+nonegative_lp
+scale_lp
+pivot_count_sx
+pivot_max_sx
+facsum (<expr>, <arg_1>, ..., <arg_n>)
+nextlayerfactor
+facsum_combine
+factorfacsum (<expr>, <arg_1>, ... <arg_n>)
+collectterms (<expr>, <arg_1>, ..., <arg_n>)
+rempart (<expr>, <n>)
+wronskian ([<f_1>, ..., <f_n>], <x>)
+tracematrix (<M>)
+rational (`z')
+nonzeroandfreeof (<x>, <expr>)
+linear (<expr>, <x>)
+gcdivide (<p>, <q>)
+arithmetic (<a>, <d>, <n>)
+geometric (<a>, <r>, <n>)
+harmonic (<a>, <b>, <c>, <n>)
+arithsum (<a>, <d>, <n>)
+geosum (<a>, <r>, <n>)
+gaussprob (<x>)
+gd (<x>)
+agd (<x>)
+vers (<x>)
+covers (<x>)
+exsec (<x>)
+hav (<x>)
+combination (<n>, <r>)
+permutation (<n>, <r>)
+reduce_consts (<expr>)
+gcfac (<expr>)
+sqrtdenest (<expr>)
+reduce_order (<rec>, <sol>, <var>)
+simplify_products
+simplify_sum (<expr>)
+solve_rec (<eqn>, <var>, [<init>])
+solve_rec_rat (<eqn>, <var>, [<init>])
+product_use_gamma
+summand_to_rec
+inference_result (<title>, <values>, <numbers>)
+inferencep (<obj>)
+items_inference (<obj>)
+take_inference
+stats_numer
+test_mean
+test_means_difference
+test_variance
+test_variance_ratio
+test_proportion
+test_proportions_difference
+test_sign
+test_signed_rank
+test_rank_sum
+test_normality (<x>)
+linear_regression
+pdf_signed_rank (<x>, <n>)
+cdf_signed_rank (<x>, <n>)
+pdf_rank_sum (<x>, <n>, <m>)
+cdf_rank_sum (<x>, <n>, <m>)
+stirling
+close (<stream>)
+flength (<stream>)
+fposition
+freshline
+get_output_stream_string (<stream>)
+make_string_input_stream
+make_string_output_stream ()
+newline
+opena (<file>)
+openr (<file>)
+openw (<file>)
+printf
+readchar (<stream>)
+readline (<stream>)
+sprint (<expr_1>, ..., <expr_n>)
+alphacharp (<char>)
+alphanumericp (<char>)
+ascii (<int>)
+cequal (<char_1>, <char_2>)
+cequalignore (<char_1>, <char_2>)
+cgreaterp (<char_1>, <char_2>)
+cgreaterpignore (<char_1>, <char_2>)
+charp (<obj>)
+cint (<char>)
+clessp (<char_1>, <char_2>)
+clesspignore (<char_1>, <char_2>)
+constituent (<char>)
+cunlisp (<lisp_char>)
+digitcharp (<char>)
+lcharp (<obj>)
+lowercasep (<char>)
+newline
+space
+tab
+uppercasep (<char>)
+base64 (<string>)
+base64_decode (<base64-string>)
+charat (<string>, <n>)
+charlist (<string>)
+eval_string (<str>)
+md5sum (<string>)
+parse_string (<str>)
+scopy (<string>)
+sdowncase
+sequal (<string_1>, <string_2>)
+sequalignore (<string_1>, <string_2>)
+sexplode (<string>)
+sha1sum (<string>)
+simplode
+sinsert (<seq>, <string>, <pos>)
+sinvertcase
+slength (<string>)
+smake (<num>, <char>)
+smismatch
+split
+sposition (<char>, <string>)
+sremove
+sremovefirst
+sreverse (<string>)
+ssearch
+ssort
+ssubst
+ssubstfirst
+strim (<seq>,<string>)
+striml (<seq>, <string>)
+strimr (<seq>, <string>)
+stringp (<obj>)
+substring
+supcase
+tokens
+%and
+%if (<bool>, <a>, <b>)
+%or
+complex_number_p (<x>)
+compose_functions (<l>)
+dfloat (<x>)
+elim (<l>, <x>)
+elim_allbut (<l>, <x>)
+eliminate_using (<l>, <e>, <x>)
+fourier_elim ([<eq1>, <eq2>, ...], [<var1>, <var>, ...])
+isreal_p (<e>)
+new_variable (type)
+nicedummies
+parg (<x>)
+real_imagpart_to_conjugate (<e>)
+rectform_log_if_constant (<e>)
+simp_inequality (<e>)
+standardize_inverse_trig (<e>)
+subst_parallel (<l>, <e>)
+to_poly (<e>, <l>)
+to_poly_solve (<e>, <l>, [options])
+setunits (<list>)
+uforget (<list>)
+convert (<expr>, <list>)
+usersetunits
+metricexpandall (<x>)
+%unitexpand
+AntiDifference (F_k, <k>)
+Gosper (F_k, <k>)
+GosperSum (F_k, <k>, <a>, <b>)
+parGosper (F_(n,k), <k>, <n>, <d>)
+Zeilberger (F_(n,k), <k>, <n>)
+MAX_ORD
+simplified_output
+linear_solver
+warnings
+Gosper_in_Zeilberger
+trivial_solutions
+mod_test
+modular_linear_solver
+ev_point
+mod_big_prime
+mod_threshold

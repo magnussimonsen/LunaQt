@@ -1,0 +1,7 @@
+LIBRARY test.dll
+
+EXPORTS
+DllEntryPoint
+fib
+fibv
+init

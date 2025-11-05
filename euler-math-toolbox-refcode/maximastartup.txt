@@ -1,0 +1,45 @@
+dgltaylor(n,expr,h) := block ([d,i,s], d:expr, s:y(x)+h*expr,for i:2 thru n do (d:subst(expr,diff(y(x),x),diff(d,x)), s:s+d*h^i/i!),[s,subst(expr,diff(y(x),x),diff(d,x))*h^(n+1)/(n+1)!])$
+diffat(expr,[x]) := if length(x)=1 then at(diff(expr,lhs(x[1])),x[1]) else at(diff(expr,lhs(x[1]),x[2]),x[1])$
+gradient(expr,v) := jacobian([expr],v)[1]$
+grad(expr,[v]) := if length(v)=0 then jacobian([expr],listofvars(expr))[1] else jacobian([expr],v[1])[1]$
+hesse(expr,[v]) := if length(v)=0 then hessian(expr,listofvars(expr)) else hessian(expr,v[1])$
+ln(x) := log(x)$
+crossproduct(v,w) := [v[2]*w[3]-v[3]*w[2],v[3]*w[1]-v[1]*w[3],v[1]*w[2]-v[2]*w[1]]$
+scalp(v,w) := v.transpose(w)$
+norm(v) := sqrt(scalp(v,v))$
+det(A) := determinant(A)$
+inv(A) := invert(A)$
+getlagrange(f,g,[v]) := if length(v)=0 then append(makelist(diff(f,var)=lambda*diff(g,var),var,listofvars(f)),[g=0]) else append(makelist(diff(f,var)=lambda*diff(g,var),var,v[1]),[g=0])$
+solvelagrange(f,g,[v]) := if length(v)=0 then solve(getlagrange(f,g,listofvars(f))) else solve(getlagrange(f,g,v[1]))$
+matrixpower(A,n) := A^^n$
+temp(i) := %rnum_list[i]$
+lusolve(A,b) := linsolve_by_lu(A,b)[1]$
+showev(f) := ev(f)=ev(f,nouns)$
+I : %i$
+E : %e$
+pi : %pi$
+postfix("°")$
+x° := x/180*pi$
+linel : 70$
+fpprec : 32$
+alias(I,%i)$
+alias(pi,%pi)$
+alias(E,%e)$
+alias(Sin,sin)$
+alias(Cos,cos)$
+alias(Tan,tan)$
+alias(ArcSin,asin)$
+alias(ArcCos,acos)$
+alias(ArcTan,atan)$
+alias(Exp,exp)$
+alias(Ln,log)$
+alias(Sqrt,sqrt)$
+alias(Abs,abs)$
+alias(Sign,sign)$
+:lisp (defun tex-mquotient (x l r) (if (or (null (cddr x)) (cdddr x)) (wna-err (caar x))) (setq l (tex (cadr x) (append l '("\\frac{")) nil 'mparen 'mparen) r (tex (caddr x) (list "}{") (append '("}") r) 'mparen 'mparen)) (append l r));
+with(expr,eq) := at(expr,eq);
+infix("with",60,60);
+:lisp (add2lnc "with" *builtin-$props*);
+load("mactex-utilities")$
+set_plot_option([gnuplot_term,"pngcairo size 600,600"])$
+set_plot_option([gnuplot_out_file,gnuout])$

@@ -1,0 +1,6 @@
+
+                         x           x
+                        E  sin(x) + E  cos(x)
+
+Integral from 0 to pi = 2.28735528718
+Exact = 2.28735528718

@@ -1,0 +1,144 @@
+menu
+Variables and Functions
+?variable := ?value
+?variable := "?expression"
+?variable &= ?symbolicexpression
+remvalue(?variable)
+function f(?parameter) := ?expression
+function f(?parameter) &= ?symbolicexpression
+function f(?parameter) &&= ?symbolicmacro
+forget ?function
+?variable &:= ?value
+
+menu
+Vectors und Matrices
+?from:?to
+?from:?step:?to
+linspace(&a,&b,&n)
+[?a,?b;?c,?d]
+A[?line] := ?vector
+A[,?column] := ?columnvector
+A[?line,?column] := ?value
+flipx(?vector)
+head(?vector,?index)
+tail(?vector,?index)
+
+menu
+Analysis
+integrate("?xExpression",?a,?b)
+romberg("?xExpression",?a,?b)
+&integrate(?Expression,?variable)
+&integrate(?Expression,?variable,?a,?b)
+diff("?xExpression",?x,n=1)
+&diff(?Expression,?variable)
+solve("?xExpression",?a,y=0)
+&solve(?Expression,?variable)
+bisect("?xExpression",?a,?b)
+mxmnewton("?xExpression",?start,y=0)
+fmin("?xExpression",?a,?b)
+fmax("?xExpression",?a,?b)
+{?xmin,?xmax}:=fextrema("?xExpression",?a,?b)
+
+menu
+Differential Equations
+runge("?xyExpression",?xvector,?y0)
+adaptiverunge("?xyExpression",[?x0,?x1],?y0)
+lsoda("?xyExpression",?xvector,?y0)
+mxmidgl("?xyExpression",[?x0,?x1],?y0)
+vectorfield("?xyExpression",?a,?b,?c,?d);
+function ?f(x,y) := ?xyExpression
+function ?f(x,[y1,y2]) := [?f1xy,?2fxy]
+ode("?functionname",?xvector,?yvector0)
+
+menu
+Linear Algebra
+id(?n)
+inv(?A)
+det(?A)
+eigenvalues(?A)
+eigenspace(?A,?b)
+kernel(?A)
+image(?A)
+fit(?A,?b)
+polyfit(?xvector,?yvector,?degree)
+
+menu
+Optimization
+simplex(?A,?b,?c)
+simplex(?A,?b,?c,eq=?inequalities,restrict=?posvars,max=1)
+intsimplex(?A,?b,?c)
+intsimplex(?A,?b,?c,eq=?inequalities,i=?integervars,max=1)
+ilpsolve(?A,?b,?c)
+ilpsolve(?A,?b,?c,eq=?inequalities)
+ilpsolve(?A,?b,?c,eq=?inequalities,i=?integerIndices)
+
+menu
+Plot 2D
+plot2d("?xExpression",?a,?b):
+plot2d("?xExpression",?a,?b,color=?color,>add):
+plot2d(["?xExpression","?xExpression"],?a,?b):
+plot2d("?xExpression",a=?a,b=?b,c=?c,d=?d):
+plot2d("?xExpression",r=?r):
+plot2d("?xyExpression",a=?a,b=?b,c=?c,d=?d,>contour,>hue):
+plot2d("?xyExpression",a=?a,b=?b,c=?d,d=?d,niveau=?vector,>hue):
+
+menu
+Plot 3D
+plot3d("?xyExpression",a=?a,b=?b,c=?c,d=?d,>user):
+plot3d("?xyExpression",r=?r,>user):
+plot3d("?xyExpression",r=?r,>polar,>user):
+plot3d("?xyExpression",xmin=?a,xmax=?b,ymin=?c,ymax=?d,niveau=?vector,>user):
+plot3d("?xyzExpression",r=?r,>implicit,>user):
+plot3d("?xExpression","?xExpression","?xExpression",xmin=?value,ymin=?value):
+plot3d(?Xmatrix,?Ymatrix,&Zmatrix,>hue,>user):
+
+menu
+Statistics
+random(?rows,?columns)
+normal(?rows,?columns)
+mean(?vector)
+dev(?vector)
+shuffle(?vector)
+normaldis(?x)
+invnormaldis(?p)
+bin(?n,?m)
+binsum(?i,?n,?p)
+invbinsum(?x,?n,?p)
+normalsum(?i,?n,?p)
+statplot(?xvector,?yvector)
+piechart(?vector)
+boxplot(quantiles(?randomrows))
+
+menu
+Constants and Units
+?number?unit->?unit
+?number?unit->" ?unit"
+E
+pi
+I
+cm
+km
+miles
+in
+ft
+yd
+ly
+AU$
+c$
+min
+h
+d
+y
+PS
+kcal
+gEarth$
+
+menu
+Conversions
+FahrenheitToCelsius(?deg)
+CelsiusToFahrenheit(?deg)
+rearth(?lat)
+rEarth$
+rad(?deg)
+deg(?rad)
+?deg°

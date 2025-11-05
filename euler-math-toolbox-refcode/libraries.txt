@@ -1,0 +1,13 @@
+kernel32.lib
+user32.lib
+gdi32.lib
+winspool.lib
+comdlg32.lib
+Shlwapi.lib
+advapi32.lib
+shell32.lib
+uuid.lib
+comctl32.lib
+winmm.lib
+gdiplus.lib
+wininet.lib

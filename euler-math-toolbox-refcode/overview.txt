@@ -1,0 +1,3204 @@
+// This file contains main topics for the help window in EMT Math
+// Toolbox (EMT). The list of topics opens when the help window is
+// opened and if the search string is empty.
+
+!Topics
+
+In the help window, you can double click on any of the topics below.
+Double click the breadcrumbs in the first line to go back to a
+previous topic.
+
+Overview  -  The ideas behind EMT
+User Interface  -  About the Windows and Menus
+Help  -  Help for the Help Window
+Keyboard  -  Keys for the Command line
+Comments  -  Syntax for Comment Sections in Notebooks
+
+Variables  -  Variables and Data Types in EMT
+Data Types  -  Syntax for Data Types in EMT
+Formats  -  Formatting the Output in EMT
+Symbolic Variables  -  Symbolic Variables
+Expressions  -  Expressions in EMT and Maxima
+Matrix Language  -  The matrix language oF EMT
+
+Calculus  -  Derivatives, Integrals, Differential Equations
+Solve Equations  -  Solve Equations and Systems of Equations
+Plots  -  Plots in 2D and 3D
+Algebra  -  Symbolic Manipulation of Expressions
+Linear Algebra  -  Vectors and Matrices in Linear Algebra
+Statistics  -  Statistics in EMT
+Optimization  -  Linear and non-linear Optimization
+Regression  -  Linear Regression
+Polynomials and Splines  -  Polynomials and Splines in EMT
+
+Programming Language  -  Functions in EMT
+Scripts  -  External *.e files for EMT
+
+Installation  -  Installation of EMT and additional Modules
+Notebooks  -  Commands and Comments in Notebooks
+Menu  -  The Menu of of the Notebook Window of EMT
+Graphics  -  Save and Export Graphics of EMT
+
+#
+
+!Overview
+
+EMT (Euler Math Toolbox) is a program to do interactive mathematics on
+all levels. It is named after the mathematician Leonhard Euler
+(1707-1783) to honor his achievements for modern mathematics.
+
+For starters it is strongly recommended to open the tutorial about
+first steps in EMT via the menu entry
+
+	File/Open Tutorial or Examples
+
+The core of EMT is its notebook interface which can contain
+
+  - the input and output of Euler commands
+  - the code of EMT functions and programs
+  - Euler graphics
+  - comments with headlines, links and images
+
+It can be saved in HTML or PDF format (using Latex). 
+
+From the notebook, the user can access the numerical kernel of EMT
+with its matrix language, the programming language of EMT, and the
+symbolic Algebra (using the open CAS Maxima which is installed with
+EMT), as well as many other programs and features like
+
+  - Povray
+  - Python
+  - C
+  - Scilab
+
+The underlying numerical kernel comes with 
+
+  - IEEE double numbers
+  - matrices, also sparse matrices
+  - complex numbers and complex matrices
+  - intervals and interval matrices
+  - a long accumulator
+  - strings (also Unicode strings)
+  - a complete programming language
+
+and numerous built-in functions for all kinds of applications, mostly
+written in efficient C or in the programming language of EMT. The
+matrix language is implemented in a very systematic and easy to grasp
+way.
+
+The programming language stores its code in Euler files (*.e). It is
+an advanced Basic dialect. An Euler file can contain any code and
+several functions. It is loaded using the "load" command. The
+functions can be listed in the help window using the filename (Try
+"sets.e").
+
+The graphics interface can generate 2D and 3D graphics with an
+anti-aliased view. The graphics can be contained in the notebook or
+exported to files as PNG, SVG, Bitmap or Windows Metafile.
+
+For a start, the best suggestion is to go through one of the tutorials
+that come with Euler Math Toolbox.
+
+For more information see:
+
+User Interface - The UI in more details
+Notebooks - All about notebooks in EMT
+
+#
+
+!User Interface
+
+In the center of the simple to use user interface is the notebook
+window which contains
+
+  - a menu (See: Menu)
+  - the notebook area
+  - a status line
+
+EMT is command line oriented. The cursor (up or down, page up or down)
+moves between the command lines. A command line can be a multi-line.
+Pressing return executes the command. The position of the cursor does
+not matter.
+
+To ease editing, EMT uses dialogs. There are
+
+  - a comment editor (F5)
+  - a command and function editor (F9)
+  - an external editor for EMT files (F10)
+
+Functions can also be edited in the notebook directly.
+
+The graphics window of EMT can be hidden using Ctrl-G. In this case,
+the graphics appears in the notebook window using the TAB key. In any
+case, the graphics can be inserted in the notebook by ending a command
+with ":".
+
+EMT can do copy and paste (Ctrl-C, Ctrl-X, Ctrl-V). Alternatively,
+Ctrl-Backspace deletes lines and Ctrl-U inserts all deleted lines at
+once. Ctrl-Up will recall the previous command into the current
+command line. Return executes the line or multi-line and Shift-Return
+executes all commands in the current section (between headings or
+empty lines).
+
+F1 or double clicks open this help window. Also note the status line
+with a short help of the current line and a possible suggestion while
+typing.
+
+Notebooks can be saved and loaded (which starts a new EMT session by
+default). They can also be exported as HTML pages using a CSS file
+which can be modified by the user. It is possible to open one second
+notebook in a separate session. EMT then shows a boundary which
+indicates that this is not the primary session of EMT.
+
+See: Exports, Menu
+
+#
+
+!Variables
+
+To store a value into a numerical variable, use := or =.
+
+  >a := 3.5
+  >b = 5 // alternative
+  >v = 1:5 // variable containing a vector
+
+Names of variables can contain
+
+  - $ (should be reserved for units), 
+  - hard spaces (enter with ctrl-space), 
+  - underscores (enter as double underscore __) 
+ 
+Variable names can start with %. The special variable % refers to the
+previous result (only outside of functions).
+
+For more Information see
+
+Symbolic Variables  -  Variables in Maxima
+Data Types  -  data types of EMT
+Variables in Functions  -  about local and global Variables
+Matrices  -  about matrices and sub-matrices
+
+#
+
+!Data Types
+
+From the viewpoint of the user, EMT has the following data types.
+
+  - real numbers and real matrices,
+  - complex numbers and complex matrices,
+  - intervals and interval matrices,
+  - strings and string vectors,
+  - symbolic strings,
+  - compressed matrices,
+  - collections,
+  - binary data.
+
+Numerical vectors are just matrices with one row or column. Column and
+row vectors make a difference. Collections are just immutable
+collections of other data. There are also expandable lists via
+glist().
+
+Here are some typical examples of values in EMT.
+
+   >-1.234 // decimal dot, not comma!
+      -1.234
+   >1.45e22 // 1.45*10^22
+      1.45e+22
+   >[1,2,-5,6] // 1x4 vector
+      [1,  2,  -5,  6]
+   >[1,0;0,1] // identity matrix id(2)
+              1         0 
+              0         1 
+   >5+6i // complex number 5+6*I
+      5+6i
+   >[I,2*I,3+4*I] // complex vector
+      [ 0+1i,  0+2i,  3+4i ]
+   >Pi, E, I // constant functions
+      3.1416
+      2.7183
+      0+1i
+   >"This is a string"
+      This is a string
+   >''Say "Hello!"'' // string containing "
+      Say "Hello!"
+   >["Vector","of","strings"]
+      Vector
+      of
+      strings
+   >~1.5,1.7~ // interval
+      ~1.5,1.7~
+   >1 0.1 // interval, use F8 for the plus/minus
+      ~0.9,1.1~
+   >~Pi~ // small interval around pi
+      ~3.141592653589792,3.141592653589794~
+
+The numerical data types of EMT are based on the IEEE standard with
+an accuracy of 16 decimal digits. The default output does not show all
+significant places.
+
+   >1/3 // default output of a single number
+      0.333333333333
+   >longest 1/3 // all digits
+           0.3333333333333333 
+   >fraction 1/3 // output as fraction
+      1/3
+   >shortest pi // very short output
+         3.1 
+   >long exp(1+2*I) // complex number, long output
+      -1.13120438376+2.471726672i
+   >sin(pi), longest sin(pi) // rounding towards 0
+      0
+        1.224646799147353e-16 
+
+There are more formats for the output and input.
+
+   >print(1000*1.03^5,2,15," Euro") // print function
+            1159.27 Euro
+   >degprint(21.567 )
+    21 34'1.20''
+   >printdate(date(day(2011,9,11,12)+1000))
+    2014-06-07 12:00
+   >printhex(sqrt(2))
+    1.6A09E667F3BCD*16^0
+
+To enter vectors and matrices use [].
+
+   >shortformat;
+   >A=[1,2,3;4,5,6] // 2x3 matrix
+              1         2         3 
+              4         5         6 
+   >A[1] // first row
+      [1,  2,  3]
+   >A[,2] // second column
+              2 
+              5 
+   >A[1,2:3] // first row, column 2 to 3
+      [2,  3]
+   >[1,2,3;4] // second row auto-filled with 0
+              1         2         3 
+              4         0         0 
+   >[1,2;3,I]; // complex matrix
+   >v=1:10 // row vector 1 to 10
+      [1,  2,  3,  4,  5,  6,  7,  8,  9,  10]
+   >v[5:7] // elements 5 to 7
+      [5,  6,  7]
+
+EMT can also use strings and vectors of string.
+
+   >"Just a string!"
+      Just a string!
+   >"Strange character: "+char(156) // number to character
+      Strange character:  
+   >strtochar("Help") // get numbers
+      [72,  101,  108,  112]
+   >r=6.7; "Area of circle with radius "+r+" = "+(pi*r^2)
+      Area of circle with radius 6.7 = 141.02609422
+
+There are also intervals. The rule of operators and functions is that
+all possible points in the intervals are used.
+
+   >~-1,2~*~-1,2~ // all x*y with -1 <= x,y <=2
+      ~-2,4~
+   >~-1,1~^2 // all x^2 with -1 <= x <= 1
+      ~0,1~
+   >exp(~-1,1~) // all exp(x) with -1 <= x <= 1
+      ~0.36,2.8~
+
+For more information see
+
+Interval Arithmetic  -  Guaranteed Inclusions
+Matrix Language  -  Matrix Language of EMT
+Expressions  -  Expressions in EMT
+
+#
+
+!Symbolic Variables
+
+We have the following assignment operators in EMT.
+
+  - Numerical variables: "=" or ":="
+  - Symbolic variables: "&="
+  - Numerical variables for EMT and for Maxima: "&:="
+  - Purely symbolic variable for Maxima only: "&&="
+
+Symbolic variables, created with "&=" are defined in the Maxima
+subsystem as expressions and in EMT as strings (with a symbolic
+flag).
+
+   >f &= x^3-x
+      
+                                       3
+                                      x  - x
+      
+   >df &= diff(f,x) // evaluates, then assigns to df
+      
+                                        2
+                                     3 x  - 1
+      
+   >df // prints as display formula
+      
+                                        2
+                                     3 x  - 1
+      
+   >df(5) // evaluates with x=5 like a string expression
+      74
+
+Symbolic expressions of Maxima (defined by "&=") can be used in EMT as
+expressions for numerical algorithms, since there is a symbolic string
+variable in EMT with the same name.
+
+   >f &= exp(x)*(x^2+1);
+   >df &= diff(f,x);
+   >solve(df,1,y=2) // solve f'(x)=2 numerically
+      0.248792696686
+   >plot2d(df,-3,1): // plot f'(x)
+
+In EMT, a symbolic variable (set with "&=") is simply a string.
+
+   >f &= x^3-x;
+   >"String: "+f
+      String: x^3-x
+
+If you need a value in EMT and Maxima, use "&:=". Then the variable
+on the numerical side of EMT is no longer a symbolic string, but a
+value.
+
+   >A &:= [1,2;3,4] // A in both worlds
+                  1             2 
+                  3             4 
+   >eigenvalues(A) // can be used numerically
+      [ -0.372281+0i ,  5.37228+0i  ]
+   >&eigenvalues(A) // can be used symbolically
+      
+                        5 - sqrt(33)  sqrt(33) + 5
+                      [[------------, ------------], [1, 1]]
+                             2             2
+      
+   >A.A // numerical result
+                  7            10 
+                 15            22 
+   >&A.A // symbolic result
+      
+                                    [ 7   10 ]
+                                    [        ]
+                                    [ 15  22 ]
+
+A variable can also be defined just for Maxima with &&= (purely
+symbolic variable). Note that "&&=" does not evaluate the right hand
+side symbolically before the definition. It evaluates when it is
+called at run-time.
+
+   >expr &&= integrate(x^3,x);
+   >&expr
+      
+                                         4
+                                        x
+                                        --
+                                        4
+
+For more information, see
+
+Symbolic Functions  -  programming Maxima
+Maxima at Compile Time  -  create advanced functions
+Variables - non-symbolic variables
+
+#
+
+!Units
+
+Appending a unit converts to the IS system. 
+
+   >3.56yards // three light years in meters
+      3.255264
+   >5.689km/h // int m/sec
+      1.58027777778
+
+The -> operator converts units. If the conversion goes to a string,
+the units in this string will be used, and the units will be printed
+after the result.
+
+   >2km/h -> miles/min
+      0.0207123730746
+   >4.56km/h -> " in/sec"
+      49.8687664042 in/sec
+
+For a list of all units see the file units.e.
+
+See: units, units.e
+
+#
+
+!Matrices
+
+EMT has vectors and matrices. Vectors are just 1xn (row vectors) or
+nx1 (column vector) matrices. To enter a matrix, separate the elements
+by a comma and the rows by a semicolon.
+
+   >A = [1,2;3,4]
+                  1             2 
+                  3             4 
+   >v = [5,6] // row vector
+      [5,  6]
+   >w = [5;6] // column vector
+                  5 
+                  6 
+   >v.A // A.v does not work !!!
+      [23,  34]
+   >A.v' // v' is the transpose of v
+                 17 
+                 39 
+   >A.w
+                 17 
+                 39 
+   >w'.w // scalar product
+      61
+
+Note that . is the matrix product. The usual operators and functions
+work element for element. This is the matrix language of EMT.
+
+   >sqrt(A) // takes the square root of all elements of A
+                  1       1.41421 
+            1.73205             2 
+   >A*A // squares all elements of A
+                  1             4 
+                  9            16
+
+Matrices can also be formed of vectors and other matrices.
+
+  >A=[1,2;3,4]; // 2x2 matrix
+  >b=[1;2]; // column vector
+  >A|b // horizontal concatenation
+                 1             2             1 
+                 3             4             2 
+  >A_b' // vertical concatenation
+                 1             2 
+                 3             4 
+                 1             2 
+  >[b,b^2,b^3] // matrix of columns
+                 1             1             1 
+                 2             4             8 
+  >[b';b'^2] // matrix of rows
+                 1             2 
+                 1             4
+
+Matrix elements or sub-matrices are referred to with square brackets.
+For vectors, only one index is necessary, of course. For matrices, one
+index refers to the complete line.
+
+   >A=[1,2;3,4]; // 2x2 matrix
+   >b=[1;2]; // column vector
+   >A|b // horizontal concatenation
+                  1             2             1 
+                  3             4             2 
+   >A_b' // vertical concatenation
+                  1             2 
+                  3             4 
+                  1             2 
+   >[b,b^2,b^3] // matrix of columns
+                  1             1             1 
+                  2             4             8 
+   >[b';b'^2] // matrix of rows
+                  1             2 
+                  1             4 
+
+Matrices can be assigned to sub-matrices, if they fit. Values can be
+assigned to sub-matrices.
+
+   >A=[1,2,3;4,5,6;7,8,9]
+                1             2             3 
+                4             5             6 
+                7             8             9 
+   >A[1:2,1:2]=[3,4;5,6]
+                3             4             3 
+                5             6             6 
+                7             8             9 
+   >A[1]=A[1]+A[2]
+                8            10             9 
+                5             6             6 
+                7             8             9 
+   >A[2]=-1
+                8            10             9 
+               -1            -1            -1 
+                7             8             9 
+
+There are numerous functions to generate or handle matrices and
+vectors. Here are just a few examples.
+
+   >setdiag(setdiag(2*id(4),-1,1),1,1) // tri-diagonal matrix
+                2             1             0             0 
+                1             2             1             0 
+                0             1             2             1 
+                0             0             1             2 
+   >diagmatrix(1:4)
+                1             0             0             0 
+                0             2             0             0 
+                0             0             3             0 
+                0             0             0             4 
+   >A=normal(3,3); A=A/getdiag(A) // normalize diagonal to 1
+                1      -7.37532        1.1013 
+          2.80451             1       1.56574 
+         0.461699    -0.0330072             1 
+   >nonzeros(isprime(1:20)) // nonzero indices of vector
+    [2,  3,  5,  7,  11,  13,  17,  19]
+   >A=random(3,3); k=mnonzeros(A>0.5) // nonzero indices of matrix
+                  1             2 
+                  1             3 
+                  2             2 
+                  2             3 
+                  3             1 
+                  3             3 
+   >A
+           0.262253      0.866587      0.536137 
+           0.493453      0.601344      0.659461 
+           0.967468      0.193151      0.935921 
+   >mset(A,k,0) // set indices to value or matrix
+           0.262253             0             0 
+           0.493453             0             0 
+                  0      0.193151             0
+ 
+
+See: Matrix Language
+
+#
+
+!Matrix Language
+
+Basic Rule: Operators and functions are applied element-wise to their
+operands (vectors or matrices), and the result is a matrix of the same
+size.
+
+In case, the operands or parameters do not fit in size, EMT tries to
+expand the smaller one to the size of the larger one by duplication.
+
+   >sqrt(1:5)
+    [1,  1.41421,  1.73205,  2,  2.23607]
+   >(1:5)*4
+    [4,  8,  12,  16,  20]
+   >(1:5)^2
+    [1,  4,  9,  16,  25]
+   >short (1:5)*(2:6)'
+            2         4         6         8        10 
+            3         6         9        12        15 
+            4         8        12        16        20 
+            5        10        15        20        25 
+            6        12        18        24        30   
+
+If one of the operands is only a vector, the other a matrix, the
+operators work, as if the vector was duplicated to the size of the
+matrix. 
+
+E.g., if a column vector v and a matrix A are combined, the result is
+a matrix R[i,j], applying the operator to v[i] and A[i,j]. If a row
+vector v and a column vector w are combined the result combines v[i]
+with v[j].
+
+All matrices must have the same size. Row vectors must have the same
+number of rows as any parameter matrix, and column vectors the same
+number of columns. If the operands do not fit together, there will be
+an error message.
+
+Scalar values can be combined with any matrix or vector. In this case,
+the scalar is combined with all elements of the matrix or vector.
+
+#
+
+!Calculus
+
+EMT can do calculus symbolically and numerically. Have a look at the
+following sections to learn more.
+
+Derivatives  -  Compute Derivatives 
+Integrals  -  Compute Integrals
+Differential Equations  -  Solve Differential Equations
+
+#
+
+// For symbolic methods, you can also refer to
+
+// See: ../Programs/00 - A first Welcome | Introduction to EMT
+// See: ../Programs/10 - Maxima | Tutorial for Maxima
+// See: maximacore.html | Reference for Maxima
+
+// For general information about numerical methods in EMT, there are
+// tutorials, examples and references.
+
+// See: ../Programs/06 - Numerical Analysis | Tutorial on Numerical Analysis
+// See: numerical | Numerical Methods
+
+!Derivatives
+
+Symbolic differentiation is done with &diff by Maxima. Here are some
+examples.
+
+   >expr&=x^2*cos(x*y);
+   >&diff(expr,x) // derivative at s
+      
+                                           2
+                           2 x cos(x y) - x  y sin(x y)
+      
+   >&diff(expr,x,n) // n-th derivative at x
+      
+                                 n
+                                d     2
+                                --- (x  cos(x y))
+                                  n
+                                dx
+      
+   >&diff(expr,x,1,y,1) // derivative to x and y
+      
+                              2             3
+                         - 3 x  sin(x y) - x  y cos(x y)
+      
+   >&diffat(expr,x=pi) // derivative to x at a
+      
+                                            2
+                         2 pi cos(pi y) - pi  y sin(pi y)
+      
+   >&diff(expr,x) with [x=pi,y=5] // alternative
+      
+                                      - 2 pi
+      
+   >&diffat(expr,x=pi,5) // n-th derivative to x at a
+      
+                 2  5                 3                    4
+             - pi  y  sin(pi y) + 20 y  sin(pi y) + 10 pi y  cos(pi y)
+
+There are functions for the gradient, the Jacobian and the Hessian
+matrix.
+
+   >expr &= x^2-x*y+y
+      
+                                               2
+                                  - x y + y + x
+      
+   >&gradient(expr,[x,y])
+      
+                                 [2 x - y, 1 - x]
+      
+   >sol &= solve(gradient(expr,[x,y]))
+      
+                                 [[y = 2, x = 1]]
+      
+   >&hessian(expr,[x,y]) with sol[1]
+      
+                                   [  2   - 1 ]
+                                   [          ]
+                                   [ - 1   0  ]
+
+Numerical differentiation is done with "diff". Note that numerical
+differentiation is numerically inaccurate or very expensive.
+
+   >diff("x^x",1)
+      1
+   >function f(x,a) := x^x*sin(a*x)
+   >diff("f",1;5) // e.g. with a=5
+      0.459386652651
+   >diff("x^x",1,2) // n-th derivative at a
+      1.99999999971
+
+See: Integrals
+
+#
+
+!Integrals
+
+Integration is available symbolically and numerically with a variety
+of methods. 
+
+For symbolic integration, use &integrate. 
+
+   >&integrate(expr,x) // anti-derivative
+      
+                                   2            3
+                                  x  y         x
+                                - ---- + x y + --
+                                   2           3
+      
+   >&integrate(expr,x,a,b) // definite integral
+      
+                      2               3       2               3
+                  (3 a  - 6 a) y - 2 a    (3 b  - 6 b) y - 2 b
+                  --------------------- - ---------------------
+                            6                       6
+      
+   >&assume(y>0); &integrate(x^y,x) // necessary sometimes
+      
+                                       y + 1
+                                      x
+                                      ------
+                                      y + 1
+
+Or you can define an integral first, then evaluate it.  
+
+   >function f(x) &= x*cos(x)
+      
+                                     x cos(x)
+      
+   >function F(x) &= integrate(f(x),x)
+      
+                                x sin(x) + cos(x)
+      
+   >F(pi)-F(0) // works better sometimes
+      -2
+   >F &= integrate(f(x),x) // alternative way using an expression
+      
+                                x sin(x) + cos(x)
+      
+   >&(F with x=b)-(F with x=a) // evaluate expressions
+      
+                      b sin(b) + cos(b) - a sin(a) - cos(a)
+
+For numerical integration, the default integrate() uses an adaptive
+Gauss scheme. 
+
+   >integrate("exp(-x^2)",0,1) // e.g.  
+      0.746824132812
+   >function f(x,a) := exp(-x^2*a)
+   >integrate("f",0,1;5) // e.g. with a=5
+      0.395712309611
+
+Some more methods for integration are available. (gauss, gauss5,
+romberg, simpson, adaptiveint). Some are from the AlgLib library
+(alintegrate, alsingular). The fastest method is gauss5.
+
+   >gauss5("exp(-x^2)",0,1) // 5 evaluations of the function
+      0.746824468131
+   >gauss5("exp(-x^2)",0,1,20) // 20 subintervals, 100 evaluations
+      0.746824132812
+
+There are also advanced methods using intervals for guaranteed
+inclusions.
+
+  >mxmiint("exp(-x^2)",0,1)
+     ~0.746824132812408,0.746824132812446~
+
+The results are very narrow intervals. But the effort is big. igauss()
+is another function which gets guaranteed bounds.
+
+  >expr &= exp(-x^2);
+  >igauss(expr,0,1,10,&diff(expr,x,20)) // compute 20-th derivative
+     ~0.7468241328124243,0.7468241328124299~
+  >igauss(expr,0,1,10,dexpr20est=1e12) // provide estimate
+     ~0.7468241328124243,0.7468241328124299~
+
+#
+
+!Differential Equations
+
+Differential Equations can be solved by Maxima symbolically up to
+degree 2 with ode2. 
+
+  >&ode2('diff(y,x,2)+'diff(y,x)+y=x^2,y,x)
+     
+                 - x/2          sqrt(3) x            sqrt(3) x      2
+            y = E      (%k1 sin(---------) + %k2 cos(---------)) + x  - 2 x
+                                    2                    2
+
+To solve for initial values, there are ic1 (for one initial value) and
+ic2 (for two).
+
+  >sol &= ode2('diff(y,x,2)+y=x^2,y,x) // general solution
+     
+                                                     2
+                      y = %k1 sin(x) + %k2 cos(x) + x  - 2
+     
+  >ysol &= ic2(sol,x=0,y=0,'diff(y,x)=1) // set initial values
+     
+                                                  2
+                         y = sin(x) + 2 cos(x) + x  - 2
+     
+  >function f(x) &= y with ysol // define a function from ysol
+     
+                                                2
+                           sin(x) + 2 cos(x) + x  - 2
+
+Maxima has some more advanced functions for differential equations,
+including systems of differential equations (&desolve, &ode2, &ic1,
+&ic2, &bc2).
+
+Numerical solutions can be obtained with many functions in EMT. One is
+ode(), which uses the LSODA algorithm.
+
+  >t=0:0.01:5; plot2d(t,ode("-x*y",t,1)):
+
+Second order differential equations need to be translated to systems
+of equations.
+
+  >function f(x,y) := [y[2],sin(y[1])*x]
+  >t=0:0.01:5; y=ode("f",t,[1,0]); 
+  >plot2d(t,y[1]):
+
+EMT has more functions for differential equations, including
+interval functions with guaranteed inclusions (runge, adaptiverunge,
+heun, lsoda, mxmidgl). For the adaptive versions, you do not need
+intermediate points.
+
+  >lsoda("-x*y",[0,1],1)[-1] // last value of solution, i.e. y(1)
+     0.606530659726
+  >adaptiverunge("-x*y",[0,1],1)[-1] // adaptive Runge method
+     0.606530659715
+
+The function mxmidgl() calls Maxima for a Taylor development of high
+degree. 
+
+  >mxmidgl("-x*y",0:0.01:1,1)[-1]
+     ~0.60653065971257,0.6065306597127~
+
+#
+
+!Expressions
+
+In the numerical kernel of EMT, expressions are strings. If they are
+marked as symbolic they print via Maxima, otherwise via EMT.
+Expressions in strings are used for plotting and many numerical
+functions. For this, the variable in the expression has to be "x".
+
+   >expr := "x^3-x" // expression in string
+      x^3-x
+   >plot2d(expr,-1,1): // plot expression
+   >expr &= x^3-x // symbolic expression
+      
+                                       3
+                                      x  - x
+      
+   >expr // prints via Maxima
+      
+                                       3
+                                      x  - x
+      
+   >plot2d(expr,-1,1): // plot it
+
+Expressions can be evaluated numerically. The variables x,y,z are
+assigned automatically. Other variables can be assigned by assigned
+parameters or via global variables.
+
+   >expr &= a*x^2
+      
+                                          2
+                                       a x
+      
+   >a=4; expr(2.5) // use global variable
+      25
+   >expr(2.5,a=5) // use assigned variable
+      31.25
+   >"x*y^2"(3,4) // direct evaluation
+      48
+
+Thus many algorithms of EMT can use expressions in x instead of
+functions. But as soon as additional parameters are involved, which
+are not global, functions should be preferred.
+
+   >a=5; plot2d("a*x^3-x",0,1): // use global "a"
+   >function f(x,a) := a*x^3-x
+   >plot2d("f",0,1;4): // "use a=4" as semicolon parameter
+   >plot2d({{"f",4}},0,1): // Alternative
+   >plot2d("f(x,4)",0,1): // Alternative
+
+Symbolic expression can be evaluated by Maxima with "with". This is a
+nice way in EMT instead of the use of "at".
+
+   >expr &= exp(-x^2)
+      
+                                          2
+                                       - x
+                                      E
+      
+   >&expr with x=a
+      
+                                          2
+                                       - a
+                                      E
+      
+   >&expr with x=5.67
+      
+                               1.09121450630144e-14
+      
+   >&expr with x=sqrt(log(y))
+      
+                                        1
+                                        -
+                                        y
+      
+   >&x^2+y^2 with [x=5,y=4]
+      
+                                        41
+      
+   >&at(x^2+y^2,[x=5,y=4]) // original Maxima syntax
+      
+                                        41
+
+"with" is a simple way to use results of "solve".
+
+   >&solve(x^3-2*x+1,x), &x with %[1]
+      
+                        - sqrt(5) - 1      sqrt(5) - 1
+                   [x = -------------, x = -----------, x = 1]
+                              2                 2
+      
+      
+                                  - sqrt(5) - 1
+                                  -------------
+                                        2
+      
+   >&solve([x+y=5,x-2*y=4]); &[x,y] with %[1]
+      
+                                      14  1
+                                     [--, -]
+                                      3   3
+
+A special problem worth mentioning here is the conflict between an
+expression and a function with the same name. To avoid this, use names
+like fx, fxy or expr, which are not used for functions. If a function
+and an expression with the same name exists, the expression will be
+used.
+
+#
+
+// For more information about differential equations refer to the
+// tutorials or the reference.
+
+// See: ../Programs/11 - Differential Equations | Tutorial on Different Equations
+// See: numerical.html#Differential_Equations | Reference
+
+!Plots
+
+EMT Math Toolbox has plots in 2D and 3D, both for data and functions.
+Click on the sections below.
+
+Plots in 2D  -  Plots in the 2D plane
+Plots in 3D  -  Plots in the 3D space
+Implicit Plots  - Plots of level lines of functions
+Logarithmic Plots  -  Plots with logarithmic scales
+Styles of 2D Plots  -  Setting own plot labels, grid styles or axis ticks
+Statistical Plots  -  Plots for statistical data
+Plot Aspect  -  Aspect Ratio of the plot window
+Basic Plots  -  Very basic functions for plots
+
+It is possible to plot in Maxima using Gnuplot. or in Python using
+Math Plot Lib. But we do not cover these subjects here.
+
+#
+
+// For more information on plots, refer to
+
+// See: ../Programs/00 - Demo - Plots in Euler | Plot Demo
+// See: ../Programs/02 - 2D Graphics | Tutorial for 2D Plots
+// See: ../Programs/03 - 3D Graphics | Tutorial for 3D Plots
+// See: plot | Reference for Plots in EMT
+
+!Plots in 2D
+
+For planar plots, EMT uses the function plot2d. This function can plot
+functions and data.
+
+A single expression in "x" (e.g. "4*x^2") or the name of a function
+(e.g. "f") produces a graph of the function.
+
+  >a:=5.6; plot2d("exp(-a*x^2)/a");
+  >p=chebpoly(10); plot2d("polyval(p,x)",-1,1): // plot polynomial
+  >plot2d(''integrate("sin(x)*exp(-x^2)",0,x)'',0,2): // plot integral
+
+Functions like "plot2d" that expect other functions or expressions as
+an argument can pass additional parameters to the argument function
+with semicolon parameters or with a call collection.
+
+  >function f(x,a) := x^2/a+a*x^2-x; // define a function
+  >a=0.3; plot2d("f",0,1): // plot with a=0.3
+  >plot2d("f",0,1;0.4): // plot with a=0.4
+  >plot2d({{"f",0.2}},0,1): // Alternative: plot with a=0.2
+  >plot2d({{"f(x,b)",b=0.1}},0,1): // plot with 0.1
+
+Symbolic expressions can also be used, since they are stored as simple
+string expressions if they are defined with "&=".
+
+  >a:=5.6; expr &= exp(-a*x^2)/a // define expression
+     
+                                          2
+                                     - a x
+                                    E
+                                    -------
+                                       a
+  
+  >plot2d(expr,-2,2): // plot from -2 to 2
+  >plot2d(expr,r=1,thickness=2): // plot in a square around (0,0)
+  >plot2d(&diff(expr,x),>add,style="--",color=red): // add another plot
+  >plot2d(&diff(expr,x,2),a=-2,b=2,c=-2,d=1): // plot in rectangle
+  >plot2d(&diff(expr,x),a=-2,b=2,>square): // keep plot square
+
+For data plots, you need one or more rows of x-values, and one or more
+rows of y-values. For point plots use ">points", for mixed lines and
+points use ">addpoints".
+
+  >xdata=[1,1.5,2.5,3,4]; ydata=[3,3.1,2.8,2.9,2.7]; // data
+  >plot2d(xdata,ydata,a=0.5,b=4.5,c=2.5,d=3.5,style="."); // lines
+  >plot2d(xdata,ydata,>points,>add,style="o"): // add points
+  
+  >p=polyfit(xdata,ydata,1); // get regression line
+  >plot2d("polyval(p,x)",>add,color=red): // add plot of line
+ 
+Thus, we can also plot curves or filled curves.
+
+  >t=linspace(0,2pi,1000); // parameter for curve
+  >x=sin(t)*exp(t/pi); y=cos(t)*exp(t/pi); // x(t) and y(t)
+  >plot2d(x,y,r=10): // plot curve
+  >plot2d(x,y,r=10,>filled,style="/",fillcolor=red): // fill curve
+
+The plot of multiple functions can be done with >add, possibly using a
+loop.
+
+  >plot2d("(1-x)^10",0,1); // plot first function
+  >for i=1 to 10; plot2d("bin(10,i)*x^i*(1-x)^(10-i)",>add); end;
+  >insimg;
+
+But it can also be done with a matrix of x-values, and a matrix of
+y-values. 
+
+  >x=linspace(0,1,500);
+  >n=10; k=(0:n)'; // n is row vector, k is column vector
+  >y=bin(n,k)*x^k*(1-x)^(n-k); // y is a matrix then
+  >plot2d(x,y):
+
+Another method is a vector of expressions.
+
+  >plot2d(["sin(x)","cos(x)"],0,2pi): // plot vector of expressions
+  
+We can get a vector with symbolic expressions from Maxima using
+makelist() and mxm2str().
+  
+  >v &= makelist(binomial(10,i)*x^i*(1-x)^(10-i),i,0,10) // make list
+  >mxm2str(v) // get a vector of strings from the symbolic vector
+  >plot2d(mxm2str(v),0,1): // plot functions
+
+If the parameter >points or >addpoints is present, the plot will show
+points with a style given in the parameter pointstyle.
+
+  >k=0:10; x=bin(10,k); plot2d(k,x,a=0,b=10,c=0,d=300,>points,,style="[]"):
+  >x=-1:0.1:1; y=x^2; plot2d(x,y,>addpoints,style="--",pointstyle="x"):
+
+It is possible to plot bars using >bar. There is also the statistical plot
+function plotbars() for the same purpose. There are also automatic histograms.
+
+  >plot2d(normal(10000),distribution=30);
+  >plot2d("qnormal(x)",thickness=5,color=red,>add):
+  
+  >plot2d(random(100),>histogram,>even):
+  
+  >x=intrandom(100,10); 
+  >columnsplot(getmultiplicities(1:10,x),1:10):
+
+For more information, refer to the tutorial about 2D plots, or the
+documentation about plot2d().
+
+plot2d  -  Reference to the main function for 2D Plots
+Plot Aspect  -  Change the aspect ratio of the plot window
+Plots  - Overview of Plots
+
+#
+
+!Logarithmic Plots
+
+EMT uses the "logplot" parameter for logarithmic scales. 1 is for the
+x-axis, 2 for both axes, and 3 for the x-axis only.
+
+  >plot2d("exp(x+sin(x))",0,100,logplot=1):
+  >plot2d("exp(x+sin(x))",10,100,logplot=2):
+  >plot2d("log(x*(2+sin(x/100)))",10,1000,logplot=3):
+
+This does also work with data plots.
+
+  >x=10^(1:20); y=x^2-x;
+  >plot2d(x,y,logplot=2):
+  
+Plots  - Overview of Plots
+
+#
+
+!Styles of 2D Plots
+
+By default, EMT computes automatic axis ticks and adds labels to each
+tick. This can be changed with the grid parameter.
+
+  >plot2d("x^3-x",grid=0) // no grid, frame or axis
+  >plot2d("x^3-x",grid=1) // x-y-axis
+  >plot2d("x^3-x",grid=2) // default ticks
+  >plot2d("x^3-x",grid=3) // x-y- axis with labels inside
+  >plot2d("x^3-x",grid=4) // no ticks, only labels
+  >plot2d("x^3-x",grid=5) // default, but no margin
+  >plot2d("x^3-x",grid=6) // axes only
+  >plot2d("x^3-x",grid=7) // axes only, ticks at axis
+  >plot2d("x^3-x",grid=8) // axes only, finer ticks at axis
+  >plot2d("x^3-x",grid=9) // default, small ticks inside
+  >plot2d("x^3-x",grid=10) // no ticks, axes only
+
+The parameter <frame switches off the frame, and framecolor=blue sets
+the frame to a blue color. 
+
+If you want your own ticks, you can use style=0, and add everything
+later.
+
+  >plot2d("x^3-x",grid=0); // plot
+  >frame; xgrid([-1,0,1]); ygrid(0): // add frame and grid
+
+For the plot title and labels of the axes, see the following example.
+
+  >plot2d("exp(x)",-1,1);
+  >textcolor(black); // set the text color to black
+  >title("y=exp(x)"); // title above the plot
+  >xlabel("x"); // "x" for x-axis
+  >ylabel("y",>vertical); // vertical "y" for y-axis
+  >label("(0,1)",0,1,color=blue); // label a point
+  >reset: // to revert the text color
+
+The axis can be drawn separately with xaxis() and yaxis().
+
+  >plot2d("x^3-x",<grid,<frame);
+  >xaxis(0,xx=-2:1,style="->"); yaxis(0,yy=-5:5,style="->"):
+
+Text on the plot can be set with label(). In the following example,
+"lc" means lower center. It sets the position of the label relative to
+the plot coordinates.
+
+  >function f(x) &= x^3-x
+  >plot2d(f,-1,1,>square);
+  >x0=fmin(f,0,1); // compute point of minimum
+  >label("Rel. Min.",x0,f(x0),pos="lc"): // add a label there
+
+There are also text boxes.
+
+  >plot2d(&f(x),-1,1,-2,2); // function
+  >plot2d(&diff(f(x),x),>add,style="--",color=red): // derivative
+  >labelbox(["f","f'"],["-","--"],[black,red]): // label box
+
+There are interactive sliders, which can set values by the user. The
+function dragvalues() provides this.
+
+  >function plotf([a,b]) := plot2d("exp(a*x)*cos(2pi*b*x)",0,2pi;a,b);
+  >dragvalues("plotf",["a","b"],[-1,2],[[-2,2];[1,10]], ...
+  >  heading="Drag these values:",hcolor=black):
+
+Plots  - Overview of Plots
+
+#
+
+!Implicit Plots
+
+To draw the set f(x,y)=c for one or more constants c you can use
+plot2d() with its implicit plots in the plane. The parameter for c is
+level=c, where c can be vector of level lines. Additionally, a color
+scheme can be drawn in the background to indicate the value of the
+function for each point in the plot. The parameter "n" determines the
+fineness of the plot.
+
+  >expr := "2*x^2+x*y+3*y^4+y"; // define an expression f(x,y)
+  >plot2d(expr,level=0): // Solutions of f(x,y)=0
+  >plot2d(expr,level=0:0.5:20,>hue,contourcolor=white,n=200): // nice
+  >plot2d(expr,level=0:0.5:20,>hue,>spectral,n=200,grid=4): // nicer
+
+This works for data plots too. But you will have to specify the ranges
+for the axis labels.
+
+  >x=-2:0.05:1; y=x'; z=expr(x,y);
+  >plot2d(z,level=0,a=-1,b=2,c=-2,d=1,>hue):
+  >z=z+normal(size(z))*0.2;
+  >plot2d(z,level=0.5,a=-1,b=2,c=-2,d=1):
+
+It is possible to fill regions of values for a specific function. For
+this, level must be a 2xn matrix. The first row are the lower bounds
+and the second row contains the upper bounds.
+
+  >plot2d(expr,level=[0;1],style="-",color=blue): // 0 <= f(x,y) <= 1
+  >plot2d(expr,level=[0:0.2:5;0.05:0.2:5.05],color=lightgray):
+
+The following is the set of the maximal value of four linear
+conditions less than or equal 3. This is A[k].v<=3 for all
+rows of A. To get nice corners, we use n relatively large.
+
+  >A=[2,1;1,2;-1,0;0,-1];
+  >function f(x,y) := max([x,y].A');
+  >plot2d("f",r=4,level=[0;3],color=green,n=111):
+
+#
+
+!Plots in 3D
+
+3D Plots in EMT are done in central projection. The algorithm used is
+very quick and usually produces very nice plots. For photo-realistic
+output, you can install Povray and use it from EMT. EMT can also do
+anaglyph plots for red/cyan glasses.
+
+The most elementary form shows the graph of a function in x and y and
+uses an expression in x and y or a function. The plot is scaled to
+fit into the unit cube, so that the default viewing parameters work
+well. These parameters can be changed.
+
+  >plot3d("x^2+y^2"):
+
+Plots can have contour lines and shading. The contour lines can be thin
+or show a range of z-values.
+
+  >plot3d("x*abs(y)^1.4", ...
+  >    contour,>spectral,angle=-60 ,height=20 ,scale=1.1):
+  >plot3d("x^2+y^3",>contour,angle=30 ,level=-2:0.2:2):
+  >plot3d("x^y-y^x",a=0,b=4,c=0,d=4,n=200,level=0,light=[0,1,0]):
+  
+  >function f(x,y,a) := x^2+y^a
+  >plot3d("f";4.5,a=0,b=1,c=0,d=1,>contour,angle=20 ): // with a=4.5
+  
+  >plot3d("x^2+y^2",>spectral,n=100):
+  >plot3d("x^2+y^2",>zhue,levels=-2:0.2:2,dl=0.01,n=100):
+  
+For surfaces which are not the graph of a function, three functions or
+expressions can be used. In this case, the user needs to scale the plot
+properly to fit into the default view area.
+
+  >plot3d("x","y","x*y",xmin=-2,xmax=2,ymin=-2,ymax=2, ...
+  >    scale=[2,2,1],n=10):
+  
+  >plot3d("x","cos(y)","sin(y)",xmin=-2,xmax=2,ymin=0,ymax=2pi, ...
+  >    scale=[1.5,1.5,1.5],n=100,grid=10,fillcolor=[gray,black]):
+
+Matrices of x-, y-, and z-coordinates can be used to represent the
+surface. The matrix language of EMT allows that x can be row vector
+and y a column vector only. The grid determines the number of grid
+lines and should be a multiple of the number of intervals.
+
+  >x=-2:0.05:2; y=x'; plot3d(x,y,x*y,scale=[2,2,1]; grid=10):
+
+For an example with shading, we plot a ball.
+
+  >s=linspace(0,2pi,180); t=linspace(-pi/2,pi/2,90)'; 
+  >plot3d(cos(s)*cos(t),sin(s)*cos(t),sin(t), ...
+  >   >hue,grid=[6,4],<frame,color=blue,scale=1.5,height=45 ,angle=45 ):
+  
+It is possible to shade with different values, and use different values
+for the levels. Then the plot can be limited to a range of values.
+
+>x=-1:0.02:1; y=x'; z=x+y+(x-1)^2;
+>plot3d(x,y,z,scale=[2,2,1],hues=scalematrix(x+y),>spectral, ...
+>  levels=[-1:0.2:1],values=x+y,limits=[-1,1], ...
+>  angle=40 ):
+
+For clouds of points or lines, use >points or >wire.
+
+  >A=normal(3,500); plot3d(A[1],A[2],A[3],>points): // cloud of points
+  >W=cumsum(A); plot3d(W[1],W[2],W[3],>wire): // path in 3D
+
+For more information, refer to the tutorial for 3D plots or the
+documentation of plot3d.
+
+Plot Aspect  -  Change the aspect ratio of the plot window
+plot3d  -  Main function for 3D plots
+Plots - Overview of Plots
+
+#
+
+!Plot Aspect
+
+The default plot uses a square plot window. The layout of the graphics
+depend on the aspect ratio and the selected font, because space is
+needed for the title and the labels. The function fullwindow() will
+get rid of this extra space if you do not want to use a title or
+labels.
+
+You can change this with the function aspect() which also refreshes
+the layout of plots. With a parameter it sets the width/height
+ratio. Without parameters, aspect() is resetting to the default aspect
+ratio.
+
+  >aspect(2);
+  >plot2d(["sin(x)","cos(x)"],0,2pi):
+  >aspect();
+
+In 3D Plots, we can change the scaling of the z-values. The following
+is a polar plot, which graphs the function on a disk.
+
+  >aspect(2);
+  >plot3d("x^2+y^4",fscale=0.4,scale=1.6,>contour,>spectral>polar):
+  >reset;
+
+The reset() function restores plot defaults including the aspect
+ratio.
+
+It is also possible to change the aspect ration permanently in the
+Options Menu. This should only be used if you want to start EMT with a
+new aspect ratio. The ratio can be tied to the size of the plot
+window. This is only for small changes which do not need another
+layout of the plots.
+
+#
+
+!Statistical Plots
+
+There are many functions which are specialized on statistical plots.
+For a demonstration, refer to the tutorial on statistics. 
+
+One of the often used plots is a column plot.
+
+  >columnsplot(cumsum(random(10)),style="/",color=blue):
+
+It can also show strings as labels.
+
+  >months=["Jan","Feb","Mar","Apr","May","Jun", ...
+  >  "Jul","Aug","Sep","Oct","Nov","Dec"];
+  >values=[10,12,12,18,22,28,30,26,22,18,12,8];
+  >columnsplot(values,lab=months,color=red,style="-");
+  >title("Temperature"):
+
+To plot an experimental statistical distribution, you can use
+distribution=n with plot2d. 
+
+  >w=randexponential(1,1000); // exponential distribution
+  >plot2d(w,>distribution): // or distribution=n with n intervals
+
+Or you can compute the distribution from the data and plot the result
+with >bar in plot3d, or with a column plot.
+
+  >w=normal(1000); // 0-1-normal distribution
+  >{x,y}=histo(w,10,v=[-6,-4,-2,-1,0,1,2,4,6]); // interval bounds v
+  >plot2d(x,y,>bar):
+
+The statplot() function sets the style with a simple string.
+
+  >statplot(1:10,cumsum(random(10)),"b"):
+
+For more statistical plots, refer to the tutorial on statistics, or
+the following introduction.
+
+Statistics  -  Introduction to Statistics in EMT
+
+#
+
+!Basic Plots
+
+There are also very basic functions of plots. The following is just a
+brief introduction into these elementary functions.
+
+plots  -  Core functions for elementary Plots.
+
+There are screen coordinates, which always range from 0 to 1024 in
+each axis, no matter if the screen is square or not. Ant there are
+plot coordinates, which can be set with setplot(). The mapping between
+the coordinates depends on the current plot window. E.g., the default
+shrinkwindow() leaves space for axis labels and a plot title.
+
+In the example, we just draw a few random lines in various colors. For
+details on these functions, study the core functions of EMT.
+
+  >clg; // clear screen
+  >window(0,0,1024,1024); // use all of the window
+  >setplot(0,1,0,1); // set plot coordinates
+  >hold on; // start overwrite mode
+  >n=100; X=random(n,2); Y=random(n,2);  // get random points
+  >colors=rgb(random(n),random(n),random(n)); // get random colors
+  >loop 1 to n; color(colors[#]); plot(X[#],Y[#]); end; // plot
+  >hold off; // end overwrite mode
+  >insimg; // insert to notebook
+
+It is necessary to hold the graphics, since the plot() command would
+clear the plot window. 
+
+To clear everything we did, we use
+
+  >reset;
+
+For another example, we draw a plot as an inset in another plot. This
+is done by defining a smaller plot window. Note that this window does
+not provide room for the axis labels outside the plot window. We
+have to add some margin for this as needed. Note that we save and
+restore the full window, and hold the current plot while we plot the
+inset.
+
+  >plot2d("x^3-x");
+  >xw=200; yw=100; ww=300; hw=300;
+  >ow=window();
+  >window(xw,yw,xw+ww,yw+hw);
+  >hold on;
+  >barclear(xw-50,yw-10,ww+60,ww+60);
+  >plot2d("x^4-x",grid=6);
+  >hold off;
+  >window(ow);  
+
+A plot with multiple figures is achieved in the same way. There is the
+utility figure() function for this.
+
+The Tutorial about plots contains another example of a function made
+of basic plot routines.
+
+See: window, figure
+
+#
+
+!Statistics
+
+EMT can generate random numbers for various distributions. They are
+usually named rand... with a few exceptions. E.g.
+
+  >mean(normal(100000)) // 0-1-normal distributed values
+     0.000592833227266
+  >dev(random(100000)) // uniformly distributed values in ]0,1[
+     0.288713900972
+  >w=randnormal(1,100000,1000,10); 
+  >  // 1x100000 matrix of 1000-10-normal distr. values
+  >plot2d(w,>distribution): // plot the distribution
+  >w=intrandom(1,600,6); // 1x600 matrix of dice throws
+  >getmultiplicities(1:6,w) // count multiplicities
+     [97,  109,  95,  104,  112,  83]
+  >mean(randexponential(1,100000,2)) // exponential distribution
+     2.00089081545
+
+EMT has many distribution functions and their inverses.
+
+  >w=intrandom(1,600,6); // 1x600 matrix of dice throws
+  >getmultiplicities(1:6,w) // count multiplicities
+     [97,  109,  95,  104,  112,  83]
+  >mean(randexponential(1,100000,2)) // exponential distribution
+     2.00089081545
+  >normaldis(3) // 0-1-normal distribution function
+     0.998650101968
+  >[invnormaldis(2.5%,1000,10),invnormaldis(97.5%,1000,10)]
+     [980.4,  1019.6]
+  >  // 90% confidence interval of 1000-10-normal distribution
+  >invchicdis(chicdis(30,10),10) // inverse complimentary chi-square
+     30
+
+Most density functions are also present. They are named like
+qnormal().
+
+  >plot2d(normal(1000),>distribution); // plot empirical data
+  >plot2d("qnormal(x,0,1)",>add,color=red,thickness=2): 
+  >  // add expected density
+
+Here are some examples of statistical indicators, derived from
+empirical data.
+
+  >x=normal(1000);
+  >boxplot(x):
+  >mean(x), dev(x)
+     -0.0284789448205
+     1.01524089997
+  >median(x)
+     0.00772826335585
+  >getfrequencies(x,-4:4) // count number of items in intervals
+     [4,  27,  139,  328,  345,  139,  18,  0]
+  >covar(x[1:2:999],x[2:2:1000]) // empirical covariance
+     -0.0408698723263
+  >quartiles(x) // quartiles, neglecting outliers
+     [-2.658,  -0.696358,  0.00772826,  0.640064,  2.64099]
+  >quantile(x,10%) // 10% quantile
+     -1.32974164884
+  >plot2d(-4:4,empdist(-4:4,sort(x))): // empirical distribution
+     
+There are statistical tests too.
+
+  >X=normal(3,10); // get 3 rows of data to test for same mean
+  >varanalysis(X[1],X[2],X[3]+2) // will be rejected
+     3.66187622312e-05
+  >mediantest(X[1],X[2]+2) // will be rejected
+     0.0115070687826
+  >signtest(X[1],X[2]+2) // will be rejected
+     0.9990234375
+  >v=randexponential(1,1000,0.5); 
+  >x=getfrequencies(v,0:0.1:1) // frequencies of exponential data
+     [171,  169,  123,  85,  81,  66,  51,  41,  47,  37]
+  >y=ones(1,10)*sum(x)/10 // assumed uniform distribution
+     [87.1,  87.1,  87.1,  87.1,  87.1,  87.1,  87.1,  87.1,  87.1,  87.1]
+  >chitest(x,y) // will be rejected
+     0
+
+For statistical plots refer to
+
+Statistical Plots  -  Special plots for statistics
+
+#
+
+// For more information about statistics in EMT, refer to
+
+// See: ../Programs/12 - Statistics | Tutorial on Statistics in EMT
+// See: statistics | Reference for Statistics
+
+!Solve Equations
+
+To solve a an equation or a system of equations symbolically, use
+&solve(). The function returns a vector of solutions. To insert one of
+the solutions into an expression, use with.
+
+  >&solve(diff(x^3-x,x)) // all critical values (assume expr=0)
+     
+                                    1            1
+                          [x = - -------, x = -------]
+                                 sqrt(3)      sqrt(3)
+     
+  >expr &= x^3-x
+     
+                                      3
+                                     x  - x
+     
+  >&solve(diff(expr,x)=0,x), &expr with %[1] // value at maximum
+     
+                                    1            1
+                          [x = - -------, x = -------]
+                                 sqrt(3)      sqrt(3)
+     
+     
+                                       2
+                                      ----
+                                       3/2
+                                      3
+
+Systems are solved in a similar way. The solution is a vector of
+solutions, which are in turn vector of equations [x=3,y=4] etc.
+
+  >sol &= solve([x^2+y=4,x-2*y=a],[x,y]) // system of 2 equations
+     
+                  - sqrt(8 a + 65) - 1      - sqrt(8 a + 65) - 4 a - 1
+            [[x = --------------------, y = --------------------------], 
+                           4                            8
+                         sqrt(8 a + 65) - 1      sqrt(8 a + 65) - 4 a - 1
+                    [x = ------------------, y = ------------------------]]
+                                 4                          8
+     
+  >&[x,y] with sol[1] with a=4 // get first solution with a=4
+     
+                        - sqrt(97) - 1  - sqrt(97) - 17
+                       [--------------, ---------------]
+                              4                8
+
+To solve an equation numerically, the default function is solve(),
+which uses a secant algorithm.
+
+  >solve("x^x-3",1) // solve near 1
+     1.82545502292
+  >solve(&diff(x^x,x),0.5) // with symbolic expression
+     0.367879441171
+  >solve(&diff(x^x,x),1,y=2) // target value y=2 near 1
+     1.36367018703
+  >function f(x,a) := x^x-a*x
+  >x1 := solve("f",1,2;0.2,y=1) // with a=0.2 between 1 and 2
+     1.19639572649
+
+There are more algorithms, some of them with guaranteed inclusions.
+
+  >bisect("x^3",1,2,y=2,eps=0.01) // reduced accuracy
+     1.26171875
+  >ibisect("x^3",1,2,y=2) // guaranteed inclusion
+     ~1.259921049894,1.259921049897~
+  >secantin("x^x",0,0.2,y=0.9) // keep solution in interval
+     0.0300653684896
+  >expr &= diff(x^x,x)
+     
+                                 x
+                                x  (log(x) + 1)
+     
+  >newton(expr,&diff(expr,x),0.5) // Newton for expr=0
+     0.367879441171
+  >inewton(expr,&diff(expr,x),0.5) // guaranteed and fast solution
+     ~0.36787944117144222,0.36787944117144245~
+
+To solve a system of equations, Broyden's algorithm is fast and
+converges for close starting points.
+
+  >function f(x) := [x[1]^2+x[2]^2-10,x[1]+2*x[2]-4]
+  >broyden("f",[0,3]), f(%) // solve and test result
+     [-1.53238,  2.76619]
+     [0,  0]
+  >function f([x,y]) := [x^2+y^2-10,x+2*y-4] // easier definition of f
+
+For the Newton algorithm, we need the Jacobian.
+
+  >function f([x,y]) &= [x^2+y^2-10,x+2*y-4] // f
+     
+                            2    2
+                          [y  + x  - 10, 2 y + x - 4]
+     
+  >function Df([x,y]) &= jacobian(f(x,y),[x,y]) // Jacobian of f
+     
+                                  [ 2 x  2 y ]
+                                  [          ]
+                                  [  1    2  ]
+     
+  >newton2("f","Df",[0,3]) // Newton algorithm
+     [-1.53238,  2.76619]
+  >inewton2("f","Df",[0,3]) // guaranteed inclusion
+     [ ~-1.532380757938123,-1.532380757938117~,
+     ~2.766190378969058,2.766190378969062~ ]
+
+See: Solve Differential Equations, Optimization
+
+#
+
+!Algebra
+
+Expanding and factoring of symbolic expressions can be done with very
+large expressions.
+
+  >&factor(diff(expand((1+x)^20),x))
+     
+                                            19
+                                  20 (x + 1)
+     
+  >&factor(x^6+x^2+1)
+     
+                                   6    2
+                                  x  + x  + 1
+     
+  >&factor(x^6+x^2+1) | modulus:=13 // factor in Z modulo 13
+     
+                              2        4      2
+                            (x  + 6) (x  - 6 x  - 2)
+     
+  >&expand((1+x)^4+(1+x)^2+1/(1+x)^2+1/(1+x)^4,2,2) // limit expansion
+     
+                    1                4      1        2
+               ------------ + (x + 1)  + -------- + x  + 2 x + 1
+                2                               4
+               x  + 2 x + 1              (x + 1)
+
+To factor numbers, use a direct mode.
+
+  >:: factor(100!)
+     
+             97  48  24  16   9   7   5   5   4   3   3   2   2   2   2
+            2   3   5   7   11  13  17  19  23  29  31  37  41  43  47  53
+                                                 59 61 67 71 73 79 83 89 97
+
+There are various to extract parts of an expression.
+
+  >expr &= expand((a*x^3+a^2*x+b*x+y)*(a*x+y))
+     
+             2      3              2                2  4        2    3  2
+            y  + a x  y + b x y + a  x y + a x y + a  x  + a b x  + a  x
+     
+  >&part(expr,2) // second term in expression
+     
+                                        3
+                                     a x  y
+     
+  >&collectterms(expr,x) // make a polynomial of x
+     
+             2             2               3      2  4           3   2
+            y  + x (b y + a  y + a y) + a x  y + a  x  + (a b + a ) x
+     
+  >&coeff(expr,x,2) // coefficient of x^2
+     
+                                           3
+                                    a b + a
+     
+  >&combine(a/b+c/d+e/b) // combine fractions
+     
+                                   e + a   c
+                                   ----- + -
+                                     b     d
+
+For simplification, there are many methods.
+
+  >&ratsimp(1/x+1/x^2+(x+1)/x) // try to simplify a fraction
+     
+                                   2
+                                  x  + 2 x + 1
+                                  ------------
+                                        2
+                                       x
+     
+  >&partfrac((x^2+1)/(x^2-1),x) // sum as partial fractions
+     
+                                  1       1
+                              - ----- + ----- + 1
+                                x + 1   x - 1
+     
+  >&trigsimp((sin(x)+cos(x))*(2*sin(x)+cos(x))) // apply rules for trig
+     
+                            2
+                         sin (x) + 3 cos(x) sin(x) + 1
+     
+  >&radcan((log(1+2*a^x+a^(2*x))/log(1+a^x))) // apply rules for radicals
+     
+                                       2
+
+There are many options for expansions and reductions.
+
+  >&trigexpand(sin(5*x)) // make it a polynomial in sin(x), cos(x)
+     
+                   5            2       3           4
+                sin (x) - 10 cos (x) sin (x) + 5 cos (x) sin(x)
+     
+  >&trigreduce(sin(x)^5) // make it a trigonometric series
+     
+                       sin(5 x) - 5 sin(3 x) + 10 sin(x)
+                       ---------------------------------
+                                      16
+     
+  >&log(a*b) | logexpand:=all // apply rules of log
+     
+                                log(b) + log(a)
+     
+  >&logcontract(log(x)+log(y)) // collect sums of log
+     
+                                    log(x y)
+     
+  >&sqrt(x^y) | radexpand:=all // apply rules for sqrt
+     
+                                       y/2
+                                      x
+     
+  >&multthru(a*x+1,b+c) // multiply into sum
+     
+                           c (a x + 1) + b (a x + 1)
+     
+  >&distrib((1+x*(2+x))*(1+y)) // apply distrib. rule
+     
+                        x (x + 2) y + y + x (x + 2) + 1
+     
+  >&rootscontract(sqrt(x)*sqrt(y)) // contract roots
+     
+                                   sqrt(x y)
+     
+  >&scsimp(a*b+b*c,a*b+d=1,b*c=d) // simplify with rules
+
+Do not forget, that you can map a function to each argument.
+
+  >&map(sqrt,x+y)
+     
+                               sqrt(y) + sqrt(x)
+     
+  >&map(ratsimp,(1+x)/(1-x^2)+(x^2+2*x+1)/(x^2-1))
+     
+                                 x + 1     1
+                                 ----- - -----
+                                 x - 1   x - 1
+
+You can get examples for manipulations.
+
+  >:: example(radcan)
+
+#
+
+!Optimization
+
+Functions of one variable are minimized with fmin(). With several
+variables, use the Nelder Mead algorithm or Powell's algorithm
+
+  >fmin("x^3-x",0,1), "x^3-x"(%)
+     0.57735026525
+     -0.38490017946
+  >function f([x,y,z]) &= x^2+y^2+z^2+exp(-x*y*z)+x
+     
+                           - x y z    2    2    2
+                          E        + z  + y  + x  + x
+     
+  >nelder("f",[0,0,0]) // start from x=y=z=0
+     [-0.5,  3.58599e-07,  -5.04735e-07]
+  >powellmin("f",[0,0,0]) // start from x=y=z=0
+     [-0.5,  1.05376e-08,  1.05376e-08]
+  >&grad(x^2+y^2+z^2+exp(-x*y*z)+x) with [x=-1/2,y=0,z=0]
+     
+                                   [0, 0, 0]
+
+Alternatively, the Broyden algorithm could be used for grad f=0.
+
+  >function f([x,y,z]) &= x^2+y^2+z^2+exp(-x*y*z)+x
+     
+                           - x y z    2    2    2
+                          E        + z  + y  + x  + x
+     
+  >function df([x,y,z]) &= grad(f(x,y,z));
+  >broyden("df",[0,0,0])
+     [-0.5,  0,  0]
+
+The simplex algorithm can be called via simplex() or the LPSOLVE
+library.
+
+  >A=[1,2;3,4;4,2] // mxn matrix A
+                 1             2 
+                 3             4 
+                 4             2 
+  >b=[10,8,7]' // column vector b
+                10 
+                 8 
+                 7 
+  >c=[1,1] // row vector c
+     [1,  1]
+  >simplex(A,b,c,>max) // solve cx->max with Ax<=b, x>=0
+               1.2 
+               1.1 
+
+Here is an example with equalities
+
+  >A=random(5,10); b=sum(A);
+  >c=ones(1,10);
+  >simplex(A,b,c,eq=0,>max)
+                 0 
+           3.04962 
+           2.00196 
+                 0 
+           0.59614 
+           2.43778 
+                 0 
+                 0 
+           4.16962 
+                 0 
+
+Another example with a mix of >= and <=.
+
+  >A=[1,1;1,1;1,-1;1,-1] // 4 inequalities -1<=x+y<=1, -1<=x-y<=1
+                 1             1 
+                 1             1 
+                 1            -1 
+                 1            -1 
+  >b=[-1,1,-1,1]' // right hand side
+                -1 
+                 1 
+                -1 
+                 1 
+  >eq=[1,-1,1,-1]' // equations >=, <=, >=, <=
+                 1 
+                -1 
+                 1 
+                -1 
+  >restr=[0,0] // no restriction x>=0
+     [0,  0]
+  >c=[1,1.2]; // target function
+  >simplex(A,b,c,eq,restr,>max) // solve
+                 0 
+                 1 
+
+For integer problems, use intsimplex() or the efficient LPSOLVE.
+
+  >A=random(10,2); b=ones(10,1)*100;
+  >c=[1,1];
+  >simplex(A,b,c,>max)
+                 0 
+           121.117 
+  >intsimplex(A,b,c,>max)
+                 0 
+               121 
+  >ilpsolve(A,b,c,>max)
+                 0 
+               121 
+
+For non-linear problems, you can use the Newton-Barrier method.
+
+  >A=1+random(1000,2); // 1000 linear conditions
+  >b=100+random(1000,1)*100; // right hand side
+  >A=A_-id(2); b=b_zeros(2,1); // add x>=0
+  >function f([x,y]) &= 1/(x*y); // target function
+  >function df([x,y]) &= gradient(f(x,y),[x,y]); // gradient
+  >function Hf([x,y]) &= hessian(f(x,y),[x,y]); // Hessian
+  >newtonbarrier("f","df","Hf",A,b,[1,1])
+     [29.6815,  25.91]
+
+See: simplex
+
+#
+
+// For more examples and the reference see
+
+// See: ../Programs/17 - Optimization | Tutorial on Optimization
+// See: simplex | Reference
+
+!Regression
+
+Linear regression with polynomials can be done with polyfit().
+
+  >function f(x) := 0.8*x+0.1; // correct function
+  >x=0:0.1:1; y=f(x)+random(cols(x))*0.4; // random values
+  >plot2d(x,y,>points); // plot values
+  >p=polyfit(x,y,1) // fit with polynomial of degree 1
+     [0.374996,  0.691596]
+  >plot2d("polyval(p,x)",>add,color=red): // add fit to plot
+
+General linear fits can be done with fit(A,y). This minimizes |Ax-y|.
+
+  >function f(x) := exp(-0.2*x)+0.5*exp(-0.4*x)+0.3
+  >  // of type a*exp(-0.2*x)+b*exp(-0.4*x)+c
+  >x=0:5; y=f(x)+random(cols(x))*0.4;
+  >plot2d(x,y,>points); // plot random data
+  >A=exp(-0.2*x')|exp(-0.4*x')|1
+                 1             1             1 
+          0.818731       0.67032             1 
+           0.67032      0.449329             1 
+          0.548812      0.301194             1 
+          0.449329      0.201897             1 
+          0.367879      0.135335             1 
+  >a=fit(A,y')
+           3.25472 
+          -1.47332 
+         0.0104999 
+  >function ff(x) := a[1]*exp(-0.2*x)+a[2]*exp(-0.4*x)+a[3]
+  >plot2d("ff(x)",>add,color=red):
+  >mean(ff(x)-y), dev(ff(x)-y) // 0 and norm of difference
+     0
+     0.0232198683434
+
+For non-linear fits of all kinds, one choice is Nelder-Mead.
+
+  >function f(x) := exp(-0.2*x)+0.5*exp(-0.4*x)
+  >  // of type exp(c*x)+0.5*exp(d*x)
+  >x=0:5; y=f(x)+random(cols(x))*0.1;
+  >plot2d(x,y,>points); // plot random data
+  >function ff(x,[c,d]) := exp(c*x)+0.5*exp(d*x);
+  >function ferr(v) := sqrt(sum(ff(x,v)-y)^2)
+  >v=nelder("ferr",[-1,-1])
+     [-0.119043,  -0.768554]
+  >plot2d("ff(x,v)",>add,color=red):
+
+#
+
+!Linear Algebra
+
+There are many methods to solve a linear system in EMT.
+
+  >A=[1,2;3,4]
+                 1             2 
+                 3             4 
+  >b=[1;4]
+                 1 
+                 4 
+  >A\b // Gauss algorithm
+                 2 
+              -0.5 
+  >A=redim(1:9,3,3) // singular matrix !
+                 1             2             3 
+                 4             5             6 
+                 7             8             9 
+  >b=sum(A)
+                 6 
+                15 
+                24 
+  >fit(A+normal(size(A)),b) // fit with orthogonal methods
+           1.00405 
+          0.618711 
+           1.39271 
+  >svdsolve(A,b) // fit using singular values
+                 1 
+                 1 
+                 1 
+
+For hand work there is a pivotize() function.
+
+  >shortformat; A=[0,1,2;3,4,5;1,2,0]; b=sum(A);
+  >M=A|b // produce the Gauss scheme
+             0         1         2         3 
+             3         4         5        12 
+             1         2         0         3 
+  >fraction pivotize(M,2,1)
+             0         1         2         3 
+             1       4/3       5/3         4 
+             0       2/3      -5/3        -1 
+  >fraction pivotize(M,1,2)
+             0         1         2         3 
+             1         0        -1         0 
+             0         0        -3        -3 
+  >fraction pivotize(M,3,3)
+             0         1         0         1 
+             1         0         0         1 
+             0         0         1         1 
+  >A=[0,1,2;3,4,5;1,2,0]; M=A|sum(A)
+             0         1         2         3 
+             3         4         5        12 
+             1         2         0         3 
+  >echelon(M) // all in one step
+             1         0         0         1 
+             0         1         0         1 
+             0         0         1         1 
+
+There are also function to handle a Gauss-Jordan scheme. See the
+tutorial on Linear Algebra for an example.
+
+There are a lot more algorithms for Linear algebra.
+
+  >A=redim(1:9,3,3)
+                 1             2             3 
+                 4             5             6 
+                 7             8             9 
+  >kernel(A)
+                 1 
+                -2 
+                 1 
+  >svdkernel(A) // orthogonal basis of kernel
+          0.408248 
+         -0.816497 
+          0.408248 
+  >eigenvalues(A), real(%)
+     [ 16.1168+0i ,  -1.11684+0i ,  0+0i  ]
+     [16.1168,  -1.11684,  0]
+  >{v,X}=eigen(A); v, // LAPACK algorithm for eigenvalues
+     [ 16.1168+0i ,  -1.11684+0i ,  0+0i  ]
+  >real(inv(X).A.X)
+           16.1168             0             0 
+                 0      -1.11684             0 
+                 0             0             0 
+  >{U,v,W}=svd(A);
+  >v // singular values
+     [16.8481,  1.06837,  0]
+  >{R,Q,c}=qrdecomp(A); // QR decomposition
+  >Q'.R // is A
+                 1             2             3 
+                 4             5             6 
+                 7             8             9
+
+For symbolic linear algebra, you can define symbolic matrices or
+transport a numerical matrix to Maxima.
+
+  >A &= [1,2,3;4,5,6;7,8,x]
+     
+                                  [ 1  2  3 ]
+                                  [         ]
+                                  [ 4  5  6 ]
+                                  [         ]
+                                  [ 7  8  x ]
+     
+  >&determinant(A), &solve(%=0)
+     
+                           - 2 (4 x - 42) + 5 x - 57
+     
+     
+                                    [x = 9]
+     
+  >A=[1,2;3,4]; // numerical matrix
+  >&invert(@A) // use direct in symbolic expression
+     
+                                  [ - 2   1  ]
+                                  [          ]
+                                  [  3     1 ]
+                                  [  -   - - ]
+                                  [  2     2 ]
+     
+  >&eigenvalues(@A)
+     
+                       5 - sqrt(33)  sqrt(33) + 5
+                     [[------------, ------------], [1, 1]]
+                            2             2
+     
+  >mxmset("A",random(2,2)) // define a matrix A in Maxima
+  >&A
+     
+                   [ 0.2003215849526854  0.4025401003732851 ]
+                   [                                        ]
+                   [ 0.6524835123965044  0.9308647905120194 ]
+
+#
+
+!Interval Arithmetic
+
+The rule for interval arithmetic is that operators combine all
+elements of the parameter intervals and return an interval containing
+all these results. Functions are applied to all elements of the
+parameter interval similarly.
+
+  >~1,2~ * ~7,8~ // result: ~1*7,2*8~
+  >~-1,1~ * ~1,1~ // result: ~-1,1~ !!!
+  >~-1,1~^2 // result: ~0,1~ !!!
+  >sin(~-1,1~) // result: ~sin(-1),sin(1)~
+
+Often, we express a function in terms of an expression. Then the rules
+for expressions overestimate the result of the function. There are
+clever methods to get closer inclusions.
+
+  >expr &= x^4-x^3+x^2+x-1
+  >x=1 0.02 // another way to enter an interval, use F8
+  >expr(x) // simple evaluation
+  >expr(fmin(expr,left(x),right(x))) // best lower estimate
+  >expr(fmax(expr,left(x),right(x))) // best upper estimate
+  >ieval(expr,x) // using sub-division of interval
+
+Integrals are good for obtaining guaranteed solutions.
+
+  >ibisect("x^3-x",1,2,y=1.4) // interval bisection
+  >expr &= x^x
+  >inewton(expr,&diff(expr,x),1,y=1.4) // interval Newton
+  >mxminewton(expr,1,2,y=1.4) // automatic call of Maxima
+  >mxmiint("x^x",1,2) // elaborate inclusion of integral
+  >est20=ieval(&diff(exp(-x^2),x,20),0,2) 
+  >  // estimate of 20-th derivative
+  >igauss("exp(-x^2)",0,2,dexpr20est=est20) // close approximation
+  >longest integrate("exp(-x^2)",0,2) // for comparison
+
+There are also interval methods for linear system and for non-linear
+systems of equations.
+
+#
+
+!Polynomials and Splines
+
+Numerical polynomials are stored as vectors v of coefficients with the
+constant coefficient in v[1]. They can be evaluated and manipulated to
+some degree.
+
+  >p=[1,2,3]; // 1+2x+3x^2
+  >plot2d("evalpoly(x,p)",-1,1):
+  >plot2d("evalpoly",-1,1;polydif(p)): // derivative of p
+  >polymult(p,p) // coefficients of p^2
+
+There are some special polynomials.
+
+  >chebpoly(10) // coefficients of 10-th Chebychev polynomial
+  >cheb(0.6,10) // evaluate it in 0.6
+  >legendre(8) // Legendre polynomial
+
+Interpolation can be done with the Newton scheme.
+
+  >p=[1,-1,2,-1] // a polynomial
+  >xdata=1:4; ydata=evalpoly(xdata,p) // evaluated in 1,2,3,4
+  >dd=divdif(xdata,ydata) // divided differences
+  >plot2d(xdata,ydata,>points); // plot points
+  >plot2d("evaldivdif(x,dd,xdata)",>add): // plot interpolation
+  >polytrans(xdata,dd) // get back the polynomial
+  >q=polyfit(xdata,ydata,2) // fit polynomial of degree 2
+  >plot2d("evalpoly(x,q)",color=green,>add): // add to plot
+
+Symbolic Polynomials can be derived from the vector with "sum". The
+converse can be done with "makelist".
+
+  >p &:= chebpoly(10) // vector of coefficients in Maxima and EMT
+  >pol &= sum(p[k]*x^(k-1),k,1,11) // make it a polynomial
+  >&makelist(coeff(pol,x,k),k,0,10), vpol = %() // get the vector back
+
+Furthermore, EMT can compute the zeros of polynomials numerically.
+
+  >p=1|zeros(1,10)|1 // z^11 + 1
+  >plot2d(polysolve(p),>points): // Baurhuber iteration, plot zeros
+  >polysolve(p,>usematrix) // eigenvalues of companion matrix
+
+Interpolation with cubic splines are can be done with "spline".
+
+  >xdata=-5:5; ydata=zeros(size(xdata)); ydata[6]=1; // data points
+  >plot2d(xdata,ydata,a=-5,b=5,c=-2,d=2,>points);
+  >s=spline(xdata,ydata); // compute spline
+  >plot2d("evalspline(x,xdata,ydata,s)",>add): // evaluate
+  >t=linspace(-5,5,1000);
+  >max(abs(evallinspline(t,xdata,ydata)-evalspline(t,xdata,ydata,s)))
+  >  // maximal distance between lineare and cubic spline
+
+For B-Splines, use nspline().
+
+  >plot2d("nspline";(1:4)',2,1:7,a=0,b=8):
+
+#
+
+!Formats
+
+The internal accuracy of a number in EMT is the IEEE standard of about
+16 decimal digits. EMT does not print all digits by default. This
+saves space and looks better. For one number, the following operators
+can be used.
+
+  >pi
+  >longest pi
+  >long pi
+  >short pi
+  >shortest pi
+  >fraction 1/3+1/7
+
+To format a number, there are many more functions. The result is
+always a string. Note that you can append strings with +.
+
+  >print(pi,5,10) // with number of digits and total length
+  >K=1012.56; i=3.75%;
+  >"E = "+print(K*(1+i),2,unit="$") // with additional unit
+  >printdollar(K*(1+i)^4) // shortcut
+  >degprint(pi/4)
+  >degprint(0.56,<dms) // not with minutes and seconds
+  >"polar: "+polarprint(1+I)
+  >frac(1/3)+" + "+frac(1/7)+" = "+frac(1/3+1/7) // convert to frac
+  >printf("pi = %10.2f",pi) // C style printf
+  >"x = "+(pi*4+1) // string plus number in default format
+
+You can also set the output format permanently.
+
+  >format(5,2); // 5 places with 2 digits after decimal dot
+  >pi
+  >12121.454354
+  >random(3,3)
+  >1:10
+  >format(10); // nice format with 10 digits of accuracy
+  >pi
+
+By default, EMT makes a difference between the output of scalars,
+vectors and matrices. By default, scalars use a longer format, and
+vectors use a denser format. The function format(n,m) applies to all
+output, however.
+
+  >reset; // reset output
+  >pi // uses the longer scalar format
+  >1:10 // uses a dense vector output
+  >random(3,3) // uses the default matrix format
+  >denseoutput(0); 1:5 // turn off dense output
+  >denseoutput(2); 1:5 // default
+  >setscalarformat(5); pi // use 5 digits of accuracy for scalars
+
+Some commands change the format for the subsequent output.
+
+  >shortestformat; random(2,8), pi // only for matrices
+  >shortformat(>all); pi // for all output
+  >longestformat; pi // always for all output
+  >goodformat(12); pi
+  >format(8,5); random(4,4) // for all output
+  >goodformat(8,4); random(4,4), pi // for matrices only
+  >goodformat(4,>all); random(4,4), pi
+  >fracformat(10); intrandom(6,6,6)/intrandom(6,6,6) // fractions
+  >defformat; // reset the default
+
+Large matrices are eclipsed by default. There are several ways to see
+the full matrix.
+
+  >largematrices on; // or off - toggles the eclipsed output
+  >showlarge A // shows A without eclipses
+  >shortest A // may help to see the full matrix A
+
+#
+
+!Programming Language
+
+There are one-line and multi-line programs. 
+
+  >function f(x) := x^3-x; // one-line function
+  >function map f(x) // multi-line function ...
+  $  if x>0 then return x^2 // if x>0 would not work for vectors x
+  $  else return x^3
+  $  endif;
+  $endfunction
+
+To start a multi-line function type "function f(x)" and press
+Ctrl-Return. To edit a multi-line function click into its body. Use
+Ctrl-Return for line breaks, and Ctrl-Back for joining lines.
+Alternatively, you can press F9 and edit in a separate editor.
+
+A variety of control structures are available, which work in one-line
+commands too, but usually spread several lines in programs. The loop
+with "repeat" is eternal, but can be left with until, while, or break;
+
+  >function f(x) ...
+  $repeat
+  $  xnew=(x+2/x)/2;
+  $  until x~=xnew;
+  $  x=xnew;
+  $end;
+  $return x;
+  $endfunction
+
+Other loops start with "for" and "loop". The for loop can loop over a
+vector.
+
+  >s=0; loop 1 to 10; s=s+#; end; s,
+  >s=0; for i=1 to 10; s=s+i; end; s,
+  >s=0; for i=10 to 1 step -1; s=s+i; end; s,
+  >v=1:10; s=0; for i=v; s=s+i; end; s,
+
+The "if" structure can have "else" and "elseif" branches. It needs an
+"endif". The condition does not work for vectors. So we need to
+vectorize with "map".
+
+  >function map f(x) ...
+  $  if x<0 then return -1;
+  $  elseif x==0 then return 0;
+  $  else return 1
+  $  endif;
+  $endfunction
+
+Multiple return values are possible. Only the first return value will
+be used as an argument to another function, unless the modifier "args"
+is set.
+
+  >function f(a,b) := {b,a}
+  >{x,y}=f(1,2); x, y,
+  >function args f(a,b) := {b,a}
+  >{x,y}=f(f(1,2)); x, y, // would not work without "args"
+
+Parameters can be restricted to specific data types.
+
+  >function map f(a:real) := integrate("sinc(x)",0,a)
+  >f(0:0.5:2)
+
+For details on this, see the reference.
+
+parameters  -  Reference for parameters
+function  -  Reference for functions
+trace - How to find errors in functions
+alias - Define an alias for a function
+
+#
+
+!Variables in Functions
+
+There are local and global variables. Inside a function, only local
+variables and parameters are visible. To access global variables,
+"useglobal" or "global var" must be present. 
+
+  >function changeA () ...
+  $  global A;
+  $  A=random(4,4);
+  $  endfunction
+  >A=id(6);
+  >changeA(); A,
+
+To generate a global variable with a given value use "global
+ var=value".
+
+  >function newvar (x) ...
+  $  global nv=x;
+  $endfunction
+  >newvar(4); nv,
+     4
+
+Variables ending with $$ are automatically global variables.
+
+  >a$$ = 1:4 // assign to a global variable a$$
+  >v = a$$ // retrieve value of global variable a$$
+
+Moreover, variables can be set as global.
+
+  >v=1:3;
+  >setglobal v;
+  >function changev () ...
+  $  v[2]=5;
+  $  endfunction
+  >changev(); v,
+
+Note that one-line functions set "useglobal" automatically. So all
+global variables can be used. But parameters have precedence.
+
+  >function f(x) := a*x
+  >a=6; f(5)
+     30
+
+Note that it is not a good style to use global variables to return
+values from functions. Instead, multiple returns should be used.
+Moreover, it is not a good style to access a global variable in a
+function (with the exception of units). Instead, pass the variable as
+an argument to the function. But for efficiency and simplicity, it is
+often nicer to use global variables.
+
+The evaluation of an expression can also see global variables, in fact
+only global variables and variables given as arguments to the
+evaluation.
+
+  >function ev(fx,x) := fx(x)
+  >a=6; ev("a*x",2)
+    12
+
+Arguments take precedence over global variables.
+
+  >a=5; f(2,3)
+   6
+  >"a*x"(2,a=3)
+   6
+  >"a*x"(2)
+   10
+
+Furthermore, there is a global list type. Lists can grow as long as
+needed.
+
+  >glist("v");
+  >for i=1 to 1000; glistadd("v",i^2); end;
+  >s=0; for i=1 to 1000; s=s+glistvar("v",i); end; s,
+  >sum((1:1000)^2) // check
+
+See: global, gvar, glist
+
+#
+
+!Symbolic Functions
+
+Symbolic functions are functions which are defined for Maxima and for
+the numerical kernel of EMT. These functions must be one-line
+functions defined with &=. The definition can spread over several
+lines nevertheless.
+
+  >function f(x) &= x^x
+  >function df(x) &= diff(f(x),x)
+  >function h(x) &= diff(f(x),x) +  ...
+  >    diff(f(x),x,2)
+
+The body of the function is evaluated symbolically before it is
+defined. Thus df() in the example above is a valid function for EMT
+which can be evaluated numerically quickly and efficiently. Moreover,
+it can be used in other symbolic functions.
+
+  >plot2d("df",0,2);
+  >&df(x+1)
+
+There are also purely symbolic functions. These functions are known
+only to Maxima. They are not evaluated at the time they are defined.
+The following function computes df/dx^2+df/dy^2. It must of course be
+evaluated, when it is used, not at the time of its definition.
+
+  >function L(f) &&= diff(f,x,2)+diff(f,y,2)
+  >u &= ratsimp(realpart((x+I*y)^3/exp(x+I*y)))
+  >&ratsimp(L(u)) // should be 0, since u(x,y) is harmonic)
+  
+See: Maxima at Compile Time
+
+#
+
+!Maxima at Compile Time
+
+Using a symbolic function inserts a Maxima result at compile time into
+the numerical EMT function.
+
+  >function f(x) &= integrate(x^3*cos(x),x)
+  >type f // inspect the function
+
+Symbolic expressions can also be inserted into multi-line functions.
+Again, the expression is evaluated at compile time, and the result is
+inserted into a normal EMT function. Take care to set brackets, since
+the result of the symbolic evaluation is inserted verbatim.
+
+  >expr &= x^x-2;
+  >function newtoniterator (x)
+  $  return x-(&:"expr")/(&:"diff(expr,x)");
+  $  endfunction
+  >type newtoniterator // look at the definition
+  >x=2; newtoniterator(x)
+  >iterate("newtoniterator",x)
+
+#
+
+!Comments
+
+Comments can contain some markups.
+
+  - * Heading
+  - ** Sub-Heading
+  - ---
+  - latex: F(x) = \int_a^x f(t) \, dt
+  - mathjax: \frac{x^2-1}{x-1} = x+1
+  - maxima: 'integrate(x^3,x) = integrate(x^3,x)+C
+  - http://www.euler-math-toolbox.de
+  - See: http://www.google.de | Google
+  - image: test.png
+
+Images cannot be read from the Web. For "See:", local web links are
+possible.
+
+Paragraphs consists of one long line in the editor. Line breaks will
+start a new line. Paragraphs should be separated with an empty line. 
+
+Spell checking is toggled with F12. To enter a word into the private
+dictionary mark the word and press Ctrl-F12.
+
+See: Exports
+
+#
+
+!Scripts
+
+Most of the functions of EMT are not in the C core, but written in the
+programming language of EMT and loaded from an Euler files (*.e) when
+the program starts. Euler files can be edited with any editor. To
+start the editing, enter
+
+  >load file
+
+into the notebook and press F9 (internal editor) or F10 (external
+editor, by default JE). The file will be saved in the directory of the
+current notebook. In the case of the internal editor, EMT will wait
+for the editing to finish.
+
+Scripts can contain
+
+  - definitions of functions (function ...)
+  - EMT commands (>...)
+  - calls to Maxima (>:: ...)
+  - comment functions (function comment name ...)
+  - maxima comment functions (maximafunction name ...)
+  - entries for the user menu (addmenu ...)
+  - comment sections (comment ... endcomment)
+  - single line comments (// ...)
+  - load commands for other Euler files (load filename)
+
+Make sure, functions have proper comment lines. For core functions or
+functions in C loaded by a DLL, there are comment functions. For
+functions defined in Maxima in EMT, there is the maximafunction
+definition.
+
+  :: h(x) := x^3;
+  
+  maximafunction h (x)
+  ## Computes x^3
+  endfunction
+
+Then
+
+  >help &h
+
+will work. And &h will be known in the help window.
+
+Help for Euler files is available by entering filename.e in the help
+window, or by double clicking on the line consisting of the load
+command.
+
+Scripts can be run on the command line. Output will be lost however
+unless files are used. Use the parameter "-script script.e" to start
+EMT for a script. Details are explained in the web documentation.
+
+#
+
+!Help
+
+You can open the help window at any time with F1. By default, EMT
+will display the topic explaining the most recent command. Press
+escape to clear the input line. While you type, the window will
+display all available topics. To select the first topic, press return.
+To select any other topic, double click on it.
+
+The following wildcard characters and commands are supported in the
+search line.
+
+  - text         topic starting with the text
+  - *text        topics containing "text"
+  - ?text        full text search for the text in help topics
+  - &topic       (or " topic") topics in the Maxima help
+  - &*text       commands containing "text" in the Maxima help
+  - _function    built-in functions
+  - function(    (or "function ") specific function
+  - filename.e   lists the content of this Euler file
+  - list ...     lists all functions containing the string
+  - listvar ...  lists all variables containing the string
+  - type ...     types the definition of a function
+
+The following key strokes are useful in the help window.
+
+  - return key   select the first topic
+  - escape key   clears selection or closes dialog
+  - F1 key       switches back to the EMT window
+  - F2 key       opens the current selection in the browser
+  
+Double click on any topic in the output of the help window to open
+that topic.
+
+#
+
+!Keyboard
+
+EMT tries to use the keys in the same way as other programs. But there
+are some special keys.
+
+  - escape: stop current computation, escape from function edit
+
+  - TAB: toggle showing the graphics
+  - ctrl+g: toggle extra graphics window
+
+  - up, down: go to previous or next command line
+  - left, right: go to previous or next character
+  - ctrl+left, ctrl+right: go to previous or next space
+  - start, end: go to start or end of line
+  - page-up, page-down: go to previous or next page
+  - ctrl+page-up, ctrl+page-down: go to previous or next heading
+  
+  - F1: toggles between the help window and the notebook
+  - F3: search next position of the current search (Ctrl-F)
+  - F5: opens the comment editor
+  - F7: degree symbol
+  - F8: plus/minus symbol
+  - F9: opens the internal editor
+  - F10: opens the external editor
+  - F11: full screen mode
+  - ctrl+F11: magnification mode
+  - F12: toggle spelling
+  - ctrl+F12: add errors in marked line to spelling
+
+  - return: run the command, or redefine the function
+  - alt+return: run the command and update the comment
+  - ctrl+return: splits the line, or go into function edit mode
+  - shift+ctrl+return: splits the line without adding "..."
+  - shift+return: run the current block of commands
+  - ctrl+backspace: join current line to previous line
+  - ctrl+r: run all subsequent commands
+
+  - alt+insert: insert a command or function line
+  - insert: insert from the suggestions in the status line
+  - ctrl+delete: clear current command line
+  
+  - alt+backspace: delete the command or function line
+  - alt+u: insert the previously deleted lines
+
+  - ctrl+z: go backward in the history of the current line
+  - ctrl+y: go forward in the history of the current line
+
+  - ctrl+c: copy marked EMT text or the marked image
+  - ctrl+v: insert EMT text
+  - ctrl+x: cut marked EMT text
+  - ctrl+alt+f: copy marked text in formatted form
+  - ctrl+alt+c: copy commands only
+  - ctrl+alt+v: paste text as commands
+
+  - ctrl+f: search a text (F3 searches next)
+  - ctrl+n: restart EMT
+  - ctrl+o: open a notebook
+  - ctrl+u: open in the EMT directory in the documents folder
+  - ctrl+s: save the notebook
+  - shift+ctrl+s: save as a new name, optionally delete old notebook
+  - ctrl+e: export notebook to HTML and save notebook
+  - ctrl+p: export notebook as PDF file
+  - ctrl+l: fold all multi-lines and function bodies
+  - ctrl+h: open help in the browser (alternative to F1 and button)
+
+See: function, python
+#
+
+!Installation
+
+The full version of EMT installs 
+
+  - the interface
+  - the numerical kernel of EMT
+  - the programming language
+  - Euler files with utilities for EMT
+  - Tutorials and Examples as Notebooks and HTML
+  - the Maxima system
+  - the documentation in HTML
+  - documentation files for in-program help
+  - the Tiny C compiler
+  - the Python interface
+  - the LPSOLVE DLL
+  - the JE editor for Euler files (Java runtime required)
+ 
+To get full advantage of EMT, you can install the following addons.
+
+  - a Latex system like MikTeX
+  - a Python 2.x interpreter like Anaconda
+  - the Povray raytracer
+  - any good code editor (replacement of JE)
+
+If the binaries of Latex are not in your system path you can configure
+Latex in EMT. If you install Anaconda its Python interpreter will
+be found by EMT. It is accessed via the Python DLL in Windows. The
+Povray executable is stored in a string if it not in the system path.
+See the tutorial about Povray for details. The external editor can be
+configured inside EMT too.
+
+#
+
+!Notebooks
+
+The simple interface of EMT consists of the following windows.
+
+  - the notebook window with its menu and status line
+  - the optional graphics window (toggles with Ctrl-G)
+  - the help window (opens with F1)
+  - the comment editor (opens with F5 or right click into comments)
+  - the internal editor (opens with F9 or right click into functions)
+  - the external editor (opens with F10)
+
+In the notebook window, command lines can be entered. Each command
+line consists of up to four elements.
+
+  - a comment in green (optional)
+  - the command line in red
+  - the output of EMT in black
+  - a graphics
+
+The command line can be a multi-line, with "..." connecting the lines.
+In this case, all connected commands in the multi-line are executed at
+once no matter where the cursor is in the multi-line. The connected
+lines do not show the ">" prompt.
+
+A special case are functions (not one-line functions). They consist of
+a header line in red, and a body in blue, which ends with a line
+containing "endfunction". More about this in the section about
+programming EMT.
+
+To edit a comment, use the comment editor. Press F5 to open this
+editor. More on this in the section about Comments.
+
+To include the current graphics into the notebook below the command
+which generates the graphics, use a colon ":" at the end of the
+command line. An alternative is the command insimg().
+
+Notebooks can be saved in "*.en" files, or exported in HTML, Markdown,
+and PDF. More on this in the section about Exports.
+
+See: Keyboard, Programming Language, Comments, Menu, Exports
+#
+
+!Exports
+
+EMT programs can write to files and read files. For this have a look
+at the programming language of EMT. The function to handle data tables
+in statistics can even write data in a variety of formats, such as
+CSV.
+
+It is possible to dump all output of EMT to an external file. This
+function was useful in old versions of EMT which did not have a
+notebook interface.
+
+Notebooks can be exported in various ways.
+
+  - Notebook file (*.en)
+  - HTML web page
+  - PDF via Latex
+  - Markdown file (*.md)
+
+For all of these versions, you need write access to the current
+directory. For a tutorial notebook, you should save the file
+externally from the installation. You can do this with other notebooks
+too. EMT will ask you to keep the old file or delete it after saving.
+It will copy all images, creating an images directory by default, and
+also all C files or Euler files that start with the same name as the
+current notebook.
+
+The notebook file is essentially a text file. It is human readable. By
+default is an UTF-8 file. For details on the syntax, study a simple
+Euler notebook file.
+
+The HTML export is optionally using a CSS. You need to copy one of the
+provided CSS patterns using the Extras menu to the current directory
+as "Pattern.html". Change the pattern file to your liking. The export
+will save the Euler notebook first, then generate the HTML export, and
+open it in the default browser. You can configure the browser to be
+used.
+
+Note that the HTML export the images in the notebook, including the
+Latex formulas, unless MathJax is forced in the dialog. It is possible
+to keep large versions of the graphics and the Latex formulas in the
+Options menu. In this case, it is possible to link to the large
+versions in the HTML export. 
+
+The PDF export is using "pdflatex". Latex must be installed
+completely for this. You can configure the path to Latex in the
+Options menu. A file "eumat.sty" is copied to the current directory.
+Modify this style file if needed. The PDF is opened in the default PDF
+browser.
+
+The Markdown file is similar to the HTML export. But the markdown
+language is much easier to write. EMT will also use HTML entities to
+format the output by default, since not all Markdown browsers accept
+escaped characters.
+
+#
+
+!Menu
+
+The main menus in EMT are the following.
+
+  - File : Store and save notebooks and graphics
+  - Recent : A list of recently opened notebooks
+  - Edit : Editing (with keyboard shortcuts)
+  - Options : Settings for various things (See: Options)
+  - User Menu : User items and loaded Euler files
+  - Tasks : Links to sections in the help
+  - Help : Links to the documentation and to tutorial notebooks
+
+Let us give some more tips about various menu items and settings.
+
+Load and Save Notebooks
+
+Notebooks are usually saved into "Euler Files" in the user directory.
+The file dialog remembers the last directory. The directory of the
+notebook will become the default directory and data files without a
+path are searched in this file. Note that images are stored into a
+sub-directory "images" by default. If notebooks are saved into another
+position EMT will ask to delete the old notebook and its files. 
+
+To open tutorials there is a menu entry in the "Help" menu. It is
+possible to open a second notebook in another copy of the program.
+This second notebook is marked as secondary and will not remember its
+settings.
+
+About loading and saving graphics, see the section about Graphics in
+EMT.
+
+Edit Notebooks
+
+You will usually just enter or edit a command line and execute it with
+the return key. But it is possible to execute a complete section of
+command lines at once with shift-return, and all commands from the
+current one to the end with ctrl-return.
+
+EMT has a command history. See the menu or the section about the
+Keyboard for more details. You can also use cut and paste as usual
+with Ctrl-X, Ctrl-C and Ctrl-V. 
+
+Command lines can be split into multi-lines (ctrl-return) or in two
+separate lines (shift-ctrl-return), and joined to one line
+(ctrl-back). 
+
+With F12 a simple spell checker is available in English or in German.
+To add a word to the checker mark the word and press Ctrl-F12. To
+search for a word use Ctrl-F and F3.
+
+Options
+
+This is more than we can explain here. Some general keys are included
+here.
+
+  - tab key : see the graphics
+  - Ctrl-G : toggle the graphics window
+  - Ctrl-F11 : toggle the display size
+  - F11 : toggle automatic window layout
+
+The graphics is displayed in a square window by default. But the
+aspect can be set permanently here. Alternatively, it can be set for
+each graphics with the aspect() command.
+
+EMT supports folding of mutli-lines and functions (ctrl-l). They are
+only fully visible if they have the focus. For a single line this can
+be achieved with %% or %+ at the start of the line.
+
+User Menu
+
+This will be filled if you load an Euler file containing the "menu" or
+"submenu" command.
+
+See: Graphics, Keyboard, Options
+#
+
+!Options
+
+Let us go through the Options menu, explaining some details
+
+  -Show Graphics (TAB)
+  -Graphics in Text Window (CTRL-G)
+
+This will toggle between display of the graphics window in a separate
+window and inside the text window. In any case, the TAB key will show
+the graphics.
+
+  -Set Aspect
+
+The aspect ratio (width by height) of the graphics can be set here.
+There are some special settings and a general width/height ratio. The
+graphics is square by default. The graphics ratio can also follow the
+dimensions of the graphics window. 
+
+There is also an aspect() command which can set the ratio. It is the
+preferred way since it will also recompute the borders.
+
+  -Fold all Multi-Lines (Ctrl-L)
+
+This will clear the text window by folding functions and multi-lines
+which are not active.
+
+For information on the rest of the Options menu see:
+
+  - Graphics Options
+  - Program Options
+  - Symbolic Options
+  - Syntax Options
+  - Latex Options
+
+  Beamer Settings
+  
+  - Full Screen (F11)
+
+This will make the text and graphics window as large as possible to
+fit onto the screen. Note, that EMT remembers the sizes of the windows
+for each screen size separately. In case of F11, this is not saved.
+
+  - Magnify for Presentation (Strg-F11)
+
+A simple magnification of the content of the text window.
+
+  - Insert smaller images
+
+Insert images in the text window at reduced size for small displays.
+
+#
+
+!Graphics Options
+
+The graphics of EMT is generated with low level routines, such as
+drawing a line or a text. EMT contains high level routines to ease the
+generation of plots, such as plot2d(). In this menu, the user can
+control the appearance of the plots.
+
+  - Use Colors: Allows to switch to B/W
+  - Set Colors ...
+
+EMT has 16 default colors for graphics and 6 default colors for text
+in the notebook. You can change the default colors with a color picker
+here, or opt to use grayscale.
+
+  - Keep Large Images
+  - Anti-Alias the Graphics Window
+  - Anti-Alias sharper
+  - Never Anti-Alias at insimg()
+  - Use System Scaling for Images
+
+Anti-Aliasing is a trick to get more smooth graphics. By default, the
+graphics is drawn at three times its width and then downscaled to get
+a smooth appearance. EMT uses a C coded way to reduce the image. This
+needs some system resources and thus can be turned off for the
+graphics window or the graphics in the text window. The default method
+of Windows can also be used which might be a bit faster. Sharper
+Anti-Aliasing improves the quality at the cost of performance.
+
+The bigger graphics can either be saved or not. It might be useful to
+have the three times bigger graphics for later use. But it takes some
+space on the disk. If you keep the big graphics you can generate links
+to them in the HTML export.
+
+  - Fatter Lines
+  - Lines depend on Font Size
+  - Scale Line Thickness for Large Prints
+  - Bold Font
+  - Set Font ...
+
+The thickness of lines depends on the font size, which in turn depends
+on the graphics size and the user selected font. This may not always
+be what you need. For large prints, you do not want the lines to get
+fat. 
+
+Selecting the font is important for graphics export. You should use
+the setfont() method for this. But the font can also be changed
+permanently. The graphics font is set in relation to the graphics size.
+For big prints you may want to keep the font smaller. You can use
+other fonts for text, such as fonts designed for programmers, to
+improve readability. You need to install those fonts into Windows.
+
+  - Save compressed SVG images
+
+SVG is not the correct way to insert graphics into your documents. I
+suggest using a properly sized PNG file. Usually 2000x2000 pixel is
+enough for print. Use setfont() and aspect() to control the output.
+
+  - Save images in Notebooks
+  - Save notebooks images in subdirectory images
+
+Images are saved by default. If not they not to be recreated by
+running commands in the notebook (Shift-Return).
+
+  - Create bb file for Latex
+
+This makes sense only for images containing Latex formulas. It allows
+using the graphics in Latex with an overlay of formulas created by
+Latex.
+
+See: setfont, setaspect
+
+#
+
+!Program Options
+
+  - Set Browser and Documentation Directory
+
+If you want to use another browser than the system default browser
+you can set this here. The default documentation directory is the
+start directory of EMT.
+
+  - Setup for External Editor
+
+The default external editor is the included Java editor JE. It
+requires Java. If you want another editor you can set it here. A good
+recommendation is Notepad++.
+
+  - Logging: This turns on the log of each command and output.
+  - Always ask for confirmation: Asks before destructive actions.
+
+  - Ask for exec Command
+
+EMT can load external libraries and execute external programs. For
+security reasons, the program will ask before doing this.
+
+  - Display Status Help Line
+  - Display Help in Window Title
+
+This can turn off the help in the status line below the text window,
+or transfer this help to the window title instead. The latter was
+necessary for Linux and Wine.
+
+  - Restart EMT with each new Notebook
+
+If not you can save your old variables between sessions. This is not
+recommended if you want to create consistent notebooks. Use Euler
+files (load *.e) to load commands and variables into a notebook.
+
+  - Use Python 2.7
+
+EMT can handle Python 3.6 and later. But for backward compatibility,
+the default is Python 2.7. You can install two versions of Python.
+Install the default version for your programming needs later.
+
+  - Fix line width to 80
+
+If not the line width will be as broad as the window. This is not
+recommended for compatible notebooks.
+
+  - Set Memory Sizes
+
+EMT keeps a junk of memory for its stack size, usually 1GB of RAM.
+Moreover, it needs at least 256 KB to store the graphics in vector
+format. You can increase these sizes for more complex tasks.
+
+  - Save notebooks as UTF-8: Recommended Setting
+
+Notebooks (*.en) are human readable text files and can be saved in the
+default encoding or UTF-8. EMT saves three bytes to mark files at
+UTF-8.
+
+  - Euler runs under Wine
+
+This adapts some internal settings for Linux. Usually, Linux is
+detected automatically. EMT runs very nicely in the recent version of
+Wine.
+
+#
+
+!Symbolic Options
+
+  - Setup Maxima call String
+
+This is only useful for those of you that use another Maxima version
+than the included one.
+
+  - Start EMT in Maxima Mode
+  - Always use Direct Mode
+
+Maxima can be used with the original Maxima syntax or the adapted EMT
+syntax. The same can be achieved with ":::" instead of "::". The
+seamless expressions "&..." use the adapted syntax.
+
+  - Answer Maxima Questions silently
+
+For some functions, Maxima asks questions in an interactive mode.
+These questions can be answered automatically in some reasonable way.
+
+  - Remove Maxima Output Labels
+
+Maxima output is numbered so that the output can be referred to. EMT
+removes these numbers for its notebook style. To refer to an output
+assign it to a variable.
+
+  - Start Maxima automatically
+
+If disabled, the Maxima system will be started on first use.
+
+  - Enable direct mode of Maxima.
+
+This will always use the direct mode of Maxima with the ": ..."
+command. 
+
+Yacas is no longer supported.
+
+See: maxima
+
+#
+
+!Latex Options
+
+  - Setup Latex Executable
+
+This sets the directory where the Latex commands are located, and the
+work directory. The default work directory the Euler directory in
+the user home.
+
+  - Disable Latex: Completely disables Latex
+  - Run Latex silently
+
+The Latex command window is usually not interesting to see.
+
+  - Display MathJax Formulas with Latex
+
+This concerns the "mathjax:" command in comments. If disabled the
+formulas will not be parsed by Latex.
+
+  - Larger Font: Increases the Latex output
+  - Scale with Text font: Increases with the text font
+
+  - Anti-Alias Latex formulas
+  - Keep large Latex images
+
+Latex formulas are parsed to images. If anti-aliasing is used the
+images are three times larger and reduced for a smooth look. The
+larger images can be kept or discarded.
+
+  - Green text: Green instead of black Latex formulas.
+
+  - Transparent Background
+
+Usually the PNG files have a white background. This can be changed
+there. The anti-aliasing will be less effective.
+
+  - Clean up Working Directory
+
+Removes the log files etc.
+
+#
+
+!Syntax Options
+
+  - Require correct brackets () and []
+
+If disabled EMT relaxes the requirements to use () for functions and
+[] for indices. 
+
+  - Require := for Assignment
+
+This is more strict than the default "=".
+
+  - Require correct Command Separation
+  - Require Commands in Matrix lines
+
+This interprets "3 -4" as one command or one item of a vector. The
+commands and the elements of a vector have to be separated by command
+or semicolon.
+
+  - Allow overwriting protected Functions
+
+The functions loaded at the program start are protected. You can use
+the "overwrite" modifier to redefine these functions, or change this
+switch.
+
+  - Always relax in Euler Files
+
+Relaxing is a method to load old EMT files which use round brackets
+for indices and other old syntax. There is a command "relax" to
+switch this on in the Euler file. But you can also use this switch.
+
+  - Report Index out of Bounds
+
+If this is switched off empty vectors may be returned. instead of an
+error message. This creates hard to detect programming errors.
+
+See: errorlevel
+
+  - Allow Vectors for conditions in "if"
+
+This is off by default and removes another hard to find error in
+programs. In old versions of EMT, a condition was true if all elements
+were non-zero. You should instead use "any" and "all" for vectors.
+
+See: any, all
+
+#
+
+!Graphics
+
+Graphics are stored internally in a meta file format. Thus they can be
+resized when the graphics window changes its dimensions, and exported
+to various sizes. The aspect should be kept the same. By default, the
+graphics window displays a square containing the graphics.
+
+Note that such an internal vector format helps only withing a small
+range of sizes. To design a graphics for various print sizes requires
+changing the fonts, the line widths and the complete layout of the
+graphics. See the tutorial about graphics in EMT for more information,
+especially the command setfont().
+
+EMT can export graphics in the following ways.
+
+  - PNG with or without anti-aliasing
+  - Bitmap to the clipboard
+  - SVG (scalable vector format)
+  - Windows Metafile to the clipboard
+
+The preferred way to save a graphics is PNG in a proper size for
+printing. For a 10cm print width you will need about 2000 pixels. But
+you can also copy and paste to Word or any other Windows program using
+the Windows Metafile.
+
+Graphics can be inserted into the notebook with the ":" at the end of
+the command line. For more control over the graphics size, use
+insimg(). These files are saved along with the notebook as PNG, by
+default in a subdirectory "images". Optionally, a three times larger
+file is saved additionally without anti-aliasing. This is useful for
+print media like PDF which have their own good anti-aliasing.
+
+It is possible to load graphics into EMT notebooks in comments
+(using image: ...) and below commands (loadimg() command). It is also
+possible to load graphics into matrices with RGB-values (loadrgb()
+command)
+
+See: Comments, loadrgb, insimg, loadimage
+#
+
