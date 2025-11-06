@@ -17,7 +17,7 @@ SYSTEM_FONTS = [
     "Georgia",
 ]
 
-# Third-party fonts bundled with the application
+# Third-party fontsss bundled with the application
 # These must match the font family names loaded from fonts/ subdirectories
 BUNDLED_FONTS = [
     "OpenDyslexic",  # Accessible font for dyslexic readers
