@@ -1,0 +1,118 @@
+# LunaQt Development Commands
+
+## Setup Commands (run once)
+
+### Windows:
+```
+python create-python-venv-win.py
+```
+
+### Linux:
+```
+python3 create-python-venv-linux.py
+```
+
+## Daily Development Commands
+
+### Windows:
+```
+# Activate virtual environment
+.venv\Scripts\activate
+
+# Run the application
+python lunaqt.py
+
+# Deactivate when done
+deactivate
+```
+
+### Linux:
+```
+# Activate virtual environment
+source .venv/bin/activate
+
+# Run the application
+python3 lunaqt.py
+
+# Deactivate when done
+deactivate
+```
+
+## Build Commands
+
+### Windows EXE:
+```
+First create python virtual environment using command: python create-python-venv-win.py
+Then from the venv: pip install pyinstaller
+.\.venv\Scripts\pyinstaller.exe .\LunaQt.spec
+
+or 
+
+.\.venv\Scripts\pyinstaller.exe --onefile --noconsole --name LunaQt --icon ".\src\icons\icon.ico" --add-data ".\src\icons\icon.ico;src\icons" --add-data ".\src\icons\icon.png;src\icons" ".\lunaqt.py"
+
+```
+Result: `dist/LunaQt.exe`
+
+### Linux AppImage:
+```
+# 1) Activate venv and install deps
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2) Build the executable (produces dist/LunaQt)
+./build-wrapper.sh
+
+# 3) Build the AppImage
+chmod +x app-image-scripts/appimagetool-x86_64.AppImage
+chmod +x app-image-scripts/build-appimage.sh
+./app-image-scripts/build-appimage.sh
+
+# Result: ./LunaQt-x86_64.AppImage
+```
+
+## Alternative (No Virtual Environment)
+
+If you have PySide6 installed globally:
+
+### Windows:
+```
+python lunaqt.py
+```
+
+### Linux:
+```
+python3 lunaqt.py
+```
+
+## Dependencies
+
+Required packages:
+- PySide6
+- matplotlib
+
+Install globally or inside the virtual environment:
+```
+# Install all runtime dependencies from requirements.txt
+pip install -r requirements.txt
+
+# Or install individual missing packages
+pip install PySide6 matplotlib
+# If you're on Linux and need pip3:
+pip3 install -r requirements.txt
+```
+
+If you see an error like "ModuleNotFoundError: No module named 'matplotlib'", run the above install command inside the active `.venv` (Windows example below).
+
+### Quick fix example (Windows, inside project root):
+```
+.venv\\Scripts\\activate
+pip install -r requirements.txt
+python lunaqt.py
+```
+
+### Quick fix example (Linux):
+```
+source .venv/bin/activate
+pip3 install -r requirements.txt
+python3 lunaqt.py
+```
