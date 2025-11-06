@@ -1,3 +1,6 @@
+# Ignore Euler Math Toolbox Reference files
+euler-math-toolbox-refcode/
+
 # Python
 __pycache__/
 *.py[cod]
