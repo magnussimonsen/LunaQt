@@ -54,7 +54,7 @@ class ThemeManager:
         
         # Apply special styling to header if it exists
         if hasattr(self._window, 'header_label'):
-            accent_color = get_color("primary_accent", theme)
+            accent_color = get_color("primary_accent_color", theme)
             self._window.header_label.setStyleSheet(f"color: {accent_color};")
     
     def toggle_theme(self) -> None:

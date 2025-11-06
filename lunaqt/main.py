@@ -20,6 +20,7 @@ from src.constants.app_info import (
     APP_DESCRIPTION
 )
 from src.gui.main_window import MainWindow
+from src.core.font_manager import initialize_fonts
 
 
 def create_window_config(theme: ThemeMode = "light") -> WindowConfig:
@@ -64,6 +65,9 @@ def main() -> int:
     """
     # Create Qt application
     app = QApplication(sys.argv)
+    
+    # Initialize custom fonts
+    initialize_fonts()
     
     # Set application metadata
     app_config = create_app_config()

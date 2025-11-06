@@ -2,12 +2,17 @@
 
 from typing import Callable
 
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QDockWidget, QListWidget
+from PySide6.QtWidgets import (
+    QMainWindow, QWidget, QVBoxLayout, QLabel, QDockWidget, 
+    QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy
+)
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
 
 from ..constants.config import WindowConfig
 from ..core.theme_manager import ThemeManager
+from ..core.font_manager import get_font_manager
+from ..assets.fonts.font_lists import SYSTEM_FONTS, BUNDLED_FONTS, SYSTEM_CODE_FONTS, BUNDLED_CODE_FONTS
 from .menu_actions import file_actions, edit_actions, view_actions
 from .menu_actions import notebook_actions, settings_actions, help_actions
 
@@ -25,9 +30,9 @@ class MainWindow(QMainWindow):
         self.config = config
         self.theme_manager = ThemeManager(config.theme)
         self._setup_window()
+        self._setup_settings_sidebar()
         self._setup_menubar()
         self._setup_statusbar()
-        self._setup_notebook_sidebar()
         self._setup_ui()
         self.theme_manager.set_window(self)
         self.theme_manager.apply_theme(config.theme)
@@ -43,30 +48,76 @@ class MainWindow(QMainWindow):
         statusbar = self.statusBar()
         statusbar.showMessage("Ready")
     
-    def _setup_notebook_sidebar(self) -> None:
-        """Set up the notebook sidebar."""
-        # Create dock widget
-        self.notebook_dock = QDockWidget("Notebooks", self)
-        self.notebook_dock.setAllowedAreas(
-            Qt.DockWidgetArea.LeftDockWidgetArea | 
-            Qt.DockWidgetArea.RightDockWidgetArea
-        )
+    def _setup_settings_sidebar(self) -> None:
+        """Set up the settings sidebar."""
+        # Create dock widget for settings
+        self.settings_dock = QDockWidget("Settings", self)
         
-        # Create list widget for notebooks
-        self.notebook_list = QListWidget()
-        self.notebook_list.addItems([
-            "Notebook 1",
-            "Notebook 2",
-            "Notebook 3",
-            "Math Examples",
-            "Physics Lab"
-        ])
+        # Lock to right side only
+        self.settings_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
         
-        # Set the list as dock widget content
-        self.notebook_dock.setWidget(self.notebook_list)
+        # Disable all features (no moving, floating, or close button)
+        self.settings_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         
-        # Add to main window (default: left side)
-        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.notebook_dock)
+        # Create settings panel content
+        settings_widget = QWidget()
+        settings_layout = QFormLayout()
+        settings_widget.setLayout(settings_layout)
+        
+        # Get available custom fonts
+        font_manager = get_font_manager()
+        custom_fonts = font_manager.get_available_fonts()
+        
+        # Combine all font sources: bundled fonts (hardcoded list) + system fonts
+        # Only fonts explicitly listed in font_lists.py will appear in dropdowns
+        all_fonts = BUNDLED_FONTS + SYSTEM_FONTS
+        code_fonts = BUNDLED_CODE_FONTS + SYSTEM_CODE_FONTS
+        
+        # UI Font Family
+        self.ui_font_family_combo = QComboBox()
+        self.ui_font_family_combo.addItems(all_fonts)
+        settings_layout.addRow("UI Font Family:", self.ui_font_family_combo)
+        
+        # Text Cell Font Family
+        self.text_cell_font_family_combo = QComboBox()
+        self.text_cell_font_family_combo.addItems(all_fonts)
+        settings_layout.addRow("Text Cell Font Family:", self.text_cell_font_family_combo)
+        
+        # Code Cell Font Family
+        self.code_cell_font_family_combo = QComboBox()
+        self.code_cell_font_family_combo.addItems(code_fonts)
+        settings_layout.addRow("Code Cell Font Family:", self.code_cell_font_family_combo)
+        
+        # UI Font Size
+        self.ui_font_size_spin = QSpinBox()
+        self.ui_font_size_spin.setRange(8, 24)
+        self.ui_font_size_spin.setValue(12)
+        settings_layout.addRow("UI Font Size:", self.ui_font_size_spin)
+        
+        # Text Cell Font Size
+        self.text_cell_font_size_spin = QSpinBox()
+        self.text_cell_font_size_spin.setRange(8, 32)
+        self.text_cell_font_size_spin.setValue(14)
+        settings_layout.addRow("Text Cell Font Size:", self.text_cell_font_size_spin)
+        
+        # Code Cell Font Size
+        self.code_cell_font_size_spin = QSpinBox()
+        self.code_cell_font_size_spin.setRange(8, 24)
+        self.code_cell_font_size_spin.setValue(12)
+        settings_layout.addRow("Code Cell Font Size:", self.code_cell_font_size_spin)
+        
+        # Number Precision
+        self.precision_spin = QSpinBox()
+        self.precision_spin.setRange(1, 15)
+        self.precision_spin.setValue(6)
+        settings_layout.addRow("Number Precision:", self.precision_spin)
+        
+        # Set the widget as dock content
+        self.settings_dock.setWidget(settings_widget)
+        
+        # Add to main window (default: right side, initially hidden)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.settings_dock)
+        self.settings_dock.hide()
     
     def _setup_menubar(self) -> None:
         """Set up the menu bar with all menus and actions."""
@@ -91,8 +142,9 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(self._create_action("Move Cell Up", lambda: edit_actions.on_move_cell_up(self)))
         edit_menu.addAction(self._create_action("Move Cell Down", lambda: edit_actions.on_move_cell_down(self)))
         edit_menu.addSeparator()
-        edit_menu.addAction(self._create_action("Move Cell to Trash Bin", lambda: edit_actions.on_delete_cell(self)))
-        
+        edit_menu.addAction(self._create_action("Delete Cell FOREVER", lambda: edit_actions.on_delete_cell(self)))
+        edit_menu.addAction(self._create_action("Delete Notebook FOREVER", lambda: notebook_actions.on_delete_notebook(self)))
+
         # Insert cells menu
         insert_menu = menubar.addMenu("&Insert")
         insert_menu.addAction(self._create_action("Insert Text Cell", lambda: edit_actions.on_insert_text_cell(self)))
@@ -102,41 +154,20 @@ class MainWindow(QMainWindow):
         # Notebooks menu
         notebooks_menu = menubar.addMenu("&Notebooks")
         notebooks_menu.addAction(self._create_action("New Notebook", lambda: notebook_actions.on_new_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Move Notebook to Trash Bin", lambda: notebook_actions.on_delete_notebook(self)))
         notebooks_menu.addSeparator()
         notebooks_menu.addAction(self._create_action("Notebook 1 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
         notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-
-        # Notebooks menu
-        notebooks_menu = menubar.addMenu("&Trash Bin")
-        notebooks_menu.addAction(self._create_action("Open Notebook with individually deleted cells", lambda: notebook_actions.on_new_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Open 'Deleted Notebook 1 placeholder'", lambda: notebook_actions.on_delete_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Open 'Deleted Notebook 2 placeholder'", lambda: notebook_actions.on_delete_notebook(self)))
-
+        notebooks_menu.addAction(self._create_action("Notebook 3 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
+        notebooks_menu.addAction(self._create_action("Notebook 4 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
+        
         # View menu
         view_menu = menubar.addMenu("&View")
         view_menu.addAction(self._create_action("Light Theme", self.theme_manager.set_light_theme))
         view_menu.addAction(self._create_action("Dark Theme", self.theme_manager.set_dark_theme))
         view_menu.addSeparator()
-        view_menu.addAction(self._create_action("Toggle Notebooks Sidebar", self._toggle_notebook_sidebar))
-        view_menu.addSeparator()
         view_menu.addAction(self._create_action("Normal Web View", lambda: view_actions.on_normal_view(self)))
         view_menu.addAction(self._create_action("A4 Paper View", lambda: view_actions.on_a4_view(self)))
 
-
-        # Settings menu
-        settings_menu = menubar.addMenu("&Settings")
-        settings_menu.addAction(self._create_action("Font Size", lambda: settings_actions.on_font_size(self)))
-        settings_menu.addAction(self._create_action("Font Family", lambda: settings_actions.on_font_family(self)))
-        settings_menu.addAction(self._create_action("Precision", lambda: settings_actions.on_precision(self)))
-        
         # Help menu
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(self._create_action("About Luna STEM Notebook", lambda: help_actions.on_about(self)))
@@ -145,6 +176,14 @@ class MainWindow(QMainWindow):
         help_menu.addAction(self._create_action("Python Help", lambda: help_actions.on_help_python(self)))
         help_menu.addAction(self._create_action("CAS Help", lambda: help_actions.on_help_cas(self)))
         help_menu.addAction(self._create_action("Geometry Help", lambda: help_actions.on_help_geometry(self)))
+        
+        # Add settings button to the corner of the menu bar
+        settings_button = QPushButton("Settings")
+        settings_button.setCheckable(True)
+        settings_button.setChecked(False)
+        settings_button.clicked.connect(self._toggle_settings_sidebar)
+        menubar.setCornerWidget(settings_button, Qt.Corner.TopRightCorner)
+        self.settings_button = settings_button
     
     def _create_action(self, text: str, slot: Callable[[], None]) -> QAction:
         """Create a menu action.
@@ -160,9 +199,12 @@ class MainWindow(QMainWindow):
         action.triggered.connect(slot)
         return action
     
-    def _toggle_notebook_sidebar(self) -> None:
-        """Toggle the notebook sidebar visibility."""
-        self.notebook_dock.setVisible(not self.notebook_dock.isVisible())
+    def _toggle_settings_sidebar(self) -> None:
+        """Toggle the settings sidebar visibility."""
+        is_visible = not self.settings_dock.isVisible()
+        self.settings_dock.setVisible(is_visible)
+        # Update the checked state of the settings button
+        self.settings_button.setChecked(is_visible)
     
     def _setup_ui(self) -> None:
         """Set up the user interface."""

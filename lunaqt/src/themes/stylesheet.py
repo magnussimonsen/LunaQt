@@ -14,24 +14,24 @@ def get_stylesheet(theme: ThemeMode = "light") -> str:
         Complete QSS stylesheet string
     """
     # Get colors for current theme
-    bg_color = get_color("main_window_bg", theme)
-    secondary_bg = get_color("secondary_bg", theme)
-    text_color = get_color("primary_text", theme)
-    secondary_text = get_color("secondary_text", theme)
-    accent_color = get_color("primary_accent", theme)
-    border_color = get_color("border", theme)
+    main_window_bg = get_color("main_window_bg", theme)
+    secondary_bg = get_color("secondary_window_bg", theme)
+    text_color = get_color("primary_text_color", theme)
+    secondary_text = get_color("secondary_text_color", theme)
+    accent_color = get_color("primary_accent_color", theme)
+    border_color = get_color("primary_border_color", theme)
     button_bg = get_color("button_bg", theme)
-    button_hover = get_color("button_hover", theme)
+    button_hover = get_color("button_hover_bg", theme)
     
     return f"""
         /* Main Window */
         QMainWindow {{
-            background-color: {bg_color};
+            background-color: {main_window_bg};
         }}
         
         /* Menu Bar */
         QMenuBar {{
-            background-color: {bg_color};
+            background-color: {main_window_bg};
             color: {text_color};
             border-bottom: px solid {border_color};
             padding: 2px;
@@ -45,7 +45,7 @@ def get_stylesheet(theme: ThemeMode = "light") -> str:
         
         QMenuBar::item:selected {{
             background-color: {accent_color};
-            color: {bg_color};
+            color: {main_window_bg};
             border-radius: 3px;
         }}
         
@@ -55,7 +55,7 @@ def get_stylesheet(theme: ThemeMode = "light") -> str:
         
         /* Dropdown Menus */
         QMenu {{
-            background-color: {bg_color};
+            background-color: {main_window_bg};
             color: {text_color};
             border: 1px solid {border_color};
             margin-top: 0px;
@@ -69,7 +69,7 @@ def get_stylesheet(theme: ThemeMode = "light") -> str:
         
         QMenu::item:selected {{
             background-color: {accent_color};
-            color: {bg_color};
+            color: {main_window_bg};
         }}
         
         QMenu::separator {{
@@ -98,6 +98,6 @@ def get_stylesheet(theme: ThemeMode = "light") -> str:
         
         QPushButton:pressed {{
             background-color: {accent_color};
-            color: {bg_color};
+            color: {main_window_bg};
         }}
     """
