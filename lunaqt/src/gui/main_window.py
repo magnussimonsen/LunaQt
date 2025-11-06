@@ -6,15 +6,20 @@ from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QDockWidget, 
     QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy
 )
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QFont
 from PySide6.QtCore import Qt
 
 from ..constants.config import WindowConfig
 from ..core.theme_manager import ThemeManager
 from ..core.font_manager import get_font_manager
-from ..assets.fonts.font_lists import SYSTEM_FONTS, BUNDLED_FONTS, SYSTEM_CODE_FONTS, BUNDLED_CODE_FONTS
+from ..assets.fonts.font_lists import (
+    BUNDLED_FONTS, BUNDLED_CODE_FONTS,
+    DEFAULT_UI_FONT, DEFAULT_CODE_FONT,
+    DEFAULT_UI_FONT_SIZE, DEFAULT_CODE_FONT_SIZE, DEFAULT_TEXT_FONT_SIZE
+)
 from .menu_actions import file_actions, edit_actions, view_actions
 from .menu_actions import notebook_actions, settings_actions, help_actions
+from .button_styles import get_button_stylesheet
 
 
 class MainWindow(QMainWindow):
@@ -30,6 +35,7 @@ class MainWindow(QMainWindow):
         self.config = config
         self.theme_manager = ThemeManager(config.theme)
         self._setup_window()
+        self._set_default_font()
         self._setup_settings_sidebar()
         self._setup_menubar()
         self._setup_statusbar()
@@ -42,6 +48,12 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.config.title)
         self.resize(self.config.width, self.config.height)
         self.setMinimumSize(self.config.min_width, self.config.min_height)
+    
+    def _set_default_font(self) -> None:
+        """Set the default application font to Inter."""
+        from PySide6.QtWidgets import QApplication
+        default_font = QFont(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
+        QApplication.instance().setFont(default_font)
     
     def _setup_statusbar(self) -> None:
         """Set up the status bar."""
@@ -64,46 +76,48 @@ class MainWindow(QMainWindow):
         settings_layout = QFormLayout()
         settings_widget.setLayout(settings_layout)
         
-        # Get available custom fonts
+        # Get available custom fonts (loaded at startup from fonts/ directory)
         font_manager = get_font_manager()
         custom_fonts = font_manager.get_available_fonts()
         
-        # Combine all font sources: bundled fonts (hardcoded list) + system fonts
-        # Only fonts explicitly listed in font_lists.py will appear in dropdowns
-        all_fonts = BUNDLED_FONTS + SYSTEM_FONTS
-        code_fonts = BUNDLED_CODE_FONTS + SYSTEM_CODE_FONTS
+        # Use only bundled fonts for consistent cross-platform experience
+        all_fonts = BUNDLED_FONTS
+        code_fonts = BUNDLED_CODE_FONTS
         
         # UI Font Family
         self.ui_font_family_combo = QComboBox()
         self.ui_font_family_combo.addItems(all_fonts)
+        self.ui_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("UI Font Family:", self.ui_font_family_combo)
         
         # Text Cell Font Family
         self.text_cell_font_family_combo = QComboBox()
         self.text_cell_font_family_combo.addItems(all_fonts)
+        self.text_cell_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("Text Cell Font Family:", self.text_cell_font_family_combo)
         
         # Code Cell Font Family
         self.code_cell_font_family_combo = QComboBox()
         self.code_cell_font_family_combo.addItems(code_fonts)
+        self.code_cell_font_family_combo.setCurrentText(DEFAULT_CODE_FONT)
         settings_layout.addRow("Code Cell Font Family:", self.code_cell_font_family_combo)
         
         # UI Font Size
         self.ui_font_size_spin = QSpinBox()
         self.ui_font_size_spin.setRange(8, 24)
-        self.ui_font_size_spin.setValue(12)
+        self.ui_font_size_spin.setValue(DEFAULT_UI_FONT_SIZE)
         settings_layout.addRow("UI Font Size:", self.ui_font_size_spin)
         
         # Text Cell Font Size
         self.text_cell_font_size_spin = QSpinBox()
         self.text_cell_font_size_spin.setRange(8, 32)
-        self.text_cell_font_size_spin.setValue(14)
+        self.text_cell_font_size_spin.setValue(DEFAULT_TEXT_FONT_SIZE)
         settings_layout.addRow("Text Cell Font Size:", self.text_cell_font_size_spin)
         
         # Code Cell Font Size
         self.code_cell_font_size_spin = QSpinBox()
         self.code_cell_font_size_spin.setRange(8, 24)
-        self.code_cell_font_size_spin.setValue(12)
+        self.code_cell_font_size_spin.setValue(DEFAULT_CODE_FONT_SIZE)
         settings_layout.addRow("Code Cell Font Size:", self.code_cell_font_size_spin)
         
         # Number Precision
@@ -111,6 +125,15 @@ class MainWindow(QMainWindow):
         self.precision_spin.setRange(1, 15)
         self.precision_spin.setValue(6)
         settings_layout.addRow("Number Precision:", self.precision_spin)
+        
+        # Connect signals to apply settings changes
+        self.ui_font_family_combo.currentTextChanged.connect(self._on_ui_font_family_changed)
+        self.ui_font_size_spin.valueChanged.connect(self._on_ui_font_size_changed)
+        self.text_cell_font_family_combo.currentTextChanged.connect(self._on_text_cell_font_changed)
+        self.text_cell_font_size_spin.valueChanged.connect(self._on_text_cell_size_changed)
+        self.code_cell_font_family_combo.currentTextChanged.connect(self._on_code_cell_font_changed)
+        self.code_cell_font_size_spin.valueChanged.connect(self._on_code_cell_size_changed)
+        self.precision_spin.valueChanged.connect(self._on_precision_changed)
         
         # Set the widget as dock content
         self.settings_dock.setWidget(settings_widget)
@@ -142,8 +165,8 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(self._create_action("Move Cell Up", lambda: edit_actions.on_move_cell_up(self)))
         edit_menu.addAction(self._create_action("Move Cell Down", lambda: edit_actions.on_move_cell_down(self)))
         edit_menu.addSeparator()
-        edit_menu.addAction(self._create_action("Delete Cell FOREVER", lambda: edit_actions.on_delete_cell(self)))
-        edit_menu.addAction(self._create_action("Delete Notebook FOREVER", lambda: notebook_actions.on_delete_notebook(self)))
+        edit_menu.addAction(self._create_action("Delete Cell", lambda: edit_actions.on_delete_cell(self)))
+        edit_menu.addAction(self._create_action("Delete Notebook", lambda: notebook_actions.on_delete_notebook(self)))
 
         # Insert cells menu
         insert_menu = menubar.addMenu("&Insert")
@@ -205,6 +228,91 @@ class MainWindow(QMainWindow):
         self.settings_dock.setVisible(is_visible)
         # Update the checked state of the settings button
         self.settings_button.setChecked(is_visible)
+        # Update button background color based on visibility
+        self._update_settings_button_style(is_visible)
+    
+    def _update_settings_button_style(self, is_selected: bool) -> None:
+        """Update the settings button style based on selected state.
+        
+        Args:
+            is_selected: True if settings dock is visible, False otherwise
+        """
+        state = "selected" if is_selected else "normal"
+        stylesheet = get_button_stylesheet(self.theme_manager.current_theme, state)
+        self.settings_button.setStyleSheet(stylesheet)
+    
+    def _on_ui_font_family_changed(self, font_family: str) -> None:
+        """Handle UI font family change."""
+        if not font_family:
+            return
+        
+        # If "Default" is selected, clear custom font settings
+        if font_family == "Default":
+            self.menuBar().setStyleSheet("")
+            self.statusBar().setStyleSheet("")
+            # Reapply theme to restore default styling
+            self.theme_manager.apply_theme(self.theme_manager.current_theme)
+            print("UI font reset to default")
+            return
+            
+        # Update the application-wide font
+        font = QFont(font_family)
+        font.setPointSize(self.ui_font_size_spin.value())
+        
+        # Apply to the entire application
+        from PySide6.QtWidgets import QApplication
+        QApplication.instance().setFont(font)
+        
+        # Also update menubar specifically via stylesheet
+        self.menuBar().setStyleSheet(f"QMenuBar {{ font-family: '{font_family}'; font-size: {self.ui_font_size_spin.value()}pt; }}")
+        self.statusBar().setStyleSheet(f"QStatusBar {{ font-family: '{font_family}'; font-size: {self.ui_font_size_spin.value()}pt; }}")
+        
+        print(f"UI font family changed to: {font_family}")
+    
+    def _on_ui_font_size_changed(self, size: int) -> None:
+        """Handle UI font size change."""
+        # Get current font family
+        font_family = self.ui_font_family_combo.currentText()
+        if not font_family or font_family == "Default":
+            return
+            
+        font = QFont(font_family)
+        font.setPointSize(size)
+        
+        # Apply to the entire application
+        from PySide6.QtWidgets import QApplication
+        QApplication.instance().setFont(font)
+        
+        # Also update menubar and statusbar specifically via stylesheet
+        self.menuBar().setStyleSheet(f"QMenuBar {{ font-family: '{font_family}'; font-size: {size}pt; }}")
+        self.statusBar().setStyleSheet(f"QStatusBar {{ font-family: '{font_family}'; font-size: {size}pt; }}")
+        
+        print(f"UI font size changed to: {size}")
+    
+    def _on_text_cell_font_changed(self, font_family: str) -> None:
+        """Handle text cell font family change."""
+        # This will be used when text cells are implemented
+        print(f"Text cell font family changed to: {font_family}")
+    
+    def _on_text_cell_size_changed(self, size: int) -> None:
+        """Handle text cell font size change."""
+        # This will be used when text cells are implemented
+        print(f"Text cell font size changed to: {size}")
+    
+    def _on_code_cell_font_changed(self, font_family: str) -> None:
+        """Handle code cell font family change."""
+        # This will be used when code cells are implemented
+        print(f"Code cell font family changed to: {font_family}")
+    
+    def _on_code_cell_size_changed(self, size: int) -> None:
+        """Handle code cell font size change."""
+        # This will be used when code cells are implemented
+        print(f"Code cell font size changed to: {size}")
+    
+    def _on_precision_changed(self, precision: int) -> None:
+        """Handle number precision change."""
+        # This will be used when numeric output is implemented
+        print(f"Number precision changed to: {precision}")
     
     def _setup_ui(self) -> None:
         """Set up the user interface."""

@@ -6,21 +6,37 @@ Each color has light and dark variants.
 
 from ..constants.types import ThemeMode, ColorName
 
+# Shades of gray (for reference light mode):
+# #F5F5F5 (White smoke)
+# #DEDEDE 
+# #C7C7C7 
+# #999999 
+# #828282 
+# #6B6B6B 
+
 COLORS = {
     # Background colors
     "main_window_bg": {
         "light": "#FFFFFF",
         "dark": "#1E1E1E"
     },
-    "secondary_window_bg": {
-        "light": "#F5F5F5",
+    "secondary_window_bg": { # Intended for menubars, sidebars, etc.
+        "light": "whitesmoke",
         "dark": "#2D2D2D"
     },
-    "main_menu_bg": {
-        "light": "#EFEFEF",
+    "third_window_bg": { # Intended for secondary menubars
+        "light": "#F0F0F0",
+        "dark": "#2D2D2D"
+    },
+    "fourth_window_bg": { # Intended A4-paper background color
+        "light": "#E0E0E0",
+        "dark": "#3A3A3A"
+    },
+    "main_menu_bg": {  # Redundant with secondary_window_bg
+        "light": "whitesmoke",
         "dark": "#2A2A2A"
     },
-    "secondary_menu_bg": {
+    "secondary_menu_bg": { # Redundant with fourth_window_bg
         "light": "#F0F0F0",
         "dark": "#2D2D2D"
     },
@@ -28,21 +44,9 @@ COLORS = {
         "light": "#DDDDDD",
         "dark": "#3A3A3A"
     },
-    "primary_active_bg": {
-        "light": "#D0E4FF",
-        "dark": "#3A5F9E"
-    },
-    "secondary_active_bg": {
-        "light": "#E8F0FF",
-        "dark": "#2E4A7E"
-    },
     "button_bg": {
-        "light": "#E0E0E0",
+        "light": "#DEDEDE",
         "dark": "#3A3A3A"
-    },
-    "button_hover_bg": {
-        "light": "#D0D0D0",
-        "dark": "#4A4A4A"
     },
 
     # Text colors
@@ -69,16 +73,31 @@ COLORS = {
         "dark": "#333333"
     },
 
-    # Accent colors
+    # Accent colors (Not needed)
     "primary_accent_color": {
-        "light": "#0066CC",
+        "light": "#002FFF",
         "dark": "#4A9EFF"
     },
     "secondary_accent_color": {
         "light": "#00AA66",
         "dark": "#00DD88"
     },
+    
+    # Interactive item states (buttons, menu items, list items, etc.)
+    "item_hover_bg": {  # Background when hovering over interactive items
+        "light": "#C7C7C7",
+        "dark": "#4A4A4A"
+    },
+    "item_pressed_bg": {  # Background when pressing down on items
+        "light": "lightgreen",
+        "dark": "forestgreen"
+    },
+    "item_selected_bg": {  # Background for selected items
+        "light": "lightgreen",
+        "dark": "forestgreen"
+    },
 }
+
 
 
 def get_color(color_name: ColorName, theme: ThemeMode = "light") -> str:

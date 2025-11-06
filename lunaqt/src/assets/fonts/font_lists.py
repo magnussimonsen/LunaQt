@@ -1,40 +1,34 @@
 """Font lists configuration.
 
-This module defines lists of fonts used in the application:
-- System fonts: Standard fonts available on most operating systems
-- Bundled fonts: Third-party fonts that ship with the application (in fonts/ subdirectories)
-- Code fonts: Monospace fonts suitable for code editing
+This module defines lists of fonts used in the application.
+All fonts listed here are bundled with the application and loaded at startup.
+This ensures consistent typography across all platforms (Windows, macOS, Linux).
 
-Note: Bundled fonts are loaded from the fonts/ directory at startup.
-Only fonts listed here will appear in the font selection dropdowns.
+Font categories:
+- UI fonts: For menus, buttons, and general interface elements
+- Code fonts: Monospace fonts for code cells
 """
 
-# Standard system fonts available on most platforms
-SYSTEM_FONTS = [
-    "Arial",
-    "Helvetica",
-    "Times New Roman",
-    "Georgia",
-]
-
-# Third-party fontsss bundled with the application
-# These must match the font family names loaded from fonts/ subdirectories
+# UI fonts bundled with the application
+# These are used for general interface elements
 BUNDLED_FONTS = [
+    "Inter",  # Modern, clean UI font - DEFAULT
     "OpenDyslexic",  # Accessible font for dyslexic readers
 ]
 
-# System monospace/code fonts
-SYSTEM_CODE_FONTS = [
-    "Courier New",
-    "Monaco",
-    "Consolas",
-    "Monospace"
+# Monospace/code fonts bundled with the application
+# These are used for code and CAS cells
+BUNDLED_CODE_FONTS = [
+    "Fira Code",  # Excellent code font with ligatures - DEFAULT
+    "OpenDyslexic",  # Accessible option for code as well
 ]
 
-# Bundled monospace/code fonts
-# These must match the font family names loaded from fonts/ subdirectories
-BUNDLED_CODE_FONTS = [
-    # "OpenDyslexic Mono",  # Uncomment if mono variant is added
-]
+# Default font selections
+DEFAULT_UI_FONT = "Inter"
+DEFAULT_CODE_FONT = "Fira Code"
+DEFAULT_UI_FONT_SIZE = 11
+DEFAULT_CODE_FONT_SIZE = 11
+DEFAULT_TEXT_FONT_SIZE = 14
+
 
 
