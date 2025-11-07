@@ -4,6 +4,9 @@
 
 Do one thing and do it well.
 
+## Avoid one-liners
+Code is read far more than it is written. Avoid cramming multiple operations into a single, cryptic expression; instead, favor clear, step-by-step code with meaningful names. This makes logic easier to review, debug, and modify later.
+
 ## Naming Conventions
 
 - **Functions:** `snake_case` (e.g., `calculate_determinant`)
@@ -30,7 +33,7 @@ def calculate_determinant(matrix: list[list[float]]) -> float:
 
 - One function = one responsibility  
 - Use descriptive, explicit names  
-- Keep functions small (<20 lines)  
+- Keep functions "small" 
 - Add type hints everywhere  
 - Run mypy for type checking  
 - Use `@dataclass` for structured data  
