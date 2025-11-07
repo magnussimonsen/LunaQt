@@ -1,7 +1,6 @@
 # LunaQt Best Practices
 
 ## Unix Philosophy
-
 Do one thing and do it well.
 
 ## Avoid one-liners
