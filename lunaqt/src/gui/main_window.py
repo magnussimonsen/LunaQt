@@ -6,12 +6,14 @@ from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QDockWidget, 
     QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy
 )
+from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QAction, QFont
 from PySide6.QtCore import Qt
 
 from ..constants.config import WindowConfig
 from ..core.theme_manager import ThemeManager
 from ..core.font_manager import get_font_manager
+from ..core.font_service import get_font_service
 from ..assets.fonts.font_lists import (
     BUNDLED_FONTS, BUNDLED_CODE_FONTS,
     DEFAULT_UI_FONT, DEFAULT_CODE_FONT,
@@ -34,14 +36,31 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.config = config
         self.theme_manager = ThemeManager(config.theme)
+        # Core window and base font
         self._setup_window()
         self._set_default_font()
+
+        # Build UI components
         self._setup_settings_sidebar()
         self._setup_menubar()
         self._setup_statusbar()
         self._setup_ui()
+
+        # Theme hookup
         self.theme_manager.set_window(self)
         self.theme_manager.apply_theme(config.theme)
+
+        # Font service setup (other widgets can subscribe later)
+        self.font_service = get_font_service()
+        self.font_service.uiFontChanged.connect(self._on_ui_font_service_changed)
+        self.font_service.textFontChanged.connect(self._on_text_font_service_changed)
+        self.font_service.codeFontChanged.connect(self._on_code_font_service_changed)
+
+        # Initialize service values then apply UI font
+        self.font_service.set_ui_font(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
+        self.font_service.set_text_font(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
+        self.font_service.set_code_font(DEFAULT_CODE_FONT, DEFAULT_CODE_FONT_SIZE)
+        self._apply_ui_font_to_widgets(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
     
     def _setup_window(self) -> None:
         """Configure window properties."""
@@ -54,6 +73,29 @@ class MainWindow(QMainWindow):
         from PySide6.QtWidgets import QApplication
         default_font = QFont(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
         QApplication.instance().setFont(default_font)
+
+    def _compute_header_point_size(self, ui_point_size: int) -> int:
+        """Compute the header label point size based on the UI font size.
+
+        This keeps the header visually proportional when the UI size changes.
+        """
+        # Roughly 2.2x of base UI font size, min 14, max 48
+        return max(14, min(48, int(ui_point_size * 2.2)))
+
+
+
+
+    def _apply_ui_font_to_widgets(self, font_family: str, size: int) -> None:
+        """Delegate font application to shared helper in gui.style.font_applier."""
+        try:
+            from .style.font_applier import apply_ui_font  # local import to avoid circulars
+            apply_ui_font(self, font_family, size, self.header_label)
+        except Exception as e:  # pragma: no cover - fallback path
+            # Minimal fallback: still set application font so UI isn't broken
+            app_font = QFont(font_family)
+            app_font.setPointSize(size)
+            QApplication.instance().setFont(app_font)
+            self.statusBar().showMessage(f"Font apply helper failed: {e}")
     
     def _setup_statusbar(self) -> None:
         """Set up the status bar."""
@@ -245,69 +287,57 @@ class MainWindow(QMainWindow):
         """Handle UI font family change."""
         if not font_family:
             return
-        
-        # If "Default" is selected, clear custom font settings
-        if font_family == "Default":
-            self.menuBar().setStyleSheet("")
-            self.statusBar().setStyleSheet("")
-            # Reapply theme to restore default styling
-            self.theme_manager.apply_theme(self.theme_manager.current_theme)
-            print("UI font reset to default")
-            return
-            
-        # Update the application-wide font
-        font = QFont(font_family)
-        font.setPointSize(self.ui_font_size_spin.value())
-        
-        # Apply to the entire application
-        from PySide6.QtWidgets import QApplication
-        QApplication.instance().setFont(font)
-        
-        # Also update menubar specifically via stylesheet
-        self.menuBar().setStyleSheet(f"QMenuBar {{ font-family: '{font_family}'; font-size: {self.ui_font_size_spin.value()}pt; }}")
-        self.statusBar().setStyleSheet(f"QStatusBar {{ font-family: '{font_family}'; font-size: {self.ui_font_size_spin.value()}pt; }}")
-        
+        size = self.ui_font_size_spin.value()
+        self.font_service.set_ui_font(font_family, size)
         print(f"UI font family changed to: {font_family}")
     
     def _on_ui_font_size_changed(self, size: int) -> None:
         """Handle UI font size change."""
-        # Get current font family
         font_family = self.ui_font_family_combo.currentText()
-        if not font_family or font_family == "Default":
+        if not font_family:
             return
-            
-        font = QFont(font_family)
-        font.setPointSize(size)
-        
-        # Apply to the entire application
-        from PySide6.QtWidgets import QApplication
-        QApplication.instance().setFont(font)
-        
-        # Also update menubar and statusbar specifically via stylesheet
-        self.menuBar().setStyleSheet(f"QMenuBar {{ font-family: '{font_family}'; font-size: {size}pt; }}")
-        self.statusBar().setStyleSheet(f"QStatusBar {{ font-family: '{font_family}'; font-size: {size}pt; }}")
-        
+        self.font_service.set_ui_font(font_family, size)
         print(f"UI font size changed to: {size}")
     
     def _on_text_cell_font_changed(self, font_family: str) -> None:
         """Handle text cell font family change."""
         # This will be used when text cells are implemented
+        size = self.text_cell_font_size_spin.value()
+        self.font_service.set_text_font(font_family, size)
         print(f"Text cell font family changed to: {font_family}")
     
     def _on_text_cell_size_changed(self, size: int) -> None:
         """Handle text cell font size change."""
         # This will be used when text cells are implemented
+        family = self.text_cell_font_family_combo.currentText()
+        if family:
+            self.font_service.set_text_font(family, size)
         print(f"Text cell font size changed to: {size}")
     
     def _on_code_cell_font_changed(self, font_family: str) -> None:
         """Handle code cell font family change."""
         # This will be used when code cells are implemented
+        size = self.code_cell_font_size_spin.value()
+        self.font_service.set_code_font(font_family, size)
         print(f"Code cell font family changed to: {font_family}")
     
     def _on_code_cell_size_changed(self, size: int) -> None:
         """Handle code cell font size change."""
         # This will be used when code cells are implemented
+        family = self.code_cell_font_family_combo.currentText()
+        if family:
+            self.font_service.set_code_font(family, size)
         print(f"Code cell font size changed to: {size}")
+
+    # Service signal callbacks (could be extended to update existing cell widgets later)
+    def _on_ui_font_service_changed(self, family: str, size: int) -> None:
+        self._apply_ui_font_to_widgets(family, size)
+
+    def _on_text_font_service_changed(self, family: str, size: int) -> None:  # placeholder
+        pass
+
+    def _on_code_font_service_changed(self, family: str, size: int) -> None:  # placeholder
+        pass
     
     def _on_precision_changed(self, precision: int) -> None:
         """Handle number precision change."""
@@ -327,10 +357,7 @@ class MainWindow(QMainWindow):
         # Header label
         self.header_label = QLabel("Luna STEM Notebook")
         self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        font = self.header_label.font()
-        font.setPointSize(24)
-        font.setBold(True)
-        self.header_label.setFont(font)
+    # Header font will be set proportionally in _apply_ui_font_to_widgets
         
         # Add widgets to layout
         layout.addWidget(self.header_label)
