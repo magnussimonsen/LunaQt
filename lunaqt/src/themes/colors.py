@@ -14,11 +14,18 @@ from ..constants.types import ThemeMode, ColorName
 # #828282 
 # #6B6B6B 
 
+# Shades of gray (for reference dark mode)
+#121212 (charcoal black, Background)
+#E0E0E0 (light gray, Primary Text)
+#B0B0B0 (medium gray, Secondary Text)
+#444444 (dark gray, Borders/Dividers)
+#888888 (soft gray, Accent )
+
 COLORS = {
     # Background colors
     "main_window_bg": {
         "light": "#FFFFFF",
-        "dark": "#1E1E1E"
+        "dark": "#121212"
     },
     "secondary_window_bg": { # Intended for menubars, sidebars, etc.
         "light": "whitesmoke",
@@ -46,7 +53,7 @@ COLORS = {
     },
     "button_bg": {
         "light": "#DEDEDE",
-        "dark": "#3A3A3A"
+        "dark": "#4A4A4A"
     },
 
     # Text colors
@@ -86,7 +93,7 @@ COLORS = {
     # Interactive item states (buttons, menu items, list items, etc.)
     "item_hover_bg": {  # Background when hovering over interactive items
         "light": "#C7C7C7",
-        "dark": "#4A4A4A"
+        "dark": "#676767"
     },
     "item_pressed_bg": {  # Background when pressing down on items
         "light": "lightgreen",
