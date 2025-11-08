@@ -4,6 +4,11 @@ Experimental attempt to build the Luna STEM Notebook in Python using Qt, aiming 
 
 Status: experimental / work in progress.
 
+## Screenshots
+
+![LunaQt screenshot 1](lunaqt/screenshots/LunaQt-2025-11-08-1.png)
+![LunaQt screenshot 2](lunaqt/screenshots/LunaQt-2025-11-08-2.png)
+
 ## Qt / PySide6
 
 This project uses Qt via PySide6 (Qt for Python). PySide6 provides Python bindings for the Qt 6 widget toolkit, giving a modern, native-like, cross‑platform UI.

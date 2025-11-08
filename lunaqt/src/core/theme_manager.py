@@ -10,6 +10,7 @@ from PySide6.QtWidgets import QMainWindow
 from ..constants.types import ThemeMode
 from ..themes.colors import get_color
 from ..themes.stylesheet import get_stylesheet
+from ..gui.style.theme_updater import apply_theme_styles
 
 
 class ThemeManager:
@@ -52,10 +53,8 @@ class ThemeManager:
         stylesheet = get_stylesheet(theme)
         self._window.setStyleSheet(stylesheet)
         
-        # Apply special styling to header if it exists
-        if hasattr(self._window, 'header_label'):
-            accent_color = get_color("primary_accent_color", theme)
-            self._window.header_label.setStyleSheet(f"color: {accent_color};")
+        # Delegate widget-specific style refresh to central updater
+        apply_theme_styles(self._window, theme)
     
     def toggle_theme(self) -> None:
         """Toggle between light and dark theme."""

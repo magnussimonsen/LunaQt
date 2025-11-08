@@ -82,8 +82,8 @@ COLORS = {
 
     # Accent colors (Not needed)
     "primary_accent_color": {
-        "light": "#002FFF",
-        "dark": "#4A9EFF"
+        "light": "#000000",
+        "dark": "whitesmoke"
     },
     "secondary_accent_color": {
         "light": "#00AA66",

@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QAction, QFont
+from pathlib import Path
+import sys
 from PySide6.QtCore import Qt
 
 from ..constants.config import WindowConfig
@@ -354,12 +356,16 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         central_widget.setLayout(layout)
         
-        # Header label
-        self.header_label = QLabel("Luna STEM Notebook")
-        self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    # Header font will be set proportionally in _apply_ui_font_to_widgets
+        # Header row: app icon + title centered (via helper)
+        from .style.set_app_icon import create_header_widget, build_window_qicon, resize_header_icon
+        header_row, self.header_label, self.header_icon_label = create_header_widget("Work in Progress")
         
         # Add widgets to layout
-        layout.addWidget(self.header_label)
+        layout.addWidget(header_row)
         layout.addStretch()
+
+        # Ensure window icon is set as well
+        icon_qicon = build_window_qicon()
+        if icon_qicon is not None:
+            self.setWindowIcon(icon_qicon)
 
