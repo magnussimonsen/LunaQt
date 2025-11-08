@@ -73,7 +73,7 @@ COLORS = {
     # Border colors
     "primary_border_color": {
         "light": "#CCCCCC",
-        "dark": "#444444"
+        "dark": "#242424"
     },
     "secondary_border_color": {
         "light": "#EEEEEE",
@@ -82,7 +82,7 @@ COLORS = {
 
     # Accent colors (Not needed)
     "primary_accent_color": {
-        "light": "#000000",
+        "light": "#222222",
         "dark": "whitesmoke"
     },
     "secondary_accent_color": {
