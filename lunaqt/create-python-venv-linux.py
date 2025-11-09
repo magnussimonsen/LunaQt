@@ -5,7 +5,6 @@ Simple script to create a Python virtual environment for Linux development.
 This script:
 1. Creates a .venv folder 
 2. Installs required dependencies
-3. That's it!
 
 Usage: python3 create-python-venv-linux.py
 """

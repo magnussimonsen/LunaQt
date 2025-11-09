@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
 
         # Notebooks menu
         notebooks_menu = menubar.addMenu("&Notebooks")
-        notebooks_menu.addAction(self._create_action("New Notebook", lambda: notebook_actions.on_new_notebook(self)))
+        notebooks_menu.addAction(self._create_action("Create New Notebook", lambda: notebook_actions.on_new_notebook(self)))
         notebooks_menu.addSeparator()
         notebooks_menu.addAction(self._create_action("Notebook 1 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
         notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
