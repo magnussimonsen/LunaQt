@@ -175,14 +175,31 @@ MainWindow (QMainWindow)
 │   ├── DefaultToolbar (no cell selected)
 │   ├── CodeToolbar (code cell selected)
 │   └── MarkdownToolbar (markdown cell selected)
+├── CommandPalette (QDialog)          # Ctrl+Shift+P
 └── NotebookView (QWidget)
-    └── QScrollArea
-        └── CellContainer (QWidget)
-            └── QVBoxLayout
-                ├── CodeCell (inherits BaseCell)
-                ├── MarkdownCell (inherits BaseCell)
-                └── CodeCell (inherits BaseCell)
+    └── QListWidget (with setItemWidget)
+        ├── QListWidgetItem → CodeCell
+        ├── QListWidgetItem → MarkdownCell
+        └── QListWidgetItem → CodeCell
 ```
+
+**Architecture Decision: Hybrid Widget Approach**
+
+We're using `QListWidget` with `setItemWidget()` instead of pure `QVBoxLayout` or full `QAbstractListModel`:
+
+**Advantages:**
+- Semi-virtualized scrolling (better than plain layout)
+- Simpler than full Model/View/Delegate pattern
+- Built-in selection, keyboard navigation, drag-drop
+- Easy to implement initially
+- Can migrate to `QListView` + delegates later if needed (100+ cells)
+
+**Future Migration Path:**
+If performance becomes an issue with very large notebooks (100+ cells), we can refactor to:
+- `QAbstractListModel` for data
+- `QListView` for display
+- `QStyledItemDelegate` for custom painting
+- Full virtualization (only visible cells rendered)
 
 ### Base Components
 
@@ -304,54 +321,170 @@ setupUI()  # Add toolbar-specific buttons
 
 ## Styling System
 
-### Cell Styles (`gui/notebook/styles/cell_stylesheet.py`)
+**Architecture Decision: QPalette + Minimal QSS** ⭐
 
-**Integration:** Reads from `themes/colors.py`
+We use a **QPalette-first approach** with minimal QSS overrides. This follows Qt best practices and provides:
+- Better performance (QPalette is faster than parsing QSS)
+- Cross-platform consistency
+- Automatic state handling (hover, focus, disabled)
+- Less code to maintain
 
-**Style Classes:**
-- `CellStylesheet.get_base_style(theme_colors)` - Common cell styles
-- `CellStylesheet.get_selected_style(theme_colors)` - Selection highlight
-- `CellStylesheet.get_code_cell_style(theme_colors)` - Code-specific styles
-- `CellStylesheet.get_markdown_cell_style(theme_colors)` - Markdown-specific styles
+### Theme Architecture
 
-**Theme Properties Used:**
+#### Semantic Color Tokens (`themes/semantic_colors.py`)
+
+Minimal, semantically-named color vocabulary:
+
 ```python
-background, background_selected
-text, code_text
-border, border_hover
-accent (selection color)
-code_background
+TOKENS = {
+    "light": {
+        # Surfaces
+        "surface.primary": "#FFFFFF",      # Main background
+        "surface.secondary": "#F5F5F5",    # Panels, sidebar
+        "surface.elevated": "#FFFFFF",     # Dialogs, popups
+        
+        # Text
+        "text.primary": "#000000",
+        "text.secondary": "#666666",
+        "text.disabled": "#AAAAAA",
+        
+        # Actions
+        "action.primary": "#0078D4",       # Selection, focus
+        "action.hover": "#1A8CFF",
+        "action.pressed": "#005A9E",
+        
+        # Borders
+        "border.default": "#CCCCCC",
+        "border.focus": "#0078D4",
+        
+        # Code-specific
+        "code.background": "#F8F8F8",
+        "code.text": "#1E1E1E",
+    },
+    "dark": { ... }
+}
 ```
 
-### Toolbar Styles (`gui/notebook/styles/toolbar_stylesheet.py`)
+**Key Principle:** Use semantic names (`surface.primary`, `action.hover`) not specific names (`sidebar_bg`, `button_hover_blue`).
 
-**Integration:** Reads from `themes/colors.py`
+#### QPalette Builder (`themes/palette_builder.py`)
 
-**Style Class:**
-- `ToolbarStylesheet.get_base_style(theme_colors)` - All toolbar styles
+Maps semantic tokens to QPalette color roles:
 
-**Styled Elements:**
-- QPushButton (standard buttons)
-- QToolButton (icon buttons)
-- Hover states
-- Pressed states
-
-**Theme Properties Used:**
 ```python
-toolbar_background
-button_background, button_hover, button_pressed
-button_border
+palette.setColor(QPalette.Window, colors["surface.primary"])
+palette.setColor(QPalette.Text, colors["text.primary"])
+palette.setColor(QPalette.Highlight, colors["action.primary"])
+# ... etc
 ```
 
-### Theme Updates
+Qt automatically applies these to all widgets. Child widgets inherit properly.
 
-**Flow:**
-1. User changes theme in settings
-2. `ThemeManager` emits `theme_changed` signal
-3. `MainWindow` receives signal
-4. `MainWindow` calls `updateNotebookStyles()`
-5. New stylesheets generated with new theme colors
-6. Applied to all cells and toolbars
+#### Minimal QSS (`themes/minimal_qss.py`)
+
+**Only** for things QPalette cannot handle:
+- Borders, border-radius, shadows
+- Spacing, padding, margins
+- Scrollbar styling
+- Layout-specific overrides
+
+```python
+QScrollBar:vertical {
+    width: 12px;
+    background: {surface.secondary};
+}
+
+QPushButton {
+    border: 1px solid {border.default};
+    border-radius: 4px;
+    padding: 6px 16px;
+    /* Background/text from QPalette automatically */
+}
+```
+
+**What QPalette Handles Automatically:**
+- ✅ Background colors (`QPalette.Window`, `QPalette.Base`)
+- ✅ Text colors (`QPalette.Text`, `QPalette.WindowText`)
+- ✅ Button colors (`QPalette.Button`, `QPalette.ButtonText`)
+- ✅ Selection/highlight (`QPalette.Highlight`)
+- ✅ Disabled states (`QPalette.Disabled`)
+- ✅ Links (`QPalette.Link`)
+
+**What Requires QSS:**
+- ❌ Borders and border-radius
+- ❌ Padding and margins
+- ❌ Scrollbar custom styling
+- ❌ Complex selectors (`:hover` on custom widgets)
+
+### Notebook-Specific Styles (`gui/notebook/styles/notebook_qss.py`)
+
+Additional QSS for notebook components:
+
+```python
+BaseCell {
+    border: 1px solid {border.default};
+    border-radius: 4px;
+    /* Background/text from QPalette */
+}
+
+BaseCell[selected="true"] {
+    border: 2px solid {action.primary};
+}
+
+CodeCell QTextEdit {
+    background-color: {code.background};  # Override for code
+    font-family: 'Fira Code', monospace;
+}
+```
+
+### Theme Application Flow
+
+```
+User changes theme
+    ↓
+ThemeManager.apply_theme(theme)
+    ↓
+1. Build QPalette from semantic tokens
+    ↓
+2. QApplication.setPalette(palette)  ← Affects ALL widgets automatically
+    ↓
+3. Apply minimal QSS for structure only
+    ↓
+4. Emit theme_changed signal
+    ↓
+5. Custom components update if needed
+    ↓
+All widgets repaint with new colors
+```
+
+### Adding New Themed Components
+
+When creating new widgets:
+
+1. **Use QPalette colors by default** - No explicit styling needed
+2. **Add borders/spacing via QSS** if needed
+3. **Use semantic tokens** via `theme_manager.get_color(token)`
+4. **Avoid hardcoded colors** in Python code
+
+Example:
+```python
+class MyWidget(QWidget):
+    def __init__(self):
+        # Background automatically from QPalette.Window
+        # Text automatically from QPalette.Text
+        
+        # Only add QSS if need borders:
+        self.setStyleSheet("""
+            MyWidget {
+                border: 1px solid palette(mid);
+                border-radius: 4px;
+            }
+        """)
+```
+
+### Migration Note
+
+See `QPALETTE_MIGRATION_PLAN.md` for full details on the QPalette migration from the old QSS-heavy system.
 
 ---
 
@@ -371,14 +504,22 @@ lunaqt/src/
 │   ├── notebook_manager.py            # Notebook CRUD & ordering
 │   ├── cell_manager.py                # Cell CRUD & conversions
 │   ├── data_store.py                  # JSON persistence layer
-│   └── cell_executor.py               # Code execution (future)
+│   ├── cell_executor.py               # Code execution (future)
+│   └── theme_manager.py               # 🔄 QPalette-based theme manager
+│
+├── themes/
+│   ├── __init__.py
+│   ├── semantic_colors.py             # ⭐ Semantic color tokens
+│   ├── palette_builder.py             # ⭐ QPalette construction
+│   └── minimal_qss.py                 # ⭐ Minimal structural QSS
 │
 ├── gui/
 │   ├── main_window.py                 # Main application window
+│   ├── command_palette.py             # ⭐ Searchable command palette
 │   │
 │   └── notebook/
 │       ├── __init__.py
-│       ├── notebook_view.py           # Cell container & orchestration
+│       ├── notebook_view.py           # Cell container (QListWidget-based)
 │       │
 │       ├── cells/
 │       │   ├── __init__.py
@@ -396,13 +537,152 @@ lunaqt/src/
 │       │
 │       └── styles/
 │           ├── __init__.py
-│           ├── cell_stylesheet.py     # ⭐ Cell style generator
-│           └── toolbar_stylesheet.py  # ⭐ Toolbar style generator
+│           └── notebook_qss.py        # ⭐ Notebook-specific QSS additions
 │
 └── utils/
     ├── __init__.py
     └── id_generator.py                # UUID generation
 ```
+
+---
+
+## Enhancements from Community Review
+
+### Implemented Design Decisions
+
+#### 1. Command Palette (Point 9)
+**Status:** ✅ Approved and planned for Phase 4
+
+A searchable command palette (Ctrl+Shift+P) will provide:
+- Quick access to all application commands
+- Fuzzy search for discoverability
+- Keyboard-first workflow
+- Professional UX similar to VS Code/Jupyter
+
+**Implementation:**
+- `gui/command_palette.py` - Dialog with search and command list
+- Command registry pattern for extensibility
+- Keybindings integrated with existing shortcuts
+
+#### 2. List-Based Cell Rendering (Point 4)
+**Status:** ✅ Hybrid approach adopted
+
+Instead of pure `QVBoxLayout` or full Model/View, we're using **QListWidget with setItemWidget()**:
+
+**Why this approach:**
+- ✅ Semi-virtualized scrolling (better performance than plain layout)
+- ✅ Simpler than full `QAbstractListModel` + delegates
+- ✅ Built-in selection, keyboard nav, drag-drop support
+- ✅ Can upgrade to full Model/View later if needed (100+ cells)
+
+**Trade-offs considered:**
+- Pure QVBoxLayout: Too simple, no virtualization, doesn't scale
+- Full Model/View: Too complex initially, harder to debug interactive editors
+- **QListWidget hybrid: Best balance for MVP** ⭐
+
+**Future optimization path:**
+If notebooks grow to 100+ cells and performance degrades:
+1. Migrate to `QListView` + `QAbstractListModel`
+2. Implement `QStyledItemDelegate` for custom cell painting
+3. Enable full virtualization (only visible cells in memory)
+
+### Under Consideration
+
+#### 3. Schema Versioning (Point 1)
+**Priority:** High for Phase 1
+
+Add to Cell and Notebook JSON:
+```python
+{
+    "schema_version": 1,  # Enable future migrations
+    "dirty": false,       # Track unsaved changes
+    ...
+}
+```
+
+**Benefits:**
+- Safe format evolution
+- Migration scripts for upgrades
+- Crash recovery support
+
+#### 4. Undo/Redo System (Point 3)
+**Priority:** Medium for Phase 4-5
+
+Use `QUndoStack` with command pattern:
+- `AddCellCommand`, `DeleteCellCommand`, `MoveCellCommand`, `EditCellCommand`
+- Native Ctrl+Z/Ctrl+Y support
+- Better than manual state tracking
+
+#### 5. Transaction Safety (Point 2)
+**Priority:** Medium for Phase 1
+
+Implement in `DataStore`:
+```python
+with data_store.transaction():
+    # Notebook + cell updates
+    # Atomic: all succeed or all fail
+```
+
+**Benefits:**
+- Prevents partial writes on crash
+- Ensures notebook ↔ cells consistency
+- Use temp files + atomic rename
+
+#### 6. Jupyter Compatibility (Point 5)
+**Priority:** Low (Phase 6+)
+
+Partial .ipynb support:
+- Import/export basic notebooks
+- Map cell types (code/markdown)
+- Convert outputs to MIME bundles
+- **Not required for MVP**
+
+#### 7. Process-Isolated Execution (Point 6)
+**Priority:** Low (Phase 6+)
+
+When implementing `CellExecutor`:
+- Use `jupyter_client` + ZMQ for kernel communication
+- Separate process for Python execution (avoid GIL blocking UI)
+- Enables kernel interrupts and restarts
+- Multi-language support becomes easier
+
+#### 8. Large Output Storage (Point 10)
+**Priority:** Low (Phase 3-5)
+
+Store outputs separately:
+```
+~/.lunaqt/
+├── notebooks/
+├── cells/
+└── assets/
+    └── <cell_id>/
+        ├── plot.png
+        └── data.csv
+```
+
+Reference in cell JSON:
+```python
+"outputs": [{
+    "output_type": "display_data",
+    "data": {
+        "image/png": "file://assets/<cell_id>/plot.png"
+    }
+}]
+```
+
+#### 9. Additional ChatGPT Suggestions
+
+**Accepted for implementation:**
+- Multi-cell selection (Shift+Click, Ctrl+Click)
+- Jupyter-style keyboard shortcuts (A/B for insert, DD for delete, M/Y for convert)
+- Inline status indicators (execution time, last run)
+- Centralized logging with rotating file handler
+
+**Deferred to future phases:**
+- Collaboration/CRDT support
+- Git integration
+- Extension API
+- Cloud sync
 
 ---
 
@@ -546,6 +826,12 @@ On Close:
 ## Implementation Phases
 
 ### Phase 1: Foundation (Weeks 1-2)
+- [ ] **Migrate to QPalette theme system** (see QPALETTE_MIGRATION_PLAN.md)
+  - Create semantic color tokens
+  - Build QPalette builder
+  - Create minimal QSS generator
+  - Refactor ThemeManager
+  - Test theme switching
 - [ ] Create data models (`models/cell.py`, `models/notebook.py`)
 - [ ] Implement `DataStore` (JSON read/write)
 - [ ] Create `CellManager` and `NotebookManager`
@@ -553,11 +839,10 @@ On Close:
 - [ ] Implement ID generation utility
 
 ### Phase 2: Base UI Components (Weeks 3-4)
-- [ ] Create `BaseCell` template
-- [ ] Create `BaseToolbar` template
-- [ ] Implement cell and toolbar stylesheets
-- [ ] Integrate with existing theme system
-- [ ] Create `NotebookView` container
+- [ ] Create `BaseCell` template (uses QPalette for colors)
+- [ ] Create `BaseToolbar` template (uses QPalette for colors)
+- [ ] Create `notebook_qss.py` for notebook-specific structural styles
+- [ ] Create `NotebookView` container (QListWidget-based)
 
 ### Phase 3: Cell Types (Weeks 5-6)
 - [ ] Implement `CodeCell` with basic text editor
@@ -572,6 +857,10 @@ On Close:
 - [ ] Implement `MarkdownToolbar`
 - [ ] Connect toolbar actions to managers
 - [ ] Add keyboard shortcuts
+- [ ] **Implement Command Palette** (Ctrl+Shift+P)
+  - Searchable command registry
+  - Quick action execution
+  - Keyboard-first navigation
 
 ### Phase 5: Integration (Week 8)
 - [ ] Integrate into `MainWindow`
@@ -662,10 +951,29 @@ On Close:
 This architecture provides:
 
 ✅ **Maintainability**: Base templates and centralized styling  
-✅ **Scalability**: Manager layer handles complexity  
+✅ **Scalability**: Manager layer handles complexity, QListWidget provides path to virtualization  
 ✅ **Consistency**: Theme integration throughout  
 ✅ **Flexibility**: Easy to add new cell types and features  
-✅ **Performance**: Efficient data structure with ID references  
-✅ **User Experience**: Reactive UI with context-sensitive toolbars  
+✅ **Performance**: Efficient data structure with ID references, semi-virtualized rendering  
+✅ **User Experience**: Reactive UI with context-sensitive toolbars and command palette  
+✅ **Future-proof**: Schema versioning, transaction safety, and upgrade paths planned  
 
 The separation between data (models + managers) and presentation (UI components) ensures clean code that's easy to test, extend, and maintain.
+
+### Key Architectural Decisions
+
+1. **Hybrid List-Based Rendering**: QListWidget strikes balance between simplicity and performance
+2. **Command Palette**: Enhances discoverability and keyboard-first workflows
+3. **Base Template Pattern**: Ensures consistency across cells and toolbars
+4. **QPalette + Minimal QSS**: Works with Qt's style engine, reduces code, better performance ⭐
+5. **Semantic Color Tokens**: Maintainable, self-documenting color vocabulary
+6. **Schema Versioning**: Enables safe format evolution (to be implemented in Phase 1)
+
+### Implementation Strategy
+
+- **Phase 1-2 (4 weeks)**: Foundation (data layer + base UI components)
+- **Phase 3-4 (4 weeks)**: Cell types + toolbars + command palette
+- **Phase 5 (2 weeks)**: Integration + polish
+- **Phase 6 (ongoing)**: Advanced features (execution, Jupyter compat, extensions)
+
+This plan balances ambition with pragmatism—building a solid MVP while leaving room for advanced features as the application matures.
