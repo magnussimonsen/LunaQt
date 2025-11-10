@@ -8,6 +8,6 @@ DEFAULT_WINDOW_HEIGHT = 800
 MIN_WINDOW_WIDTH = 200
 MIN_WINDOW_HEIGHT = 200
 
-# Maximum window dimensions (optional)
-MAX_WINDOW_WIDTH = 1920
-MAX_WINDOW_HEIGHT = 1080
+# Maximum window dimensions (optional - None means unlimited)
+MAX_WINDOW_WIDTH = None
+MAX_WINDOW_HEIGHT = None

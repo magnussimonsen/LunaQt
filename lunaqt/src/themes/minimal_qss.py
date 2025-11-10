@@ -209,6 +209,7 @@ class MinimalQSS:
             
             QComboBox {{
                 border: 1px solid {colors["border.default"]};
+                /*min-width: 150px;*/
             }}
             
             QComboBox:hover {{

@@ -116,7 +116,9 @@ class MainWindow(QMainWindow):
         # Lock to right side only
         self.settings_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
         
-        # Disable all features (no moving, floating, or close button)
+        # Remove title bar to prevent undocking, but keep resizable
+        # NoDockWidgetFeatures removes the title bar which prevents moving/floating
+        # The dock widget will still be resizable by dragging its edge
         self.settings_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         
         # Create settings panel content
@@ -134,18 +136,21 @@ class MainWindow(QMainWindow):
         
         # UI Font Family
         self.ui_font_family_combo = QComboBox()
+        self.ui_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.ui_font_family_combo.addItems(all_fonts)
         self.ui_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("UI Font Family:", self.ui_font_family_combo)
         
         # Text Cell Font Family
         self.text_cell_font_family_combo = QComboBox()
+        self.text_cell_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.text_cell_font_family_combo.addItems(all_fonts)
         self.text_cell_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("Text Cell Font Family:", self.text_cell_font_family_combo)
         
         # Code Cell Font Family
         self.code_cell_font_family_combo = QComboBox()
+        self.code_cell_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.code_cell_font_family_combo.addItems(code_fonts)
         self.code_cell_font_family_combo.setCurrentText(DEFAULT_CODE_FONT)
         settings_layout.addRow("Code Cell Font Family:", self.code_cell_font_family_combo)
@@ -188,6 +193,10 @@ class MainWindow(QMainWindow):
         
         # Add to main window (default: right side, initially hidden)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.settings_dock)
+        
+        # Set a reasonable initial width for the dock widget
+        #self.settings_dock.setMinimumWidth(200) # Do not work as expected
+        #self.settings_dock.setMaximumWidth(900) # Do not work as expected
         self.settings_dock.hide()
     
     def _setup_menubar(self) -> None:
