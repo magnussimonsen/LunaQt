@@ -1,20 +1,25 @@
-"""Theme management - core business logic for theme switching.
-
-This module handles theme state and application logic,
-independent of GUI implementation.
-"""
+"""Theme management with QPalette-first approach."""
 
 from typing import Optional
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtCore import Signal, QObject
 
 from ..constants.types import ThemeMode
-from ..themes.colors import get_color
-from ..themes.stylesheet import get_stylesheet
-from ..gui.style.theme_updater import apply_theme_styles
+from ..themes.palette_builder import PaletteBuilder
+from ..themes.minimal_qss import MinimalQSS
+from ..themes.semantic_colors import SemanticColors
 
 
-class ThemeManager:
-    """Manages application theme state and switching."""
+class ThemeManager(QObject):
+    """
+    Manages application theme using QPalette + minimal QSS.
+    
+    QPalette handles most colors automatically.
+    QSS only for structural styling (borders, spacing, etc).
+    """
+    
+    # Signal emitted when theme changes
+    theme_changed = Signal(str)  # emits theme name ("light" or "dark")
     
     def __init__(self, initial_theme: ThemeMode = "light") -> None:
         """Initialize theme manager.
@@ -22,6 +27,7 @@ class ThemeManager:
         Args:
             initial_theme: Starting theme mode
         """
+        super().__init__()
         self._current_theme: ThemeMode = initial_theme
         self._window: Optional[QMainWindow] = None
     
@@ -38,8 +44,23 @@ class ThemeManager:
         """Get current theme mode."""
         return self._current_theme
     
+    def get_color(self, token: str) -> str:
+        """
+        Get semantic color for current theme.
+        
+        Args:
+            token: Semantic token like 'surface.primary'
+            
+        Returns:
+            Hex color string
+        """
+        return SemanticColors.get(self._current_theme, token)
+    
     def apply_theme(self, theme: ThemeMode) -> None:
-        """Apply theme to the window.
+        """
+        Apply theme to the application.
+        
+        Uses QPalette for colors, minimal QSS for structure.
         
         Args:
             theme: Theme mode to apply
@@ -49,12 +70,19 @@ class ThemeManager:
         
         self._current_theme = theme
         
-        # Apply complete stylesheet
-        stylesheet = get_stylesheet(theme)
-        self._window.setStyleSheet(stylesheet)
+        # 1. Apply QPalette (handles most colors automatically)
+        palette = PaletteBuilder.build(theme)
+        QApplication.instance().setPalette(palette)
         
-        # Delegate widget-specific style refresh to central updater
-        apply_theme_styles(self._window, theme)
+        # 2. Apply minimal QSS (only for structure/borders)
+        qss = MinimalQSS.get(theme)
+        QApplication.instance().setStyleSheet(qss)
+        
+        # 3. Emit signal for custom components
+        self.theme_changed.emit(theme)
+        
+        # Force repaint
+        self._window.update()
     
     def toggle_theme(self) -> None:
         """Toggle between light and dark theme."""

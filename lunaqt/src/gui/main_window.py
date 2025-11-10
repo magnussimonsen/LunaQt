@@ -23,7 +23,6 @@ from ..assets.fonts.font_lists import (
 )
 from .menu_actions import file_actions, edit_actions, view_actions
 from .menu_actions import notebook_actions, settings_actions, help_actions
-from .button_styles import get_button_stylesheet
 
 
 class MainWindow(QMainWindow):
@@ -50,6 +49,11 @@ class MainWindow(QMainWindow):
 
         # Theme hookup
         self.theme_manager.set_window(self)
+        
+        # Connect to theme changes for custom updates
+        self.theme_manager.theme_changed.connect(self._on_theme_changed)
+        
+        # Apply initial theme
         self.theme_manager.apply_theme(config.theme)
 
         # Font service setup (other widgets can subscribe later)
@@ -272,18 +276,17 @@ class MainWindow(QMainWindow):
         self.settings_dock.setVisible(is_visible)
         # Update the checked state of the settings button
         self.settings_button.setChecked(is_visible)
-        # Update button background color based on visibility
-        self._update_settings_button_style(is_visible)
     
-    def _update_settings_button_style(self, is_selected: bool) -> None:
-        """Update the settings button style based on selected state.
+    def _on_theme_changed(self, theme: str) -> None:
+        """Handle theme changes for custom components.
+        
+        Most widgets update automatically via QPalette.
+        No special handling needed - QPushButton:checked handles settings button.
         
         Args:
-            is_selected: True if settings dock is visible, False otherwise
+            theme: The new theme name ("light" or "dark")
         """
-        state = "selected" if is_selected else "normal"
-        stylesheet = get_button_stylesheet(self.theme_manager.current_theme, state)
-        self.settings_button.setStyleSheet(stylesheet)
+        pass
     
     def _on_ui_font_family_changed(self, font_family: str) -> None:
         """Handle UI font family change."""
