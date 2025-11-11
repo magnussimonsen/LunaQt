@@ -41,7 +41,8 @@ Use this checklist to track MVP progress and planned build-outs. Update in PRs a
 ### UI shell
 - [x] `MainWindow` with settings side panel; resizable
 - [x] Settings controls wired (QComboBox with AdjustToContents, QSpinBox)
-- [ ] Persist window geometry/state via QSettings
+- [x] Persist window geometry/state via QSettings
+- [x] Document notebook cell GUI plan (this file)
 - [ ] Consider switching settings panel to QSplitter if resize quirks persist
 
 ### Widgets polish
@@ -54,14 +55,18 @@ Use this checklist to track MVP progress and planned build-outs. Update in PRs a
 - [x] Scaffolding created: `src/models/`, `src/utils/`, `src/gui/notebook/cells/`, `src/gui/notebook/toolbars/`
 - [x] Core stubs added: `core/data_store.py`, `core/cell_manager.py`, `core/notebook_manager.py`
 - [x] READMEs in new folders explaining deferred implementation
-- [ ] UUID helper in `utils` for IDs
-- [ ] `NotebookView` container (QListWidget-based) placeholder
+- [x] UUID helper in `utils` for IDs
+- [x] `NotebookView` container (QListWidget-based) placeholder
 
-### Data and persistence (post-MVP)
-- [ ] DataStore MVP (JSON read/write + atomic save)
-- [ ] NotebookManager API (create/open/save)
-- [ ] Add `schema_version` to models
-- [ ] Use per-OS data directory (QStandardPaths/AppDirs)
+### Data and persistence
+- [x] DataStore MVP (JSON read/write + atomic save)
+- [x] NotebookManager API (create/open/save)
+- [x] Add `schema_version` to models
+- [x] Use per-OS data directory (QStandardPaths/AppDirs)
+- [x] CellManager API (create/update/delete/get)
+- [x] Cell widgets (BaseCell, CodeCell, MarkdownCell)
+- [x] Wire NotebookView into MainWindow central area
+- [x] Implement NotebookView behavior (selection, insert/delete/move, placeholder)
 
 ### Commands and shortcuts (post-MVP)
 - [ ] Centralized command registry (IDs, labels, shortcuts)
@@ -393,6 +398,118 @@ setupUI()  # Add toolbar-specific buttons
 
 ---
 
+## Notebook Cell GUI Plan (MVP)
+
+This section defines the concrete interaction contract for NotebookView and cell widgets for the MVP. It covers selection rules, insert/delete/move behavior, placeholder handling, and how actions enable/disable based on state.
+
+### Goals and constraints
+
+- Single selection only (exactly 0 or 1 selected cell at a time)
+- Keyboard and mouse friendly; drag-and-drop is optional later
+- Operations: insert (above/below/end), delete, move up/down, convert type (optional)
+- Persist via NotebookManager/CellManager; UI reflects persisted order and selection
+
+### Internal structures (NotebookView)
+
+- Underlying: QListWidget with setItemWidget(CodeCell/MarkdownCell)
+- Registry mappings:
+    - `cell_id -> (QListWidgetItem, BaseCell)`
+    - `QListWidgetItem -> cell_id`
+- Public helpers:
+    - `get_selected_index() -> int | None`
+    - `get_selected_cell_id() -> str | None`
+    - `select_index(i: int) -> None`
+    - `select_cell(cell_id: str) -> None`
+    - `add_cell(cell_id: str, cell_type: str, content: str, position: int | None = None) -> None`
+    - `remove_cell(cell_id: str) -> None`
+    - `move_cell(cell_id: str, delta: int) -> None`  # delta = -1 (up) or +1 (down)
+
+### Selection behavior
+
+- Click on a cell selects it and deselects any previous selection
+- Selection is visually indicated by BaseCell (e.g., border highlight)
+- When selection changes, NotebookView emits `selection_changed(cell_id: str, cell_type: str, index: int)`
+
+### Operations and rules
+
+1) Insert
+- Insert Above: if a cell is selected at index i, insert new cell at i; select the new cell
+- Insert Below: if selected at index i, insert at i+1; select the new cell
+- Insert At End: append after the last cell; select the new cell
+- If no selection:
+    - For Above/Below: treat as End
+    - For End: append
+- Persistence: create via CellManager.create_cell(type), add to notebook via NotebookManager.add_cell(notebook_id, cell_id, position), then add to UI
+
+2) Delete
+- Requires a selected cell; if none, no-op
+- Remove from NotebookManager, then remove from UI registry and list
+- Selection fallback after delete:
+    - If an item now exists at the same index, select it
+    - Else, if there is a previous item (index-1), select it
+    - Else, no selection; show placeholder
+
+3) Move Up / Move Down
+- With selected index i:
+    - Move Up only if i > 0 (delta = -1)
+    - Move Down only if i < count-1 (delta = +1)
+- Call NotebookManager.move_cell(notebook_id, cell_id, new_position)
+- Update UI order (takeItem/insertItem or swap); keep the same cell selected post-move
+
+### Edge cases and enable/disable logic
+
+- 0 cells: show placeholder; only “Add” actions enabled; Delete/Move disabled
+- 1 cell: Delete enabled when selected; Move Up/Down disabled
+- At first cell: Move Up disabled
+- At last cell: Move Down disabled
+- No selection but non-empty notebook: Add actions enabled; Delete/Move disabled
+
+NotebookView emits a compact state signal after any change:
+- `state_changed(can_insert: bool, can_delete: bool, can_move_up: bool, can_move_down: bool, count: int, has_selection: bool)`
+
+Toolbars subscribe to `selection_changed` and `state_changed` to enable/disable their buttons.
+
+### Placeholder behavior (empty notebook)
+
+- Show a centered, low-contrast panel with text: “No cells yet. Use the Insert menu to add a cell.”
+- No inline add buttons; cell insertion is driven by the menubar Insert actions
+- When the first cell is added, hide the placeholder and select the new cell
+
+### Load/open flow
+
+1. MainWindow determines `notebook_id` and calls NotebookManager.open_notebook()
+2. NotebookView.clear(), hide placeholder
+3. For each `cell_id` in `NotebookManager.get_cell_order()`:
+     - Load via CellManager.get_cell(cell_id)
+     - Create appropriate cell widget and add to list/registry
+4. If any cells were added, select index 0; else, show placeholder
+5. Emit initial `state_changed` reflecting current count/selection
+
+### Minimal signals (between layers)
+
+- BaseCell emits:
+    - `selected(cell_id: str, cell_type: str)`
+    - `content_changed(cell_id: str, new_content: str)`
+- NotebookView emits:
+    - `selection_changed(cell_id: str, cell_type: str, index: int)`
+    - `state_changed(can_insert: bool, can_delete: bool, can_move_up: bool, can_move_down: bool, count: int, has_selection: bool)`
+    - `request_persist_reorder(new_order: list[str])` (optional if persistence is invoked directly)
+
+### Tiny contract (I/O expectations)
+
+- Inputs: current notebook_id, managers (NotebookManager, CellManager)
+- Outputs: UI list of cells in manager order; signals for selection/state; operations delegate to managers then reflect in UI
+- Error modes: failed persistence (show non-blocking toast/status), invalid indices are guarded and no-op
+- Success: list and managers remain in sync; selection is always valid or empty; actions reflect current state
+
+### Next steps to implement
+
+- Implement NotebookView registry and helpers listed above
+- Wire BaseCell click to NotebookView.selection handling
+- Add toolbar buttons (Add Above/Below/End, Delete, Up, Down) and connect signals
+- Implement enable/disable updates based on `state_changed`
+- Cover edge cases with simple unit tests around ordering helpers (post-MVP optional)
+
 ## Styling System
 
 **Architecture Decision: QPalette + Minimal QSS** ⭐
@@ -686,7 +803,7 @@ with data_store.transaction():
 - Use temp files + atomic rename
 
 #### 6. Jupyter Compatibility (Point 5)
-**Priority:** Low (Phase 6+)
+**Priority:** Very Low (Phase 6+)
 
 Partial .ipynb support:
 - Import/export basic notebooks

@@ -1,4 +1,7 @@
-"""Edit menu action handlers."""
+"""Edit menu action handlers.
+
+Wire menubar actions to NotebookView operations.
+"""
 
 from typing import TYPE_CHECKING
 
@@ -6,55 +9,60 @@ if TYPE_CHECKING:
     from PySide6.QtWidgets import QMainWindow
 
 
+def _nv(window: "QMainWindow"):
+    return getattr(window, "notebook_view", None)
+
+
 def on_move_cell_up(window: "QMainWindow") -> None:
-    """Handle move cell up action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Move cell up action triggered")
+    nv = _nv(window)
+    if nv:
+        nv.move_selected_up()
 
 
 def on_move_cell_down(window: "QMainWindow") -> None:
-    """Handle move cell down action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Move cell down action triggered")
+    nv = _nv(window)
+    if nv:
+        nv.move_selected_down()
 
 
 def on_delete_cell(window: "QMainWindow") -> None:
-    """Handle delete cell action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Delete cell action triggered")
+    nv = _nv(window)
+    if nv:
+        nv.delete_selected()
 
 
 def on_insert_text_cell(window: "QMainWindow") -> None:
-    """Handle insert text cell action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Insert text cell action triggered")
+    """Insert a Markdown (text) cell below selection or at end if none."""
+    nv = _nv(window)
+    if not nv:
+        return
+    idx = nv.get_selected_index()
+    if idx is None:
+        nv.insert_at_end("markdown")
+    else:
+        nv.insert_below("markdown")
 
 
 def on_insert_cas_cell(window: "QMainWindow") -> None:
-    """Handle insert CAS cell action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Insert CAS cell action triggered")
+    """Insert a CAS cell (mapped to code for MVP) below selection or at end."""
+    nv = _nv(window)
+    if not nv:
+        return
+    idx = nv.get_selected_index()
+    target_type = "code"  # TODO: introduce dedicated CAS type later
+    if idx is None:
+        nv.insert_at_end(target_type)
+    else:
+        nv.insert_below(target_type)
 
 
 def on_insert_python_cell(window: "QMainWindow") -> None:
-    """Handle insert Python cell action.
-    
-    Args:
-        window: Main window instance
-    """
-    print("Insert Python cell action triggered")
+    """Insert a Python (code) cell below selection or at end if none."""
+    nv = _nv(window)
+    if not nv:
+        return
+    idx = nv.get_selected_index()
+    if idx is None:
+        nv.insert_at_end("code")
+    else:
+        nv.insert_below("code")

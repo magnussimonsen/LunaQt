@@ -10,12 +10,15 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QAction, QFont
 from pathlib import Path
 import sys
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSettings
 
 from ..constants.config import WindowConfig
 from ..core.theme_manager import ThemeManager
 from ..core.font_manager import get_font_manager
 from ..core.font_service import get_font_service
+from ..core.data_store import DataStore
+from ..core.notebook_manager import NotebookManager
+from ..core.cell_manager import CellManager
 from ..assets.fonts.font_lists import (
     BUNDLED_FONTS, BUNDLED_CODE_FONTS,
     DEFAULT_UI_FONT, DEFAULT_CODE_FONT,
@@ -67,6 +70,27 @@ class MainWindow(QMainWindow):
         self.font_service.set_text_font(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
         self.font_service.set_code_font(DEFAULT_CODE_FONT, DEFAULT_CODE_FONT_SIZE)
         self._apply_ui_font_to_widgets(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
+        
+        # Restore window geometry/state from previous session
+        self._restore_window_state()
+    
+    def _restore_window_state(self) -> None:
+        """Restore window geometry and dock widget state from QSettings."""
+        settings = QSettings("LunaQt", "LunaQt")
+        geometry = settings.value("window/geometry")
+        state = settings.value("window/state")
+        
+        if geometry is not None:
+            self.restoreGeometry(geometry)
+        if state is not None:
+            self.restoreState(state)
+    
+    def closeEvent(self, event) -> None:
+        """Save window geometry/state before closing."""
+        settings = QSettings("LunaQt", "LunaQt")
+        settings.setValue("window/geometry", self.saveGeometry())
+        settings.setValue("window/state", self.saveState())
+        event.accept()
     
     def _setup_window(self) -> None:
         """Configure window properties."""
@@ -386,11 +410,34 @@ class MainWindow(QMainWindow):
         
         # Header row: app icon + title centered (via helper)
         from .style.set_app_icon import create_header_widget, build_window_qicon, resize_header_icon
-        header_row, self.header_label, self.header_icon_label = create_header_widget("Work in Progress")
+        header_row, self.header_label, self.header_icon_label = create_header_widget("LunaQt Notebook")
         
-        # Add widgets to layout
+        # Add header
         layout.addWidget(header_row)
-        layout.addStretch()
+        
+        # Add NotebookView as main content area
+        from .notebook.notebook_view import NotebookView
+        self.notebook_view = NotebookView()
+        layout.addWidget(self.notebook_view)
+
+        # Initialize data store and managers, load or create default notebook
+        try:
+            self._data_store = DataStore()
+            self._notebook_manager = NotebookManager(self._data_store)
+            self._cell_manager = CellManager(self._data_store)
+
+            notebooks = self._notebook_manager.list_notebooks()
+            if notebooks:
+                active_id = notebooks[0].get("notebook_id")
+            else:
+                active_id = self._notebook_manager.create_notebook("Untitled Notebook")
+            # Open and load into view
+            self._notebook_manager.open_notebook(active_id)
+            self.notebook_view.set_managers(self._notebook_manager, self._cell_manager)
+            self.notebook_view.set_active_notebook(active_id)
+        except Exception as e:
+            # Non-fatal: show message in status bar
+            self.statusBar().showMessage(f"Notebook init failed: {e}")
 
         # Ensure window icon is set as well
         icon_qicon = build_window_qicon()
