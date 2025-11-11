@@ -209,6 +209,7 @@ class MinimalQSS:
             
             QComboBox {{
                 border: 1px solid {colors["border.default"]};
+                padding: 4px 8px 4px 8px; /* Adjust padding for better touch targets */
                 /*min-width: 150px;*/
             }}
             
@@ -295,6 +296,7 @@ class MinimalQSS:
             QDockWidget::title {{
                 padding: 6px;
                 border-bottom: 1px solid {colors["border.subtle"]};
+                text-align: left;
                 /* Background/text from QPalette */
             }}
             
