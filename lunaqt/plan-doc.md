@@ -4,6 +4,78 @@
 
 LunaQt will implement a Jupyter-like notebook system using PySide6 (Qt6) with a focus on maintainability, theme integration, and clean separation of concerns.
 
+This document follows an MVP-first approach: build the smallest useful prototype with a clean, extensible structure, then layer in professional features. Non-essential items (accessibility, risk register, advanced execution, etc.) are deferred but scaffolded in the repository for smooth expansion later.
+
+## MVP-first plan (keep it small, ready to grow)
+
+MVP goals (functional, minimal):
+- App starts with themed UI (QPalette-first + minimal QSS)
+- MainWindow with a resizable settings side panel and a central placeholder Notebook area
+- Theme switching (light/dark) via ThemeManager
+- Basic settings controls (comboboxes/spinboxes) wired and styled
+- Project structure in place for data managers and notebook UI, even if not fully implemented
+
+Out-of-scope for MVP (scaffold only):
+- Notebook persistence (JSON), cell execution, markdown rendering
+- Command palette, undo/redo, complex outputs
+- Accessibility audits, risk register, full test matrix
+
+Acceptance criteria:
+- The app launches without errors on Windows
+- Theme switching works and repaints widgets
+- Settings panel can be shown/hidden and resized without snapping glitches
+- UI uses no hard-coded colors; QSS overrides are structural only
+- Repository contains future-ready folders with short README placeholders
+
+## Progress checklist
+
+Use this checklist to track MVP progress and planned build-outs. Update in PRs as items are completed.
+
+### Theme and styling
+- [x] Semantic color tokens in `themes/semantic_colors.py`
+- [x] `PaletteBuilder` constructs `QPalette` with roles
+- [x] Minimal QSS in `themes/minimal_qss.py` applied app-wide
+- [x] `ThemeManager` applies palette and QSS, emits change signal
+- [x] QSpinBox arrows via SVG (up/down × light/dark), offline-safe
+
+### UI shell
+- [x] `MainWindow` with settings side panel; resizable
+- [x] Settings controls wired (QComboBox with AdjustToContents, QSpinBox)
+- [ ] Persist window geometry/state via QSettings
+- [ ] Consider switching settings panel to QSplitter if resize quirks persist
+
+### Widgets polish
+- [x] QComboBox dropdown background and selection colors
+- [x] Hover states for buttons, menus, list widgets
+- [x] QSpinBox button backgrounds and icon rendering
+- [ ] QDockWidget title styling (custom title bar if needed)
+
+### Structure for growth
+- [x] Scaffolding created: `src/models/`, `src/utils/`, `src/gui/notebook/cells/`, `src/gui/notebook/toolbars/`
+- [x] Core stubs added: `core/data_store.py`, `core/cell_manager.py`, `core/notebook_manager.py`
+- [x] READMEs in new folders explaining deferred implementation
+- [ ] UUID helper in `utils` for IDs
+- [ ] `NotebookView` container (QListWidget-based) placeholder
+
+### Data and persistence (post-MVP)
+- [ ] DataStore MVP (JSON read/write + atomic save)
+- [ ] NotebookManager API (create/open/save)
+- [ ] Add `schema_version` to models
+- [ ] Use per-OS data directory (QStandardPaths/AppDirs)
+
+### Commands and shortcuts (post-MVP)
+- [ ] Centralized command registry (IDs, labels, shortcuts)
+- [ ] Wire menubar/shortcuts to registry
+- [ ] Command palette shell consuming registry
+
+### Packaging and resources (post-MVP)
+- [ ] Move icons/QSS to Qt Resource System (qrc)
+- [ ] Ensure high-DPI-safe icon scaling
+
+### Tests and tooling (post-MVP)
+- [ ] Minimal unit tests for DataStore and NotebookManager
+- [ ] Enable mypy, ruff, black in CI
+
 ---
 
 ## Data Structure Architecture
@@ -15,9 +87,9 @@ LunaQt will implement a Jupyter-like notebook system using PySide6 (Qt6) with a 
 3. **ID-based References**: Notebooks store ordered lists of cell IDs (not cell data)
 4. **Separation**: Data layer completely independent of UI layer
 
-### Data Models
+### Data Models (scaffold for later)
 
-#### Cell Model (`models/cell.py`)
+#### Cell Model (`models/cell.py`) – planned, not required for MVP
 
 ```python
 {
@@ -47,7 +119,7 @@ LunaQt will implement a Jupyter-like notebook system using PySide6 (Qt6) with a 
 - `markdown`: Formatted text with Markdown
 - `raw`: Plain text, no execution or rendering
 
-#### Notebook Model (`models/notebook.py`)
+#### Notebook Model (`models/notebook.py`) – planned, not required for MVP
 
 ```python
 {
@@ -69,16 +141,18 @@ LunaQt will implement a Jupyter-like notebook system using PySide6 (Qt6) with a 
 }
 ```
 
-**Key Feature**: Reordering cells only modifies the `cell_ids` array order—no cell data duplication.
+**Key Feature (future)**: Reordering cells only modifies the `cell_ids` array order—no cell data duplication.
 
 ---
 
-## Storage Architecture
+## Storage Architecture (post-MVP)
 
 ### File Structure
 
+Use OS-appropriate data locations via QStandardPaths/AppDirs (not hard-coded ~/.lunaqt). Example structure (conceptual):
+
 ```
-~/.lunaqt/
+<AppData>/LunaQt/
 ├── notebooks/
 │   ├── notebook-uuid-1.json
 │   ├── notebook-uuid-2.json
@@ -91,14 +165,14 @@ LunaQt will implement a Jupyter-like notebook system using PySide6 (Qt6) with a 
 
 ### Data Store (`core/data_store.py`)
 
-**Responsibilities:**
+**Responsibilities (planned):**
 - Load/save individual cells from JSON
 - Load/save notebooks from JSON
 - Handle file I/O and error handling
 - Provide atomic write operations
 - Cache recently accessed cells
 
-**Key Methods:**
+**Key Methods (planned):**
 ```python
 load_cell(cell_id: str) -> dict
 save_cell(cell_data: dict) -> bool
@@ -111,9 +185,9 @@ list_notebooks() -> list[dict]
 
 ---
 
-## Manager Layer
+## Manager Layer (scaffold now, implement later)
 
-### Cell Manager (`core/cell_manager.py`)
+### Cell Manager (`core/cell_manager.py`) – stubbed
 
 **Responsibilities:**
 - Create new cells with unique IDs
@@ -132,7 +206,7 @@ delete_cell(cell_id: str) -> bool
 convert_cell_type(cell_id: str, new_type: str) -> bool
 ```
 
-### Notebook Manager (`core/notebook_manager.py`)
+### Notebook Manager (`core/notebook_manager.py`) – stubbed
 
 **Responsibilities:**
 - Create/open/close notebooks
@@ -153,7 +227,7 @@ get_cell_order(notebook_id: str) -> list[str]
 save_notebook(notebook_id: str) -> bool
 ```
 
-### Cell Executor (`core/cell_executor.py`)
+### Cell Executor (`core/cell_executor.py`) – future
 
 **Responsibilities (Future):**
 - Execute code cells
@@ -164,7 +238,7 @@ save_notebook(notebook_id: str) -> bool
 
 ---
 
-## UI Architecture
+## UI Architecture (MVP + growth path)
 
 ### Component Hierarchy
 
@@ -183,7 +257,7 @@ MainWindow (QMainWindow)
         └── QListWidgetItem → CodeCell
 ```
 
-**Architecture Decision: Hybrid Widget Approach**
+**Architecture Decision: Hybrid Widget Approach (MVP)**
 
 We're using `QListWidget` with `setItemWidget()` instead of pure `QVBoxLayout` or full `QAbstractListModel`:
 
@@ -201,7 +275,7 @@ If performance becomes an issue with very large notebooks (100+ cells), we can r
 - `QStyledItemDelegate` for custom painting
 - Full virtualization (only visible cells rendered)
 
-### Base Components
+### Base Components (planned)
 
 #### BaseCell (`gui/notebook/cells/base_cell.py`)
 
@@ -246,7 +320,7 @@ is_selected: bool
 setupUI()  # Add toolbar-specific buttons
 ```
 
-### Cell Types
+### Cell Types (planned)
 
 #### CodeCell (`gui/notebook/cells/code_cell.py`)
 
@@ -280,7 +354,7 @@ setupUI()  # Add toolbar-specific buttons
 - LaTeX support (future)
 - Image embedding
 
-### Toolbar Types
+### Toolbar Types (planned)
 
 #### DefaultToolbar (`gui/notebook/toolbars/default_toolbar.py`)
 
@@ -329,7 +403,7 @@ We use a **QPalette-first approach** with minimal QSS overrides. This follows Qt
 - Automatic state handling (hover, focus, disabled)
 - Less code to maintain
 
-### Theme Architecture
+### Theme Architecture (aligns with best practices)
 
 #### Semantic Color Tokens (`themes/semantic_colors.py`)
 
@@ -416,7 +490,7 @@ QPushButton {
 - ❌ Scrollbar custom styling
 - ❌ Complex selectors (`:hover` on custom widgets)
 
-### Notebook-Specific Styles (`gui/notebook/styles/notebook_qss.py`)
+### Notebook-Specific Styles (`gui/notebook/styles/notebook_qss.py`) – planned
 
 Additional QSS for notebook components:
 
@@ -488,67 +562,50 @@ See `QPALETTE_MIGRATION_PLAN.md` for full details on the QPalette migration from
 
 ---
 
-## Project Structure
+## Project Structure (MVP-ready scaffold)
 
 ```
 lunaqt/src/
 ├── constants/
-│   └── notebook_constants.py          # Cell types, defaults, configs
+│   └── notebook_constants.py          # Cell types, defaults, configs (future)
 │
-├── models/
-│   ├── __init__.py
-│   ├── notebook.py                    # Notebook data class
-│   └── cell.py                        # Cell data classes
+├── models/                            # CREATED (placeholder)
+│   ├── __init__.py                    # Stubs; README explains deferment
+│   └── README.md
 │
 ├── core/
-│   ├── notebook_manager.py            # Notebook CRUD & ordering
-│   ├── cell_manager.py                # Cell CRUD & conversions
-│   ├── data_store.py                  # JSON persistence layer
-│   ├── cell_executor.py               # Code execution (future)
-│   └── theme_manager.py               # 🔄 QPalette-based theme manager
+│   ├── data_store.py                  # Stubbed for post-MVP JSON persistence
+│   ├── cell_manager.py                # Stubbed manager
+│   ├── notebook_manager.py            # Stubbed manager
+│   └── theme_manager.py               # QPalette-based theme manager
 │
 ├── themes/
 │   ├── __init__.py
-│   ├── semantic_colors.py             # ⭐ Semantic color tokens
-│   ├── palette_builder.py             # ⭐ QPalette construction
-│   └── minimal_qss.py                 # ⭐ Minimal structural QSS
+│   ├── semantic_colors.py             # Semantic color tokens
+│   ├── palette_builder.py             # QPalette construction
+│   └── minimal_qss.py                 # Minimal structural QSS
 │
 ├── gui/
 │   ├── main_window.py                 # Main application window
-│   ├── command_palette.py             # ⭐ Searchable command palette
-│   │
 │   └── notebook/
-│       ├── __init__.py
-│       ├── notebook_view.py           # Cell container (QListWidget-based)
-│       │
-│       ├── cells/
-│       │   ├── __init__.py
-│       │   ├── base_cell.py           # ⭐ Cell template
-│       │   ├── code_cell.py           # Code editor cell
-│       │   ├── markdown_cell.py       # Markdown cell
-│       │   └── output_widget.py       # Output display
-│       │
-│       ├── toolbars/
-│       │   ├── __init__.py
-│       │   ├── base_toolbar.py        # ⭐ Toolbar template
-│       │   ├── default_toolbar.py     # General notebook actions
-│       │   ├── code_toolbar.py        # Code cell actions
-│       │   └── markdown_toolbar.py    # Markdown cell actions
-│       │
+│       ├── README.md                  # Planned components (placeholder)
+│       ├── cells/                     # CREATED (placeholder)
+│       │   └── __init__.py
+│       ├── toolbars/                  # CREATED (placeholder)
+│       │   └── __init__.py
 │       └── styles/
 │           ├── __init__.py
-│           └── notebook_qss.py        # ⭐ Notebook-specific QSS additions
+│           └── notebook_qss.py        # Notebook QSS (future)
 │
-└── utils/
-    ├── __init__.py
-    └── id_generator.py                # UUID generation
+└── utils/                             # CREATED (placeholder)
+    └── __init__.py                    # Future helpers (UUID, etc.)
 ```
 
 ---
 
-## Enhancements from Community Review
+## Enhancements from Community Review (trimmed for MVP, queued for later)
 
-### Implemented Design Decisions
+### Implemented Design Decisions (MVP-aligned)
 
 #### 1. Command Palette (Point 9)
 **Status:** ✅ Approved and planned for Phase 4
@@ -586,7 +643,7 @@ If notebooks grow to 100+ cells and performance degrades:
 2. Implement `QStyledItemDelegate` for custom cell painting
 3. Enable full virtualization (only visible cells in memory)
 
-### Under Consideration
+### Under Consideration (post-MVP)
 
 #### 3. Schema Versioning (Point 1)
 **Priority:** High for Phase 1
@@ -686,7 +743,7 @@ Reference in cell JSON:
 
 ---
 
-## Key Design Patterns
+## Key Design Patterns (kept simple for MVP)
 
 ### 1. Template Pattern
 - `BaseCell` and `BaseToolbar` provide templates
@@ -712,7 +769,7 @@ Reference in cell JSON:
 
 ---
 
-## Data Flow Examples
+## Data Flow Examples (future behavior)
 
 ### Creating a New Cell
 
@@ -823,51 +880,38 @@ On Close:
 
 ---
 
-## Implementation Phases
+## Implementation Phases (MVP-first, minimal)
 
-### Phase 1: Foundation (Weeks 1-2)
-- [ ] **Migrate to QPalette theme system** (see QPALETTE_MIGRATION_PLAN.md)
-  - Create semantic color tokens
-  - Build QPalette builder
-  - Create minimal QSS generator
-  - Refactor ThemeManager
-  - Test theme switching
-- [ ] Create data models (`models/cell.py`, `models/notebook.py`)
-- [ ] Implement `DataStore` (JSON read/write)
-- [ ] Create `CellManager` and `NotebookManager`
-- [ ] Write unit tests for data layer
-- [ ] Implement ID generation utility
+### Phase 1: MVP shell (1–2 weeks)
+- [x] QPalette theme system with semantic tokens and minimal QSS
+- [x] ThemeManager applies palette and QSS
+- [x] MainWindow with a resizable settings side panel (dock or splitter)
+- [x] Basic settings controls (combobox/spinbox) styled and working
+- [x] Future-ready folders and READMEs (models, managers, notebook UI)
+- [ ] Persist window geometry/state (QSettings)
 
-### Phase 2: Base UI Components (Weeks 3-4)
-- [ ] Create `BaseCell` template (uses QPalette for colors)
-- [ ] Create `BaseToolbar` template (uses QPalette for colors)
-- [ ] Create `notebook_qss.py` for notebook-specific structural styles
-- [ ] Create `NotebookView` container (QListWidget-based)
+Acceptance: app launches cleanly; theme switching works; settings panel resizes smoothly; no hard-coded colors.
 
-### Phase 3: Cell Types (Weeks 5-6)
-- [ ] Implement `CodeCell` with basic text editor
-- [ ] Implement `MarkdownCell` with edit/preview modes
-- [ ] Add basic syntax highlighting for code
-- [ ] Implement markdown rendering
-- [ ] Create `OutputWidget` for cell outputs
+### Phase 2: Base UI Components (lightweight)
+- [ ] Create NotebookView container (QListWidget-based placeholder)
+- [ ] Add notebook_qss.py shell for future structural styles
+- [ ] Decide dock vs splitter for settings (splitter recommended for stable MVP resize)
 
-### Phase 4: Toolbars & Actions (Week 7)
-- [ ] Implement `DefaultToolbar`
-- [ ] Implement `CodeToolbar`
-- [ ] Implement `MarkdownToolbar`
-- [ ] Connect toolbar actions to managers
-- [ ] Add keyboard shortcuts
-- [ ] **Implement Command Palette** (Ctrl+Shift+P)
-  - Searchable command registry
-  - Quick action execution
-  - Keyboard-first navigation
+### Phase 3: Minimal data layer
+- [ ] Introduce schema_version in models (even if minimal)
+- [ ] Implement DataStore MVP (JSON read/write, atomic save)
+- [ ] Implement simple NotebookManager API (create/open/save)
+- [ ] UUID helper in utils
 
-### Phase 5: Integration (Week 8)
-- [ ] Integrate into `MainWindow`
-- [ ] Connect all signals and slots
-- [ ] Implement auto-save
-- [ ] Add notebook file browser
-- [ ] Polish UI and fix bugs
+### Phase 4: Toolbars & Commands (post-MVP)
+- [ ] Define a centralized command registry (IDs, labels, shortcuts)
+- [ ] Wire menubar and shortcuts to registry
+- [ ] Command palette shell (dialog + search) that consumes the registry
+
+### Phase 5: Integration polish
+- [ ] Auto-save with debounce
+- [ ] Persist UI layout, recent files, last notebook
+- [ ] Basic unit tests for DataStore and NotebookManager
 
 ### Phase 6: Advanced Features (Future)
 - [ ] Code execution (Python kernel)
@@ -881,7 +925,7 @@ On Close:
 
 ---
 
-## Testing Strategy
+## Testing Strategy (minimal now, expand later)
 
 ### Unit Tests
 - Data models serialization/deserialization
@@ -903,7 +947,7 @@ On Close:
 
 ---
 
-## Performance Considerations
+## Performance Considerations (pragmatic for MVP)
 
 1. **Lazy Loading**: Load cell data only when notebook opened
 2. **Virtual Scrolling**: For notebooks with 100+ cells (future)
@@ -913,7 +957,7 @@ On Close:
 
 ---
 
-## Security Considerations
+## Security Considerations (later)
 
 1. **Code Execution Sandboxing**: Run code in restricted environment (future)
 2. **File Path Validation**: Prevent directory traversal attacks
@@ -923,7 +967,7 @@ On Close:
 
 ---
 
-## Accessibility
+## Accessibility (later)
 
 1. **Keyboard Navigation**: Full keyboard support for all actions
 2. **Screen Reader Support**: Proper ARIA labels (Qt accessibility)
@@ -945,6 +989,14 @@ On Close:
 8. **AI Assistance**: Code completion, cell suggestions
 
 ---
+
+## Best Practices Alignment
+
+This plan adheres to `lunaqt/lunaqt_best_practices.md`:
+- Keep functions small and single-responsibility; avoid one-liners
+- Use snake_case for modules/functions/variables, PascalCase for classes, ALL_CAPS for constants
+- Add type hints throughout and run mypy; use @dataclass for structured data as models land
+- Use black for formatting and ruff for linting/import sorting
 
 ## Summary
 
