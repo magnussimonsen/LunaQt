@@ -20,8 +20,8 @@ from PySide6.QtCore import Qt
 # Base filename (without extension preference). You can change this once here.
 # ICON_BASE_NAME = "icon"  # Change here to switch the global app icon base name
 ICON_BASE_NAME = "normal_distribution_3d"  # Change here to switch the global app icon base name
-# Default header icon height (can be overridden per call)
-DEFAULT_HEADER_ICON_HEIGHT = 500
+# Default header icon height (kept modest to avoid layout pressure)
+DEFAULT_HEADER_ICON_HEIGHT = 64
 
 
 

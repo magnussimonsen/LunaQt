@@ -41,11 +41,11 @@ class MainWindow(QMainWindow):
         self._setup_window()
         self._set_default_font()
 
-        # Build UI components
-        self._setup_settings_sidebar()
+        # Build UI components (ensure central widget is set BEFORE dock widgets)
         self._setup_menubar()
         self._setup_statusbar()
         self._setup_ui()
+        self._setup_settings_sidebar()
 
         # Theme hookup
         self.theme_manager.set_window(self)
@@ -112,73 +112,75 @@ class MainWindow(QMainWindow):
         """Set up the settings sidebar."""
         # Create dock widget for settings
         self.settings_dock = QDockWidget("Settings", self)
-        
+
         # Lock to right side only
         self.settings_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
-        
+
         # Remove title bar to prevent undocking, but keep resizable
         # NoDockWidgetFeatures removes the title bar which prevents moving/floating
         # The dock widget will still be resizable by dragging its edge
         self.settings_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
-        
+
         # Create settings panel content
         settings_widget = QWidget()
         settings_layout = QFormLayout()
         settings_widget.setLayout(settings_layout)
-        
+        # Help splitter sizing: prefer width but allow vertical expansion
+        settings_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+
         # Get available custom fonts (loaded at startup from fonts/ directory)
         font_manager = get_font_manager()
         custom_fonts = font_manager.get_available_fonts()
-        
+
         # Use only bundled fonts for consistent cross-platform experience
         all_fonts = BUNDLED_FONTS
         code_fonts = BUNDLED_CODE_FONTS
-        
+
         # UI Font Family
         self.ui_font_family_combo = QComboBox()
         self.ui_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.ui_font_family_combo.addItems(all_fonts)
         self.ui_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("UI Font Family:", self.ui_font_family_combo)
-        
+
         # Text Cell Font Family
         self.text_cell_font_family_combo = QComboBox()
         self.text_cell_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.text_cell_font_family_combo.addItems(all_fonts)
         self.text_cell_font_family_combo.setCurrentText(DEFAULT_UI_FONT)
         settings_layout.addRow("Text Cell Font Family:", self.text_cell_font_family_combo)
-        
+
         # Code Cell Font Family
         self.code_cell_font_family_combo = QComboBox()
         self.code_cell_font_family_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.code_cell_font_family_combo.addItems(code_fonts)
         self.code_cell_font_family_combo.setCurrentText(DEFAULT_CODE_FONT)
         settings_layout.addRow("Code Cell Font Family:", self.code_cell_font_family_combo)
-        
+
         # UI Font Size
         self.ui_font_size_spin = QSpinBox()
         self.ui_font_size_spin.setRange(8, 24)
         self.ui_font_size_spin.setValue(DEFAULT_UI_FONT_SIZE)
         settings_layout.addRow("UI Font Size:", self.ui_font_size_spin)
-        
+
         # Text Cell Font Size
         self.text_cell_font_size_spin = QSpinBox()
         self.text_cell_font_size_spin.setRange(8, 32)
         self.text_cell_font_size_spin.setValue(DEFAULT_TEXT_FONT_SIZE)
         settings_layout.addRow("Text Cell Font Size:", self.text_cell_font_size_spin)
-        
+
         # Code Cell Font Size
         self.code_cell_font_size_spin = QSpinBox()
         self.code_cell_font_size_spin.setRange(8, 24)
         self.code_cell_font_size_spin.setValue(DEFAULT_CODE_FONT_SIZE)
         settings_layout.addRow("Code Cell Font Size:", self.code_cell_font_size_spin)
-        
+
         # Number Precision
         self.precision_spin = QSpinBox()
         self.precision_spin.setRange(1, 15)
         self.precision_spin.setValue(6)
         settings_layout.addRow("Number Precision:", self.precision_spin)
-        
+
         # Connect signals to apply settings changes
         self.ui_font_family_combo.currentTextChanged.connect(self._on_ui_font_family_changed)
         self.ui_font_size_spin.valueChanged.connect(self._on_ui_font_size_changed)
@@ -187,16 +189,16 @@ class MainWindow(QMainWindow):
         self.code_cell_font_family_combo.currentTextChanged.connect(self._on_code_cell_font_changed)
         self.code_cell_font_size_spin.valueChanged.connect(self._on_code_cell_size_changed)
         self.precision_spin.valueChanged.connect(self._on_precision_changed)
-        
+
         # Set the widget as dock content
         self.settings_dock.setWidget(settings_widget)
-        
+
         # Add to main window (default: right side, initially hidden)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.settings_dock)
-        
-        # Set a reasonable initial width for the dock widget
-        #self.settings_dock.setMinimumWidth(200) # Do not work as expected
-        #self.settings_dock.setMaximumWidth(900) # Do not work as expected
+        self.settings_dock.setObjectName("SettingsDock")
+        # Set a reasonable minimum width to avoid snapping to 0 on first show
+        self.settings_dock.setMinimumWidth(220)
+        # Hide by default; width will be applied on first show via resizeDocks
         self.settings_dock.hide()
     
     def _setup_menubar(self) -> None:
@@ -283,6 +285,13 @@ class MainWindow(QMainWindow):
         """Toggle the settings sidebar visibility."""
         is_visible = not self.settings_dock.isVisible()
         self.settings_dock.setVisible(is_visible)
+        # If showing, set an initial reasonable width to avoid snapping to edge
+        if is_visible:
+            try:
+                # Request ~300px width for the right dock area
+                self.resizeDocks([self.settings_dock], [300], Qt.Orientation.Horizontal)
+            except Exception:
+                pass
         # Update the checked state of the settings button
         self.settings_button.setChecked(is_visible)
     
@@ -346,6 +355,13 @@ class MainWindow(QMainWindow):
     # Service signal callbacks (could be extended to update existing cell widgets later)
     def _on_ui_font_service_changed(self, family: str, size: int) -> None:
         self._apply_ui_font_to_widgets(family, size)
+        # Also resize header icon proportionally to UI font size to avoid excessive width hints
+        try:
+            from .style.set_app_icon import resize_header_icon
+            new_h = max(24, min(96, self._compute_header_point_size(size) * 2))
+            resize_header_icon(self.header_icon_label, new_h)
+        except Exception:
+            pass
 
     def _on_text_font_service_changed(self, family: str, size: int) -> None:  # placeholder
         pass
