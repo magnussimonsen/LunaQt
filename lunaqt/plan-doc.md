@@ -116,7 +116,7 @@ Use this checklist to track MVP progress and planned build-outs. Update in PRs a
 
 **Cell Types:**
 - `code`: Executable code (Python, initially)
-- `markdown`: Formatted text with Markdown
+- `markdown`: Formatted text with Markdown and KaTeX in inline between $...$ and KaTeX block between $$ ... $$
 - `raw`: Plain text, no execution or rendering
 
 #### Notebook Model (`models/notebook.py`) – planned, not required for MVP
