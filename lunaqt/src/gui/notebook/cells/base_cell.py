@@ -177,13 +177,14 @@ class _Gutter(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self.setObjectName("CellGutter")  # Set object name for QSS targeting
         self._label = QLabel("")
         self._label.setAlignment(Qt.AlignCenter)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(self._label)
-        self.setStyleSheet("background: palette(window); color: palette(mid);")
+        # Styling now handled by notebook_qss.py - don't override here
 
     def set_index(self, index: int) -> None:
         self._label.setText(str(index))

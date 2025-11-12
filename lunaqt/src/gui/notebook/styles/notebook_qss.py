@@ -23,6 +23,19 @@ class NotebookQSS:
                 /* Text from QPalette.Text */
             }}
             
+            /* ===== CELL GUTTER ===== */
+            
+            CellGutter {{
+                background-color: {colors["surface.secondary"]};
+                border-right: 10px solid {colors["border.subtle"]};
+            }}
+            
+            CellGutter QLabel {{
+                color: {colors["text.secondary"]};
+                font-size: 10pt;
+                padding: 2px 6px;
+            }}
+            
             BaseCell[selected="true"] {{
                 border: 2px solid {colors["action.primary"]};
                 /* Highlight background from QPalette.Highlight */
@@ -38,7 +51,7 @@ class NotebookQSS:
                 background-color: {colors["code.background"]};
                 color: {colors["code.text"]};
                 border: none;
-                font-family: 'Fira Code', 'Consolas', monospace;
+                /* Font family controlled by FontService via Python setFont() */
             }}
             
             /* ===== MARKDOWN CELLS ===== */

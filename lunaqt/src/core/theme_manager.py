@@ -8,6 +8,7 @@ from ..constants.types import ThemeMode
 from ..themes.palette_builder import PaletteBuilder
 from ..themes.minimal_qss import MinimalQSS
 from ..themes.semantic_colors import SemanticColors
+from ..gui.notebook.styles.notebook_qss import NotebookQSS
 
 
 class ThemeManager(QObject):
@@ -74,9 +75,11 @@ class ThemeManager(QObject):
         palette = PaletteBuilder.build(theme)
         QApplication.instance().setPalette(palette)
         
-        # 2. Apply minimal QSS (only for structure/borders)
-        qss = MinimalQSS.get(theme)
-        QApplication.instance().setStyleSheet(qss)
+        # 2. Apply minimal QSS (only for structure/borders) + notebook-specific QSS
+        base_qss = MinimalQSS.get(theme)
+        notebook_qss = NotebookQSS.get(theme)
+        combined_qss = base_qss + "\n" + notebook_qss
+        QApplication.instance().setStyleSheet(combined_qss)
         
         # 3. Emit signal for custom components
         self.theme_changed.emit(theme)

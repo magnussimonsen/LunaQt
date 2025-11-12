@@ -45,7 +45,7 @@ class SemanticColors:
             "dark": "#f5f5f5",
         },
         "text.secondary": {
-            "light": "#626262",      # Muted text
+            "light": "#3B3B3B",      # Muted text
             "dark": "#dcdcdc",
         },
         "text.disabled": {
