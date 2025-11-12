@@ -3,8 +3,10 @@
 from __future__ import annotations
 from PySide6.QtWidgets import QWidget, QTextEdit, QTextBrowser, QPushButton, QHBoxLayout
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QFont
 
 from .base_cell import BaseCell
+from ....core.font_service import get_font_service
 
 
 class _MarkdownEditor(QTextEdit):
@@ -58,6 +60,14 @@ class MarkdownCell(BaseCell):
         self._content = content
         self._is_preview_mode = False
         self._setup_ui()
+        
+        # Subscribe to font service
+        self._font_service = get_font_service()
+        self._font_service.textFontChanged.connect(self._on_text_font_changed)
+        # Apply current font from service
+        family, size = self._font_service.get_text_font()
+        if family and size:
+            self._apply_font(family, size)
     
     def _setup_ui(self) -> None:
         """Set up the UI components."""
@@ -168,3 +178,23 @@ class MarkdownCell(BaseCell):
     def _on_focus_changed(self, has_focus: bool) -> None:
         if has_focus:
             self.set_selected(True)
+
+    def _on_text_font_changed(self, family: str, size: int) -> None:
+        """Handle text font changes from font service.
+        
+        Args:
+            family: Font family name.
+            size: Font size in points.
+        """
+        self._apply_font(family, size)
+    
+    def _apply_font(self, family: str, size: int) -> None:
+        """Apply font to editor and preview.
+        
+        Args:
+            family: Font family name.
+            size: Font size in points.
+        """
+        font = QFont(family, size)
+        self._editor.setFont(font)
+        self._preview.setFont(font)

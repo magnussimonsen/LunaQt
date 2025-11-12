@@ -6,6 +6,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
 from .base_cell import BaseCell
+from ....core.font_service import get_font_service
 
 
 class _CodeEditor(QTextEdit):
@@ -50,6 +51,14 @@ class CodeCell(BaseCell):
         
         self._execution_count = execution_count
         self._setup_ui(content)
+        
+        # Subscribe to font service
+        self._font_service = get_font_service()
+        self._font_service.codeFontChanged.connect(self._on_code_font_changed)
+        # Apply current font from service
+        family, size = self._font_service.get_code_font()
+        if family and size:
+            self._apply_font(family, size)
     
     def _setup_ui(self, content: str) -> None:
         """Set up the UI components.
@@ -73,10 +82,7 @@ class CodeCell(BaseCell):
         self._editor.setAcceptRichText(False)
         self._editor.setTabStopDistance(40)  # 4 spaces
         
-        # Set monospace font
-        font = QFont("Consolas", 10)
-        font.setStyleHint(QFont.StyleHint.Monospace)
-        self._editor.setFont(font)
+        # Font will be set by font service in __init__
         
         # Connect text changes
         self._editor.textChanged.connect(self._on_text_changed)
@@ -137,3 +143,23 @@ class CodeCell(BaseCell):
     def _on_editor_focus_changed(self, has_focus: bool) -> None:
         if has_focus:
             self.set_selected(True)
+
+    def _on_code_font_changed(self, family: str, size: int) -> None:
+        """Handle code font changes from font service.
+        
+        Args:
+            family: Font family name.
+            size: Font size in points.
+        """
+        self._apply_font(family, size)
+    
+    def _apply_font(self, family: str, size: int) -> None:
+        """Apply font to the code editor.
+        
+        Args:
+            family: Font family name.
+            size: Font size in points.
+        """
+        font = QFont(family, size)
+        font.setStyleHint(QFont.StyleHint.Monospace)
+        self._editor.setFont(font)

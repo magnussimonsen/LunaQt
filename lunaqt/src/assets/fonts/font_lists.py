@@ -14,9 +14,9 @@ Font categories:
 BUNDLED_FONTS = [
     "Inter",  # Modern, clean UI font - DEFAULT
     "Figtree",  # Clean geometric sans
-    "Fira Code",  # Excellent code font with ligatures - DEFAULT
+    "Fira Code",  # Excellent code font with ligatures
     "Comic Neue",  # Playful UI/text option
-    "OpenDyslexic",  # Accessible font for dyslexic readers  
+    "OpenDyslexic",  # Accessible font for dyslexic readers
 ]
 
 # Monospace/code fonts bundled with the application
@@ -26,7 +26,7 @@ BUNDLED_CODE_FONTS = [
     "Figtree",  # Clean geometric sans
     "Fira Code",  # Excellent code font with ligatures - DEFAULT
     "Comic Neue",  # Playful UI/text option
-    "OpenDyslexic",  # Accessible font for dyslexic readers 
+    "OpenDyslexic",  # Accessible font for dyslexic readers
 ]
 
 # Default font selections
