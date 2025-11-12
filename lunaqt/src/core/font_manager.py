@@ -4,9 +4,12 @@ This module handles loading custom fonts from the assets/fonts directory
 and makes them available throughout the application.
 """
 
+import logging
 from pathlib import Path
 from typing import List
 from PySide6.QtGui import QFontDatabase
+
+logger = logging.getLogger(__name__)
 
 
 class FontManager:
@@ -26,7 +29,7 @@ class FontManager:
         fonts_dir = Path(__file__).parent.parent / "assets" / "fonts"
         
         if not fonts_dir.exists():
-            print(f"Warning: Fonts directory not found: {fonts_dir}")
+            logger.warning("Fonts directory not found: %s", fonts_dir)
             return
         
         # Load all .otf and .ttf files from all subdirectories
@@ -49,7 +52,7 @@ class FontManager:
         font_id = QFontDatabase.addApplicationFont(str(font_path))
         
         if font_id == -1:
-            print(f"Warning: Failed to load font: {font_path.name}")
+            logger.warning("Failed to load font: %s", font_path.name)
             return
         
         # Get the font families that were loaded
@@ -58,7 +61,7 @@ class FontManager:
         for family in families:
             if family not in self.font_families:
                 self.font_families.append(family)
-                print(f"Loaded font family: {family} from {font_path.name}")
+                logger.info("Loaded font family: %s from %s", family, font_path.name)
         
         self.loaded_fonts.append(str(font_path))
     

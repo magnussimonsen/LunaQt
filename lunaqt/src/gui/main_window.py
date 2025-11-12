@@ -1,5 +1,6 @@
 """Main application window."""
 
+import logging
 from typing import Callable
 
 from PySide6.QtWidgets import (
@@ -26,6 +27,9 @@ from ..assets.fonts.font_lists import (
 )
 from .menu_actions import file_actions, edit_actions, view_actions
 from .menu_actions import notebook_actions, settings_actions, help_actions
+
+# Logger for MainWindow
+logger = logging.getLogger(__name__)
 
 
 class MainWindow(QMainWindow):
@@ -67,7 +71,7 @@ class MainWindow(QMainWindow):
 
         # Initialize service values then apply UI font
         self.font_service.set_ui_font(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
-        self.font_service.set_text_font(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
+        self.font_service.set_text_font(DEFAULT_UI_FONT, DEFAULT_TEXT_FONT_SIZE)
         self.font_service.set_code_font(DEFAULT_CODE_FONT, DEFAULT_CODE_FONT_SIZE)
         self._apply_ui_font_to_widgets(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
         
@@ -100,20 +104,8 @@ class MainWindow(QMainWindow):
     
     def _set_default_font(self) -> None:
         """Set the default application font to Inter."""
-        from PySide6.QtWidgets import QApplication
         default_font = QFont(DEFAULT_UI_FONT, DEFAULT_UI_FONT_SIZE)
         QApplication.instance().setFont(default_font)
-
-    def _compute_header_point_size(self, ui_point_size: int) -> int:
-        """Compute the header label point size based on the UI font size.
-
-        This keeps the header visually proportional when the UI size changes.
-        """
-        # Roughly 2.2x of base UI font size, min 14, max 48
-        return max(14, min(48, int(ui_point_size * 2.2)))
-
-
-
 
     def _apply_ui_font_to_widgets(self, font_family: str, size: int) -> None:
         """Delegate font application to shared helper in gui.style.font_applier."""
@@ -151,10 +143,6 @@ class MainWindow(QMainWindow):
         settings_widget.setLayout(settings_layout)
         # Help splitter sizing: prefer width but allow vertical expansion
         settings_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-
-        # Get available custom fonts (loaded at startup from fonts/ directory)
-        font_manager = get_font_manager()
-        custom_fonts = font_manager.get_available_fonts()
 
         # Use only bundled fonts for consistent cross-platform experience
         all_fonts = BUNDLED_FONTS
@@ -336,7 +324,7 @@ class MainWindow(QMainWindow):
             return
         size = self.ui_font_size_spin.value()
         self.font_service.set_ui_font(font_family, size)
-        print(f"UI font family changed to: {font_family}")
+        logger.debug("UI font family changed to: %s", font_family)
     
     def _on_ui_font_size_changed(self, size: int) -> None:
         """Handle UI font size change."""
@@ -344,14 +332,14 @@ class MainWindow(QMainWindow):
         if not font_family:
             return
         self.font_service.set_ui_font(font_family, size)
-        print(f"UI font size changed to: {size}")
+        logger.debug("UI font size changed to: %s", size)
     
     def _on_text_cell_font_changed(self, font_family: str) -> None:
         """Handle text cell font family change."""
         # This will be used when text cells are implemented
         size = self.text_cell_font_size_spin.value()
         self.font_service.set_text_font(font_family, size)
-        print(f"Text cell font family changed to: {font_family}")
+        logger.debug("Text cell font family changed to: %s", font_family)
     
     def _on_text_cell_size_changed(self, size: int) -> None:
         """Handle text cell font size change."""
@@ -359,14 +347,14 @@ class MainWindow(QMainWindow):
         family = self.text_cell_font_family_combo.currentText()
         if family:
             self.font_service.set_text_font(family, size)
-        print(f"Text cell font size changed to: {size}")
+        logger.debug("Text cell font size changed to: %s", size)
     
     def _on_code_cell_font_changed(self, font_family: str) -> None:
         """Handle code cell font family change."""
         # This will be used when code cells are implemented
         size = self.code_cell_font_size_spin.value()
         self.font_service.set_code_font(font_family, size)
-        print(f"Code cell font family changed to: {font_family}")
+        logger.debug("Code cell font family changed to: %s", font_family)
     
     def _on_code_cell_size_changed(self, size: int) -> None:
         """Handle code cell font size change."""
@@ -374,7 +362,7 @@ class MainWindow(QMainWindow):
         family = self.code_cell_font_family_combo.currentText()
         if family:
             self.font_service.set_code_font(family, size)
-        print(f"Code cell font size changed to: {size}")
+        logger.debug("Code cell font size changed to: %s", size)
 
     # Service signal callbacks (could be extended to update existing cell widgets later)
     def _on_ui_font_service_changed(self, family: str, size: int) -> None:
@@ -382,7 +370,8 @@ class MainWindow(QMainWindow):
         # Also resize header icon proportionally to UI font size to avoid excessive width hints
         try:
             from .style.set_app_icon import resize_header_icon
-            new_h = max(24, min(96, self._compute_header_point_size(size) * 2))
+            from .style.font_applier import _compute_header_point_size
+            new_h = max(24, min(96, _compute_header_point_size(size) * 2))
             resize_header_icon(self.header_icon_label, new_h)
         except Exception:
             pass
@@ -396,7 +385,7 @@ class MainWindow(QMainWindow):
     def _on_precision_changed(self, precision: int) -> None:
         """Handle number precision change."""
         # This will be used when numeric output is implemented
-        print(f"Number precision changed to: {precision}")
+        logger.debug("Number precision changed to: %s", precision)
     
     def _setup_ui(self) -> None:
         """Set up the user interface."""

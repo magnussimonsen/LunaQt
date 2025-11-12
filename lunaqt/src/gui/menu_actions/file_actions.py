@@ -1,9 +1,12 @@
 """File menu action handlers."""
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QMainWindow
+
+logger = logging.getLogger(__name__)
 
 
 def on_new_file(window: "QMainWindow") -> None:
@@ -12,7 +15,7 @@ def on_new_file(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("New file action triggered")
+    logger.info("New file action triggered")
 
 
 def on_open_file(window: "QMainWindow") -> None:
@@ -21,7 +24,7 @@ def on_open_file(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Open file action triggered")
+    logger.info("Open file action triggered")
 
 
 def on_save_file(window: "QMainWindow") -> None:
@@ -30,7 +33,7 @@ def on_save_file(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Save file action triggered")
+    logger.info("Save file action triggered")
 
 
 def on_save_file_as(window: "QMainWindow") -> None:
@@ -39,7 +42,7 @@ def on_save_file_as(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Save file as action triggered")
+    logger.info("Save file as action triggered")
 
 
 def on_export_pdf(window: "QMainWindow") -> None:
@@ -48,7 +51,7 @@ def on_export_pdf(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Export as PDF action triggered")
+    logger.info("Export as PDF action triggered")
 
 
 def on_about(window: "QMainWindow") -> None:
@@ -57,7 +60,7 @@ def on_about(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("About Luna STEM Notebook action triggered")
+    logger.info("About Luna STEM Notebook action triggered")
 
 
 def on_quit(window: "QMainWindow") -> None:

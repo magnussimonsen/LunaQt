@@ -1,9 +1,12 @@
 """Help menu action handlers."""
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QMainWindow
+
+logger = logging.getLogger(__name__)
 
 
 def on_about(window: "QMainWindow") -> None:
@@ -12,7 +15,7 @@ def on_about(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("About Luna STEM Notebook action triggered")
+    logger.info("About Luna STEM Notebook action triggered")
 
 
 def on_help_markdown(window: "QMainWindow") -> None:
@@ -21,7 +24,7 @@ def on_help_markdown(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Markdown help action triggered")
+    logger.info("Markdown help action triggered")
 
 
 def on_help_python(window: "QMainWindow") -> None:
@@ -30,7 +33,7 @@ def on_help_python(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Python help action triggered")
+    logger.info("Python help action triggered")
 
 
 def on_help_cas(window: "QMainWindow") -> None:
@@ -39,7 +42,7 @@ def on_help_cas(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("CAS help action triggered")
+    logger.info("CAS help action triggered")
 
 
 def on_help_geometry(window: "QMainWindow") -> None:
@@ -48,4 +51,4 @@ def on_help_geometry(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Geometry help action triggered")
+    logger.info("Geometry help action triggered")

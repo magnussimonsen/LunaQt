@@ -1,9 +1,12 @@
 """Settings menu action handlers."""
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QMainWindow
+
+logger = logging.getLogger(__name__)
 
 
 def on_font_size(window: "QMainWindow") -> None:
@@ -12,7 +15,7 @@ def on_font_size(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Font size action triggered")
+    logger.info("Font size action triggered")
 
 
 def on_font_family(window: "QMainWindow") -> None:
@@ -21,7 +24,7 @@ def on_font_family(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Font family action triggered")
+    logger.info("Font family action triggered")
 
 
 def on_precision(window: "QMainWindow") -> None:
@@ -30,4 +33,4 @@ def on_precision(window: "QMainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Precision action triggered")
+    logger.info("Precision action triggered")

@@ -17,26 +17,18 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QLabel,
-    QPushButton,
-    QHBoxLayout,
-    QApplication,
 )
 from PySide6.QtCore import Signal, Qt
 import shiboken6
+import logging
 from typing import Any
 
 from .cells.base_cell import BaseCell
 from .cells.code_cell import CodeCell
 from .cells.markdown_cell import MarkdownCell
-# --- Debug logging ---
-DEBUG_NV = True
 
-def nvlog(*args):
-    if DEBUG_NV:
-        try:
-            print("[NotebookView]", *args)
-        except Exception:
-            pass
+# Logger for NotebookView
+logger = logging.getLogger(__name__)
 
 
 # Optional managers (set via set_managers). Lazy imports to avoid cycles at import time.
@@ -80,9 +72,6 @@ class NotebookView(QWidget):
         self._id_to_item = {}    # type: dict[str, QListWidgetItem]
         self._id_to_widget = {}  # type: dict[str, BaseCell]
 
-        # Internal flags
-        self._suppress_selection_events = False  # prevent re-entrant selection handling during moves
-
         self._setup_ui()
     
     def _setup_ui(self) -> None:
@@ -103,6 +92,9 @@ class NotebookView(QWidget):
             "QListWidget::item { background: transparent; }\n"
             "QListWidget::item:selected { background: transparent; }"
         )
+        
+        # Enable smooth pixel-based scrolling
+        self._cell_list.setVerticalScrollMode(QListWidget.ScrollMode.ScrollPerPixel)
         layout.addWidget(self._cell_list)
 
         self._update_placeholder_visibility()
@@ -128,12 +120,9 @@ class NotebookView(QWidget):
     
     def _on_qt_selection_changed(self) -> None:
         """Handle list selection change and emit signals."""
-        if self._suppress_selection_events:
-            nvlog("selection_changed: suppressed during move")
-            return
         idx = self.get_selected_index()
         if idx is None:
-            nvlog("selection_changed: none selected")
+            logger.debug("selection_changed: none selected")
             self._apply_cell_selection(None)
             self._emit_state_changed()
             return
@@ -141,17 +130,17 @@ class NotebookView(QWidget):
         data = item.data(Qt.UserRole)
         cell_id = data if isinstance(data, str) else None
         if not cell_id:
-            nvlog("selection_changed: item without cell_id at index", idx)
+            logger.debug("selection_changed: item without cell_id at index %s", idx)
             self._emit_state_changed()
             return
         widget = self._id_to_widget.get(cell_id)
         if not widget:
-            nvlog("selection_changed: no widget for cell_id", cell_id)
+            logger.debug("selection_changed: no widget for cell_id %s", cell_id)
             self._emit_state_changed()
             return
         # Ensure BaseCell selection reflects QListWidget selection
         self._apply_cell_selection(cell_id)
-        nvlog("selection_changed:", dict(index=idx, cell_id=cell_id, cell_type=getattr(widget, 'cell_type', '?')))
+        logger.debug("selection_changed: index=%s cell_id=%s cell_type=%s", idx, cell_id, getattr(widget, 'cell_type', '?'))
         self.selection_changed.emit(cell_id, widget.cell_type, idx)
         self.cell_selected.emit(cell_id, widget.cell_type)
         self._emit_state_changed()
@@ -163,7 +152,7 @@ class NotebookView(QWidget):
         """
         item = QListWidgetItem()
         insert_at = self._cell_list.count() if position is None else max(0, min(position, self._cell_list.count()))
-        nvlog("add_cell_widget:", dict(cell_id=cell_id, type=getattr(cell_widget, 'cell_type', '?'), position=insert_at))
+        logger.debug("add_cell_widget: cell_id=%s type=%s position=%s", cell_id, getattr(cell_widget, 'cell_type', '?'), insert_at)
         self._cell_list.insertItem(insert_at, item)
         # Explicitly set flags to enabled/selectable
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
@@ -200,7 +189,11 @@ class NotebookView(QWidget):
         self._refresh_indices()
 
     def _wire_cell_widget_signals(self, cell_widget: BaseCell) -> None:
-        """Connect signals from a cell widget to the view handlers."""
+        """Connect signals from a cell widget to the view handlers.
+        
+        Args:
+            cell_widget: The cell widget to wire up.
+        """
         cell_widget.selected.connect(self._on_cell_widget_selected)
         cell_widget.content_changed.connect(self._on_cell_content_changed)
         cell_widget.gutter_clicked.connect(self._on_cell_gutter_clicked)
@@ -342,11 +335,11 @@ class NotebookView(QWidget):
     def _move_selected(self, delta: int) -> None:
         idx = self.get_selected_index()
         if idx is None:
-            nvlog("move_selected: no selection, delta=", delta)
+            logger.debug("move_selected: no selection, delta=%s", delta)
             return
         new_index = idx + delta
         if new_index < 0 or new_index >= self._cell_list.count():
-            nvlog("move_selected: out of bounds", dict(idx=idx, new_index=new_index, count=self._cell_list.count()))
+            logger.debug("move_selected: out of bounds idx=%s new_index=%s count=%s", idx, new_index, self._cell_list.count())
             return
         
         # Get the cell_id being moved
@@ -354,25 +347,25 @@ class NotebookView(QWidget):
         cell_id = item.data(Qt.UserRole) if isinstance(item.data(Qt.UserRole), str) else None
         
         if not cell_id:
-            nvlog("move_selected: no cell_id found")
+            logger.debug("move_selected: no cell_id found")
             return
         
-        nvlog("move_selected start:", dict(idx=idx, new_index=new_index, cell_id=cell_id))
+        logger.debug("move_selected start: idx=%s new_index=%s cell_id=%s", idx, new_index, cell_id)
         
         # Update persistence layer
         if self._notebook_manager and self._active_notebook_id:
             self._notebook_manager.move_cell(self._active_notebook_id, cell_id, new_index)
-            nvlog("persist move:", dict(cell_id=cell_id, new_index=new_index))
+            logger.debug("persist move: cell_id=%s new_index=%s", cell_id, new_index)
         
         # Reload the entire cell list from persistence to reflect the new order
         if self._notebook_manager and self._active_notebook_id:
-            nvlog("move_selected: reloading notebook to reflect new order")
+            logger.debug("move_selected: reloading notebook to reflect new order")
             self.load_notebook(self._active_notebook_id)
             # Select the moved cell at its new position
             self.select_index(new_index)
-            nvlog("move_selected done:", dict(cell_id=cell_id, new_index=new_index))
+            logger.debug("move_selected done: cell_id=%s new_index=%s", cell_id, new_index)
         else:
-            nvlog("move_selected: no manager, cannot reload")
+            logger.debug("move_selected: no manager, cannot reload")
         
         self._emit_state_changed()
 
@@ -411,10 +404,10 @@ class NotebookView(QWidget):
 
     def _recreate_widget_for_cell(self, cell_id: str) -> BaseCell | None:
         """Ensure there is a valid widget instance for the given cell id."""
-        nvlog("recreate_widget_for_cell: start", dict(cell_id=cell_id))
+        logger.debug("recreate_widget_for_cell: start cell_id=%s", cell_id)
         widget = self._id_to_widget.get(cell_id)
         if widget and shiboken6.isValid(widget):
-            nvlog("recreate_widget_for_cell: existing valid widget")
+            logger.debug("recreate_widget_for_cell: existing valid widget")
             return widget
 
         item = self._id_to_item.get(cell_id)
@@ -440,11 +433,11 @@ class NotebookView(QWidget):
         if cell_type is None:
             cell_type = "code"
 
-        nvlog("recreate_widget_for_cell: creating", dict(cell_type=cell_type, content_len=len(content)))
+        logger.debug("recreate_widget_for_cell: creating cell_type=%s content_len=%s", cell_type, len(content))
         new_widget = self._create_widget(cell_type, cell_id, content)
         self._wire_cell_widget_signals(new_widget)
         self._id_to_widget[cell_id] = new_widget
-        nvlog("recreate_widget_for_cell: done")
+        logger.debug("recreate_widget_for_cell: done")
         return new_widget
 
     def _create_widget(self, cell_type: str, cell_id: str, content: str) -> BaseCell:
@@ -482,27 +475,31 @@ class NotebookView(QWidget):
             pass
 
     def _apply_cell_selection(self, selected_id: str | None) -> None:
+        """Update BaseCell selection visuals.
+        
+        Args:
+            selected_id: ID of cell to select, or None to deselect all.
+        """
         # Update BaseCell selection visuals
         for cid, widget in list(self._id_to_widget.items()):
             try:
-                # Check validity but don't remove from mapping during moves
-                # (widget may temporarily appear invalid during reparenting)
+                # Check validity
                 if not shiboken6.isValid(widget):
-                    # Only clean up if we're not in the middle of a move operation
-                    if not self._suppress_selection_events:
-                        nvlog("_apply_cell_selection: removing stale widget", dict(cell_id=cid))
-                        self._id_to_widget.pop(cid, None)
+                    logger.debug("_apply_cell_selection: removing stale widget cell_id=%s", cid)
+                    self._id_to_widget.pop(cid, None)
                     continue
                 widget.set_selected(selected_id is not None and cid == selected_id)
             except RuntimeError:
-                # C++ object deleted; remove stale mapping only if not during move
-                if not self._suppress_selection_events:
-                    nvlog("_apply_cell_selection: removing deleted widget", dict(cell_id=cid))
-                    self._id_to_widget.pop(cid, None)
+                # C++ object deleted; remove stale mapping
+                logger.debug("_apply_cell_selection: removing deleted widget cell_id=%s", cid)
+                self._id_to_widget.pop(cid, None)
                 continue
 
     def _refresh_indices(self) -> None:
-        """Update the visible indices in each cell gutter to match list order."""
+        """Update the visible indices in each cell gutter to match list order.
+        
+        Updates each cell's gutter to display its 1-based position in the notebook.
+        """
         count = self._cell_list.count()
         for i in range(count):
             item = self._cell_list.item(i)

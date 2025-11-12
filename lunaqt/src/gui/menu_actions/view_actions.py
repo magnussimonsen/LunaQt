@@ -1,9 +1,12 @@
 """View menu action handlers."""
 
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..main_window import MainWindow
+
+logger = logging.getLogger(__name__)
 
 
 def on_normal_view(window: "MainWindow") -> None:
@@ -12,7 +15,7 @@ def on_normal_view(window: "MainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("Normal web view action triggered")
+    logger.info("Normal web view action triggered")
 
 
 def on_a4_view(window: "MainWindow") -> None:
@@ -21,4 +24,4 @@ def on_a4_view(window: "MainWindow") -> None:
     Args:
         window: Main window instance
     """
-    print("A4 paper view action triggered")
+    logger.info("A4 paper view action triggered")
