@@ -1,6 +1,6 @@
 """Notebook-specific QSS additions."""
 
-from ....themes.semantic_colors import SemanticColors, ThemeMode
+from .semantic_colors import SemanticColors, ThemeMode
 
 
 class NotebookQSS:

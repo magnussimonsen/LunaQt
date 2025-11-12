@@ -29,8 +29,20 @@ def _base_dir() -> Path:
     """Return the base directory where icons are located (handles frozen)."""
     if hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS) / 'src' / 'icons'
-    # This file: src/gui/style/set_app_icon.py -> go up three to src, then icons
-    return Path(__file__).resolve().parents[2] / 'icons'
+    # This file: src/styling/icon_utils.py -> go up two to src, then icons
+    return Path(__file__).resolve().parents[1] / 'icons'
+
+
+def get_icon_path(icon_name: str) -> Path:
+    """Get the absolute path to an icon file.
+    
+    Args:
+        icon_name: Name of the icon file (e.g., 'normal_distribution_3d.png')
+    
+    Returns:
+        Absolute path to the icon file
+    """
+    return _base_dir() / icon_name
 
 
 def resolve_icon(preferred: str = ICON_BASE_NAME) -> dict[str, Path]:
@@ -49,7 +61,7 @@ def resolve_icon(preferred: str = ICON_BASE_NAME) -> dict[str, Path]:
     return variants
 
 
-def build_window_qicon() -> Optional[QIcon]:
+def get_app_icon() -> Optional[QIcon]:
     """Build a QIcon for the main window (prefers .ico on Windows)."""
     variants = resolve_icon()
     chosen: Optional[Path] = None
@@ -66,7 +78,7 @@ def build_window_qicon() -> Optional[QIcon]:
 def create_header_widget(title: str, icon_height: int | None = None) -> tuple[QWidget, QLabel, QLabel]:
     """Create a header widget containing the app icon and a title label.
 
-    Returns (container_widget, title_label) so caller can further style the label.
+    Returns (container_widget, title_label, icon_label) so caller can further style the labels.
     """
     container = QWidget()
     layout = QHBoxLayout()

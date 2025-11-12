@@ -1,0 +1,21 @@
+Migration Strategy (Step-by-Step):
+
+Step 1: Create new structure (safe, non-breaking)
+Create src/styling/ directory
+Copy files to new location (keep originals)
+Update imports in copied files
+
+Step 2: Update imports (one module at a time)
+Update ThemeManager imports
+Update FontService imports
+Update MainWindow imports
+Test after each change
+
+Step 3: Clean up
+Delete old files only after all imports updated
+Delete empty directories
+Would you like me to:
+
+Create the new src/styling/ structure with all files?
+Provide a detailed step-by-step migration guide?
+Start the migration automatically?

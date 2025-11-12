@@ -108,9 +108,9 @@ class MainWindow(QMainWindow):
         QApplication.instance().setFont(default_font)
 
     def _apply_ui_font_to_widgets(self, font_family: str, size: int) -> None:
-        """Delegate font application to shared helper in gui.style.font_applier."""
+        """Delegate font application to shared helper in styling.font_utils."""
         try:
-            from .style.font_applier import apply_ui_font  # local import to avoid circulars
+            from ..styling.font_utils import apply_ui_font  # local import to avoid circulars
             apply_ui_font(self, font_family, size, self.header_label)
         except Exception as e:  # pragma: no cover - fallback path
             # Minimal fallback: still set application font so UI isn't broken
@@ -369,8 +369,8 @@ class MainWindow(QMainWindow):
         self._apply_ui_font_to_widgets(family, size)
         # Also resize header icon proportionally to UI font size to avoid excessive width hints
         try:
-            from .style.set_app_icon import resize_header_icon
-            from .style.font_applier import _compute_header_point_size
+            from ..styling.icon_utils import resize_header_icon
+            from ..styling.font_utils import _compute_header_point_size
             new_h = max(24, min(96, _compute_header_point_size(size) * 2))
             resize_header_icon(self.header_icon_label, new_h)
         except Exception:
@@ -398,7 +398,7 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(layout)
         
         # Header row: app icon + title centered (via helper)
-        from .style.set_app_icon import create_header_widget, build_window_qicon, resize_header_icon
+        from ..styling.icon_utils import create_header_widget, get_app_icon, resize_header_icon
         header_row, self.header_label, self.header_icon_label = create_header_widget("LunaQt Notebook")
         
         # Add header
@@ -429,7 +429,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(f"Notebook init failed: {e}")
 
         # Ensure window icon is set as well
-        icon_qicon = build_window_qicon()
+        icon_qicon = get_app_icon()
         if icon_qicon is not None:
             self.setWindowIcon(icon_qicon)
 

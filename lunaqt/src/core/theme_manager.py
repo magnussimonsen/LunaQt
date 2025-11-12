@@ -5,10 +5,10 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import Signal, QObject
 
 from ..constants.types import ThemeMode
-from ..themes.palette_builder import PaletteBuilder
-from ..themes.minimal_qss import MinimalQSS
-from ..themes.semantic_colors import SemanticColors
-from ..gui.notebook.styles.notebook_qss import NotebookQSS
+from ..styling.palette_builder import PaletteBuilder
+from ..styling.base_qss import BaseQSS
+from ..styling.semantic_colors import SemanticColors
+from ..styling.notebook_qss import NotebookQSS
 
 
 class ThemeManager(QObject):
@@ -76,7 +76,7 @@ class ThemeManager(QObject):
         QApplication.instance().setPalette(palette)
         
         # 2. Apply minimal QSS (only for structure/borders) + notebook-specific QSS
-        base_qss = MinimalQSS.get(theme)
+        base_qss = BaseQSS.get(theme)
         notebook_qss = NotebookQSS.get(theme)
         combined_qss = base_qss + "\n" + notebook_qss
         QApplication.instance().setStyleSheet(combined_qss)

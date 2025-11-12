@@ -3,7 +3,7 @@
 from .semantic_colors import SemanticColors, ThemeMode
 
 
-class MinimalQSS:
+class BaseQSS:
     """
     Generates minimal QSS for structural styling only.
     
@@ -19,8 +19,8 @@ class MinimalQSS:
         """Get minimal QSS for structural styling."""
         colors = SemanticColors.get_all(theme)
         # Resolve themed arrow icons for spin boxes
-        up_icon = "src/themes/icons/up_light.svg" if theme == "light" else "src/themes/icons/up_dark.svg"
-        down_icon = "src/themes/icons/down_light.svg" if theme == "light" else "src/themes/icons/down_dark.svg"
+        up_icon = "src/styling/theme_icons/up_light.svg" if theme == "light" else "src/styling/theme_icons/up_dark.svg"
+        down_icon = "src/styling/theme_icons/down_light.svg" if theme == "light" else "src/styling/theme_icons/down_dark.svg"
         
         return f"""
             /* ===== GLOBAL OVERRIDES ===== */
