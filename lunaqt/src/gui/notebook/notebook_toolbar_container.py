@@ -2,10 +2,12 @@
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QFont
 
 from .toolbars.empty_toolbar import EmptyToolbar
 from .toolbars.code_toolbar import CodeToolbar
 from .toolbars.markdown_toolbar import MarkdownToolbar
+from ...core.font_service import get_font_service
 
 
 class NotebookToolbarContainer(QWidget):
@@ -28,6 +30,15 @@ class NotebookToolbarContainer(QWidget):
         super().__init__(parent)
         self.setObjectName("NotebookToolbarContainer")
         self._setup_ui()
+        
+        # Subscribe to font service for UI font changes
+        self._font_service = get_font_service()
+        self._font_service.uiFontChanged.connect(self._on_ui_font_changed)
+        
+        # Apply current UI font
+        family, size = self._font_service.get_ui_font()
+        if family and size:
+            self._apply_font(family, size)
     
     def _setup_ui(self) -> None:
         """Set up the UI with stacked toolbars."""
@@ -82,3 +93,24 @@ class NotebookToolbarContainer(QWidget):
             self.show_markdown_toolbar()
         else:
             self.show_empty_toolbar()
+    
+    def _apply_font(self, family: str, size: int) -> None:
+        """Apply font to all toolbars.
+        
+        Args:
+            family: Font family name
+            size: Font size in points
+        """
+        font = QFont(family, size)
+        self._empty_toolbar.setFont(font)
+        self._code_toolbar.setFont(font)
+        self._markdown_toolbar.setFont(font)
+    
+    def _on_ui_font_changed(self, family: str, size: int) -> None:
+        """Handle UI font changes from FontService.
+        
+        Args:
+            family: Font family name
+            size: Font size in points
+        """
+        self._apply_font(family, size)
