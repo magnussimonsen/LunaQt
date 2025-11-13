@@ -50,6 +50,10 @@ def apply_ui_font(
     window.menuBar().setFont(app_font)
     window.statusBar().setFont(app_font)
 
+    # Apply font to settings button in menubar corner widget
+    if hasattr(window, 'settings_button') and window.settings_button is not None:
+        window.settings_button.setFont(app_font)
+
     # Header label follows UI size proportionally
     if header_label is not None:
         header_font = QFont(font_family)
