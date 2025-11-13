@@ -27,7 +27,7 @@ class BaseQSS:
             
             QMainWindow {{
                 /* QPalette handles background via Window role */
-                border: 0px solid red;;
+                border: none;
                 margin: 0px;
                 padding: 0px;
                 outline: none;
@@ -76,16 +76,15 @@ class BaseQSS:
             /* ===== TOOLBARS ===== */
             
             QToolBar {{
-                spacing: 4px;
-                padding: 4px;
-                border-bottom: 1px solid {colors["border.subtle"]};
-                /* Background handled by QPalette.Window */
+                /*QToolBar in Qt is a complex container widget 
+                that doesn't render borders or backgrounds 
+                the way you'd expect.*/
             }}
             
             QToolBar::separator {{
-                width: 1px;
-                background: {colors["border.subtle"]};
-                margin: 4px 8px;
+                /*QToolBar in Qt is a complex container widget 
+                that doesn't render borders or backgrounds 
+                the way you'd expect.*/
             }}
             
             /* ===== MENUS ===== */
@@ -141,8 +140,8 @@ class BaseQSS:
             
             QStatusBar::item {{
                 border: none;
-                padding: 400px 80px;
-                margin: 100px;
+                padding: 2px 8px;
+                margin: 0px;
             }}
 
             
@@ -182,14 +181,15 @@ class BaseQSS:
             /* ===== LIST WIDGETS ===== */
             
             QListWidget {{
-                border: 0px solid {colors["border.default"]};
+                border: 10px solid red;
                 outline: none;
                 /* Background/selection from QPalette */
             }}
             
             QListWidget::item {{
                 padding: 0px;
-                border-radius: 3px;
+                border-radius: 0px;
+                border: 0px solid blue;
             }}
             
             QListWidget::item:hover {{
@@ -197,6 +197,7 @@ class BaseQSS:
             }}
             
             QListWidget::item:selected {{
+                border: none;
                 background-color: {colors["action.primary"]};
                 color: {colors["text.inverted"]};
             }}

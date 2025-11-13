@@ -15,10 +15,10 @@ class NotebookQSS:
             /* ===== NOTEBOOK CELLS ===== */
             
             BaseCell {{
-                border: 1px solid {colors["border.default"]};
-                border-radius: 4px;
-                padding: 8px;
-                margin: 4px 0px;
+                border: 10px solid {colors["border.default"]}; /*Has no effect*/
+                border-radius: 0px;
+                padding: 0px;
+                margin: 0px 0px;
                 /* Background from QPalette.Base */
                 /* Text from QPalette.Text */
             }}
@@ -33,11 +33,11 @@ class NotebookQSS:
             CellGutter QLabel {{
                 color: {colors["text.secondary"]};
                 font-size: 10pt;
-                padding: 2px 6px;
+                padding: 0px 0px;
             }}
             
             BaseCell[selected="true"] {{
-                border: 2px solid {colors["action.primary"]};
+                border: 3px solid {colors["action.primary"]};
                 /* Highlight background from QPalette.Highlight */
             }}
             

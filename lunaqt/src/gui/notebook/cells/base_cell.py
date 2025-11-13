@@ -103,20 +103,10 @@ class BaseCell(QFrame):
     
     def _update_selection_style(self) -> None:
         """Update visual style based on selection state."""
-        if self._is_selected:
-            self.setStyleSheet("""
-                BaseCell {
-                    border: 2px solid palette(highlight);
-                    background-color: palette(base);
-                }
-            """)
-        else:
-            self.setStyleSheet("""
-                BaseCell {
-                    border: 1px solid palette(mid);
-                    background-color: palette(base);
-                }
-            """)
+        # Use property selector to trigger QSS styling
+        self.setProperty("selected", self._is_selected)
+        # Force style refresh
+        self.style().polish(self)
     
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle mouse press to select cell.
