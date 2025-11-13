@@ -46,3 +46,5 @@ lunaqt/app-image-scripts/squashfs-root/
 # Qt WebEngine cache (runtime, should not be committed)
 qtwebengine_dictionaries/
 QtWebEngineProcess.exe*
+*.deb
+google-chrome-stable_current_amd64.deb
