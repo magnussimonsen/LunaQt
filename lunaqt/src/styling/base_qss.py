@@ -149,10 +149,10 @@ class BaseQSS:
             /* ===== BUTTONS ===== */
             
             QPushButton {{
-                border: 1px solid {colors["border.default"]};
+                border: 0px solid {colors["border.default"]};
                 border-radius: 4px;
-                padding: 6px 16px;
-                min-height: 24px;
+                padding: 6px 8px;
+                min-height: 14px;
                 color: {colors["text.primary"]};
                 /* Background from QPalette */
             }}
