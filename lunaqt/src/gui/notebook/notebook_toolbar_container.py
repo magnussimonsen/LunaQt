@@ -95,16 +95,20 @@ class NotebookToolbarContainer(QWidget):
             self.show_empty_toolbar()
     
     def _apply_font(self, family: str, size: int) -> None:
-        """Apply font to all toolbars.
+        """Apply font to all toolbars and their children recursively.
         
         Args:
             family: Font family name
             size: Font size in points
         """
         font = QFont(family, size)
-        self._empty_toolbar.setFont(font)
-        self._code_toolbar.setFont(font)
-        self._markdown_toolbar.setFont(font)
+        
+        # Apply to each toolbar
+        for toolbar in [self._empty_toolbar, self._code_toolbar, self._markdown_toolbar]:
+            toolbar.setFont(font)
+            # Recursively apply to all child widgets (buttons, labels)
+            for child in toolbar.findChildren(QWidget):
+                child.setFont(font)
     
     def _on_ui_font_changed(self, family: str, size: int) -> None:
         """Handle UI font changes from FontService.
