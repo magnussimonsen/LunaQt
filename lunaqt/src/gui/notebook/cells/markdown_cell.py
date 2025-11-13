@@ -1,7 +1,7 @@
 """MarkdownCell widget with edit/preview modes."""
 
 from __future__ import annotations
-from PySide6.QtWidgets import QWidget, QTextEdit, QTextBrowser, QPushButton, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QTextEdit, QTextBrowser
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
@@ -71,21 +71,20 @@ class MarkdownCell(BaseCell):
     
     def _setup_ui(self) -> None:
         """Set up the UI components."""
-        # Header with mode toggle
-        header_layout = QHBoxLayout()
-        
-        self._toggle_button = QPushButton("Preview")
-        self._toggle_button.clicked.connect(self._toggle_mode)
-        header_layout.addWidget(self._toggle_button)
-        header_layout.addStretch()
-        
-        self._content_layout.addLayout(header_layout)
-        
         # Editor (edit mode)
         self._editor = _MarkdownEditor()
         self._editor.setPlainText(self._content)
         self._editor.setAcceptRichText(False)
+        
+        # Set size policy and minimum height
+        from PySide6.QtWidgets import QSizePolicy
+        self._editor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self._editor.setMinimumHeight(50)
+        self._editor.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self._editor.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
         self._editor.textChanged.connect(self._on_text_changed)
+        self._editor.textChanged.connect(self._adjust_editor_height)
         self._editor.focus_changed.connect(self._on_focus_changed)
         self._content_layout.addWidget(self._editor)
         
@@ -94,8 +93,18 @@ class MarkdownCell(BaseCell):
         self._preview.setOpenExternalLinks(True)
         self._preview.setHtml(self._render_markdown(self._content))
         self._preview.hide()
+        
+        # Set size policy and minimum height for preview
+        self._preview.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self._preview.setMinimumHeight(50)
+        self._preview.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self._preview.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
         self._preview.focus_changed.connect(self._on_focus_changed)
         self._content_layout.addWidget(self._preview)
+        
+        # Initial height adjustment
+        self._adjust_editor_height()
 
     def focus_editor(self) -> None:
         try:
@@ -105,6 +114,22 @@ class MarkdownCell(BaseCell):
                 self._preview.setFocus(Qt.FocusReason.OtherFocusReason)
         except Exception:
             super().focus_editor()
+    
+    def _adjust_editor_height(self) -> None:
+        """Adjust editor height to fit content."""
+        if not self._is_preview_mode:
+            doc_height = self._editor.document().size().height()
+            new_height = int(doc_height + 10)
+            new_height = max(new_height, 50)
+            self._editor.setFixedHeight(new_height)
+    
+    def _adjust_preview_height(self) -> None:
+        """Adjust preview height to fit content."""
+        if self._is_preview_mode:
+            doc_height = self._preview.document().size().height()
+            new_height = int(doc_height + 10)
+            new_height = max(new_height, 50)
+            self._preview.setFixedHeight(new_height)
     
     def _toggle_mode(self) -> None:
         """Toggle between edit and preview modes."""
@@ -117,6 +142,7 @@ class MarkdownCell(BaseCell):
             self._editor.hide()
             self._preview.show()
             self._toggle_button.setText("Edit")
+            self._adjust_preview_height()
         else:
             # Switch to edit
             self._editor.setPlainText(self._content)

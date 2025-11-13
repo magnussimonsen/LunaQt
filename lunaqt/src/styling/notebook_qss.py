@@ -63,9 +63,31 @@ class NotebookQSS:
             
             /* ===== CELL TOOLBARS ===== */
             
+            /* Notebook toolbar container (menubar-like) */
+            NotebookToolbarContainer {{
+                background-color: {colors["surface.primary"]};
+                border-bottom: 1px solid {colors["border.default"]};
+                min-height: 32px;
+                max-height: 40px;
+            }}
+            
+            /* Individual toolbars inside container */
             BaseToolbar {{
-                border-bottom: 1px solid {colors["border.subtle"]};
-                spacing: 4px;
-                padding: 4px 8px;
+                background-color: transparent;
+                border: none;
+                spacing: 6px;
+                padding: 2px 8px;
+            }}
+            
+            /* Toolbar buttons - more compact */
+            BaseToolbar QPushButton {{
+                padding: 3px 10px;
+                min-height: 20px;
+                max-height: 28px;
+            }}
+            
+            /* Toolbar labels */
+            BaseToolbar QLabel {{
+                padding: 2px 4px;
             }}
         """

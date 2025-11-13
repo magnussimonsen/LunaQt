@@ -111,7 +111,9 @@ class MainWindow(QMainWindow):
         """Delegate font application to shared helper in styling.font_utils."""
         try:
             from ..styling.font_utils import apply_ui_font  # local import to avoid circulars
-            apply_ui_font(self, font_family, size, self.header_label)
+            # Pass header_label only if it exists (removed from UI)
+            header_label = getattr(self, 'header_label', None)
+            apply_ui_font(self, font_family, size, header_label)
         except Exception as e:  # pragma: no cover - fallback path
             # Minimal fallback: still set application font so UI isn't broken
             app_font = QFont(font_family)
@@ -367,14 +369,15 @@ class MainWindow(QMainWindow):
     # Service signal callbacks (could be extended to update existing cell widgets later)
     def _on_ui_font_service_changed(self, family: str, size: int) -> None:
         self._apply_ui_font_to_widgets(family, size)
-        # Also resize header icon proportionally to UI font size to avoid excessive width hints
-        try:
-            from ..styling.icon_utils import resize_header_icon
-            from ..styling.font_utils import _compute_header_point_size
-            new_h = max(24, min(96, _compute_header_point_size(size) * 2))
-            resize_header_icon(self.header_icon_label, new_h)
-        except Exception:
-            pass
+        # Also resize header icon proportionally to UI font size (if header exists)
+        if hasattr(self, 'header_icon_label'):
+            try:
+                from ..styling.icon_utils import resize_header_icon
+                from ..styling.font_utils import _compute_header_point_size
+                new_h = max(24, min(96, _compute_header_point_size(size) * 2))
+                resize_header_icon(self.header_icon_label, new_h)
+            except Exception:
+                pass
 
     def _on_text_font_service_changed(self, family: str, size: int) -> None:  # placeholder
         pass
@@ -387,6 +390,34 @@ class MainWindow(QMainWindow):
         # This will be used when numeric output is implemented
         logger.debug("Number precision changed to: %s", precision)
     
+    def _on_notebook_selection_changed(self, cell_id: str, cell_type: str, index: int) -> None:
+        """Handle notebook cell selection change - update toolbar.
+        
+        Args:
+            cell_id: ID of selected cell
+            cell_type: Type of selected cell ("code" or "markdown")
+            index: Index of selected cell
+        """
+        self.toolbar_container.update_for_cell_type(cell_type if cell_id else None)
+    
+    def _on_run_code_requested(self) -> None:
+        """Handle Run button click from code toolbar."""
+        logger.info("Run code requested")
+        self.statusBar().showMessage("Running code...")
+        # TODO: Implement code execution
+    
+    def _on_reset_code_requested(self) -> None:
+        """Handle Reset button click from code toolbar."""
+        logger.info("Reset code requested")
+        self.statusBar().showMessage("Resetting code cell...")
+        # TODO: Implement code reset
+    
+    def _on_preview_markdown_requested(self) -> None:
+        """Handle Preview button click from markdown toolbar."""
+        logger.info("Preview markdown requested")
+        self.statusBar().showMessage("Previewing markdown...")
+        # TODO: Implement markdown preview
+    
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         # Central widget
@@ -396,18 +427,36 @@ class MainWindow(QMainWindow):
         # Main layout
         layout = QVBoxLayout()
         central_widget.setLayout(layout)
-        
+
+        # Header row (deprecated)
         # Header row: app icon + title centered (via helper)
-        from ..styling.icon_utils import create_header_widget, get_app_icon, resize_header_icon
-        header_row, self.header_label, self.header_icon_label = create_header_widget("LunaQt Notebook")
-        
+        # from ..styling.icon_utils import create_header_widget, get_app_icon, resize_header_icon
+        # header_row, self.header_label, self.header_icon_label = create_header_widget("LunaQt Notebook")
         # Add header
-        layout.addWidget(header_row)
+        # layout.addWidget(header_row)
+
+        # Ensure window icon is set as well
+        # icon_qicon = get_app_icon()
+        # if icon_qicon is not None:
+        #    self.setWindowIcon(icon_qicon)
+        
+        # Add reactive toolbar container
+        from .notebook.notebook_toolbar_container import NotebookToolbarContainer
+        self.toolbar_container = NotebookToolbarContainer()
+        layout.addWidget(self.toolbar_container)
+        
+        # Connect toolbar signals (placeholder implementations)
+        self.toolbar_container.run_code_requested.connect(self._on_run_code_requested)
+        self.toolbar_container.reset_code_requested.connect(self._on_reset_code_requested)
+        self.toolbar_container.preview_markdown_requested.connect(self._on_preview_markdown_requested)
         
         # Add NotebookView as main content area
         from .notebook.notebook_view import NotebookView
         self.notebook_view = NotebookView()
         layout.addWidget(self.notebook_view)
+        
+        # Connect notebook selection changes to update toolbar
+        self.notebook_view.selection_changed.connect(self._on_notebook_selection_changed)
 
         # Initialize data store and managers, load or create default notebook
         try:
@@ -428,8 +477,5 @@ class MainWindow(QMainWindow):
             # Non-fatal: show message in status bar
             self.statusBar().showMessage(f"Notebook init failed: {e}")
 
-        # Ensure window icon is set as well
-        icon_qicon = get_app_icon()
-        if icon_qicon is not None:
-            self.setWindowIcon(icon_qicon)
+       
 

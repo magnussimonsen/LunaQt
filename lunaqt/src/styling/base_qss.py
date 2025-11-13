@@ -27,6 +27,10 @@ class BaseQSS:
             
             QMainWindow {{
                 /* QPalette handles background via Window role */
+                border: 0px solid red;;
+                margin: 0px;
+                padding: 0px;
+                outline: none;
             }}
             
             /* ===== SCROLLBARS ===== */
@@ -126,6 +130,22 @@ class BaseQSS:
                 margin: 4px 8px;
             }}
             
+            /* ===== STATUSBAR ===== */
+            
+            QStatusBar {{
+                background-color: {colors["surface.secondary"]};
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }}
+            
+            QStatusBar::item {{
+                border: none;
+                padding: 400px 80px;
+                margin: 100px;
+            }}
+
+            
             /* ===== BUTTONS ===== */
             
             QPushButton {{
@@ -162,13 +182,13 @@ class BaseQSS:
             /* ===== LIST WIDGETS ===== */
             
             QListWidget {{
-                border: none;
+                border: 0px solid {colors["border.default"]};
                 outline: none;
                 /* Background/selection from QPalette */
             }}
             
             QListWidget::item {{
-                padding: 4px;
+                padding: 0px;
                 border-radius: 3px;
             }}
             

@@ -46,13 +46,9 @@ def apply_ui_font(
     # 2) Also set on the existing main window to push the font to current children
     window.setFont(app_font)
 
-    # Menubar and statusbar explicit sizes to avoid theme stylesheet overrides
-    window.menuBar().setStyleSheet(
-        f"QMenuBar {{ font-family: '{font_family}'; font-size: {size}pt; }}"
-    )
-    window.statusBar().setStyleSheet(
-        f"QStatusBar {{ font-family: '{font_family}'; font-size: {size}pt; }}"
-    )
+    # Apply font directly to menubar and statusbar (without overriding QSS styling)
+    window.menuBar().setFont(app_font)
+    window.statusBar().setFont(app_font)
 
     # Header label follows UI size proportionally
     if header_label is not None:

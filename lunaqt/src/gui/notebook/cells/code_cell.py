@@ -1,7 +1,7 @@
 """CodeCell widget for executable code."""
 
 from __future__ import annotations
-from PySide6.QtWidgets import QWidget, QTextEdit, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QTextEdit
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
@@ -66,29 +66,34 @@ class CodeCell(BaseCell):
         Args:
             content: Initial content.
         """
-        # Header with execution count
-        header_layout = QHBoxLayout()
-        
-        self._count_label = QLabel(self._format_count())
-        self._count_label.setStyleSheet("color: palette(mid); font-size: 10pt;")
-        header_layout.addWidget(self._count_label)
-        header_layout.addStretch()
-        
-        self._content_layout.addLayout(header_layout)
-        
         # Code editor
         self._editor = _CodeEditor()
         self._editor.setPlainText(content)
         self._editor.setAcceptRichText(False)
         self._editor.setTabStopDistance(40)  # 4 spaces
         
+        # Set size policy to expand vertically, fit horizontally
+        from PySide6.QtWidgets import QSizePolicy
+        self._editor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        
+        # Set minimum height (approximately 2 lines)
+        self._editor.setMinimumHeight(50)
+        
+        # Enable vertical scrolling for content that exceeds visible area
+        self._editor.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self._editor.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
         # Font will be set by font service in __init__
         
-        # Connect text changes
+        # Connect text changes to adjust height
         self._editor.textChanged.connect(self._on_text_changed)
+        self._editor.textChanged.connect(self._adjust_editor_height)
         self._editor.focus_changed.connect(self._on_editor_focus_changed)
         
         self._content_layout.addWidget(self._editor)
+        
+        # Initial height adjustment
+        self._adjust_editor_height()
 
     def focus_editor(self) -> None:
         try:
@@ -105,6 +110,17 @@ class CodeCell(BaseCell):
         if self._execution_count is None:
             return "In [ ]:"
         return f"In [{self._execution_count}]:"
+    
+    def _adjust_editor_height(self) -> None:
+        """Adjust editor height to fit content."""
+        # Get document height
+        doc_height = self._editor.document().size().height()
+        # Add some padding for comfort
+        new_height = int(doc_height + 10)
+        # Respect minimum height
+        new_height = max(new_height, 50)
+        # Set fixed height to content size
+        self._editor.setFixedHeight(new_height)
     
     def _on_text_changed(self) -> None:
         """Handle text changes in editor."""
