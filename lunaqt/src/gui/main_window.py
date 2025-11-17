@@ -4,7 +4,7 @@ import logging
 from typing import Callable
 
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QLabel, QDockWidget, 
+    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDockWidget, 
     QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy
 )
 from PySide6.QtWidgets import QApplication
@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self._setup_statusbar()
         self._setup_ui()
         self._setup_settings_sidebar()
+        self._setup_notebooks_sidebar()
 
         # Theme hookup
         self.theme_manager.set_window(self)
@@ -215,6 +216,38 @@ class MainWindow(QMainWindow):
         # Hide by default; width will be applied on first show via resizeDocks
         self.settings_dock.hide()
     
+    def _setup_notebooks_sidebar(self) -> None:
+        """Set up the notebooks sidebar."""
+        # Create dock widget for notebooks
+        self.notebooks_dock = QDockWidget("Notebooks", self)
+
+        # Lock to right side only
+        self.notebooks_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
+
+        # Remove title bar to prevent undocking, but keep resizable
+        self.notebooks_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
+
+        # Create notebooks panel content (empty for now)
+        notebooks_widget = QWidget()
+        notebooks_layout = QVBoxLayout()
+        notebooks_widget.setLayout(notebooks_layout)
+        notebooks_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+
+        # Add placeholder label
+        placeholder_label = QLabel("Notebooks Panel\n(Coming Soon)")
+        placeholder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        notebooks_layout.addWidget(placeholder_label)
+
+        # Set the widget as dock content
+        self.notebooks_dock.setWidget(notebooks_widget)
+
+        # Add to main window (default: right side, initially hidden)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.notebooks_dock)
+        self.notebooks_dock.setObjectName("NotebooksDock")
+        self.notebooks_dock.setMinimumWidth(220)
+        # Hide by default
+        self.notebooks_dock.hide()
+    
     def _setup_menubar(self) -> None:
         """Set up the menu bar with all menus and actions."""
         menubar = self.menuBar()
@@ -247,15 +280,6 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(self._create_action("Insert CAS Cell", lambda: edit_actions.on_insert_cas_cell(self)))
         insert_menu.addAction(self._create_action("Insert Python Cell", lambda: edit_actions.on_insert_python_cell(self)))
 
-        # Notebooks menu
-        notebooks_menu = menubar.addMenu("&Notebooks")
-        notebooks_menu.addAction(self._create_action("Create New Notebook", lambda: notebook_actions.on_new_notebook(self)))
-        notebooks_menu.addSeparator()
-        notebooks_menu.addAction(self._create_action("Notebook 1 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 2 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 3 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        notebooks_menu.addAction(self._create_action("Notebook 4 (placeholder)", lambda: notebook_actions.on_select_notebook(self)))
-        
         # View menu
         view_menu = menubar.addMenu("&View")
         view_menu.addAction(self._create_action("Light Theme", self.theme_manager.set_light_theme))
@@ -273,13 +297,34 @@ class MainWindow(QMainWindow):
         help_menu.addAction(self._create_action("CAS Help", lambda: help_actions.on_help_cas(self)))
         help_menu.addAction(self._create_action("Geometry Help", lambda: help_actions.on_help_geometry(self)))
         
-        # Add settings button to the corner of the menu bar
+        # Add notebooks and settings buttons to the corner of the menu bar
+        # Create a container widget for multiple corner buttons (horizontal layout)
+        corner_widget = QWidget(menubar)
+        corner_layout = QHBoxLayout()
+        corner_layout.setContentsMargins(2, 2, 2, 2)
+        corner_layout.setSpacing(5)
+        corner_widget.setLayout(corner_layout)
+        
+        # Notebooks button
+        notebooks_button = QPushButton("Notebooks")
+        notebooks_button.setCheckable(True)
+        notebooks_button.setChecked(False)
+        notebooks_button.clicked.connect(self._toggle_notebooks_sidebar)
+        corner_layout.addWidget(notebooks_button)
+        self.notebooks_button = notebooks_button
+        
+        # Settings button
         settings_button = QPushButton("Settings")
         settings_button.setCheckable(True)
         settings_button.setChecked(False)
         settings_button.clicked.connect(self._toggle_settings_sidebar)
-        menubar.setCornerWidget(settings_button, Qt.Corner.TopRightCorner)
+        corner_layout.addWidget(settings_button)
         self.settings_button = settings_button
+        
+        # Ensure corner widget has proper size
+        corner_widget.adjustSize()
+        menubar.setCornerWidget(corner_widget, Qt.Corner.TopRightCorner)
+        self._menubar_corner_widget = corner_widget
     
     def _create_action(self, text: str, slot: Callable[[], None]) -> QAction:
         """Create a menu action.
@@ -298,6 +343,12 @@ class MainWindow(QMainWindow):
     def _toggle_settings_sidebar(self) -> None:
         """Toggle the settings sidebar visibility."""
         is_visible = not self.settings_dock.isVisible()
+        
+        # If opening settings, close notebooks
+        if is_visible and self.notebooks_dock.isVisible():
+            self.notebooks_dock.hide()
+            self.notebooks_button.setChecked(False)
+        
         self.settings_dock.setVisible(is_visible)
         # If showing, set an initial reasonable width to avoid snapping to edge
         if is_visible:
@@ -308,6 +359,26 @@ class MainWindow(QMainWindow):
                 pass
         # Update the checked state of the settings button
         self.settings_button.setChecked(is_visible)
+    
+    def _toggle_notebooks_sidebar(self) -> None:
+        """Toggle the notebooks sidebar visibility."""
+        is_visible = not self.notebooks_dock.isVisible()
+        
+        # If opening notebooks, close settings
+        if is_visible and self.settings_dock.isVisible():
+            self.settings_dock.hide()
+            self.settings_button.setChecked(False)
+        
+        self.notebooks_dock.setVisible(is_visible)
+        # If showing, set an initial reasonable width
+        if is_visible:
+            try:
+                # Request ~300px width for the right dock area
+                self.resizeDocks([self.notebooks_dock], [300], Qt.Orientation.Horizontal)
+            except Exception:
+                pass
+        # Update the checked state of the notebooks button
+        self.notebooks_button.setChecked(is_visible)
     
     def _on_theme_changed(self, theme: str) -> None:
         """Handle theme changes for custom components.

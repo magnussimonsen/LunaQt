@@ -50,9 +50,11 @@ def apply_ui_font(
     window.menuBar().setFont(app_font)
     window.statusBar().setFont(app_font)
 
-    # Apply font to settings button in menubar corner widget
+    # Apply font to menubar corner buttons if present
     if hasattr(window, 'settings_button') and window.settings_button is not None:
         window.settings_button.setFont(app_font)
+    if hasattr(window, 'notebooks_button') and window.notebooks_button is not None:
+        window.notebooks_button.setFont(app_font)
 
     # Header label follows UI size proportionally
     if header_label is not None:
@@ -61,12 +63,15 @@ def apply_ui_font(
         header_font.setBold(True)
         header_label.setFont(header_font)
 
-    # 3) Ensure settings dock subtree updates reactively if present
-    #    Setting the font on the dock's content widget propagates to its children
-    if hasattr(window, "settings_dock") and window.settings_dock is not None:
-        # Apply to the dock itself (affects title area in some styles)
-        window.settings_dock.setFont(app_font)
-        # Apply to the dock content and all children to force immediate update
-        dock_widget = window.settings_dock.widget()
+    # 3) Ensure dock subtrees update reactively if present
+    def _apply_font_to_dock(dock_attr: str) -> None:
+        dock = getattr(window, dock_attr, None)
+        if dock is None:
+            return
+        dock.setFont(app_font)
+        dock_widget = dock.widget()
         if dock_widget is not None:
             _set_font_recursive(dock_widget, app_font)
+
+    _apply_font_to_dock("settings_dock")
+    _apply_font_to_dock("notebooks_dock")
