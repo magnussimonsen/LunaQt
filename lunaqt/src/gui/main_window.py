@@ -14,6 +14,7 @@ import sys
 from PySide6.QtCore import Qt, QSettings
 
 from ..constants.config import WindowConfig
+from ..constants.window_size import MIN_SIDEBAR_WIDTH, MAX_SIDEBAR_WIDTH
 from ..core.theme_manager import ThemeManager
 from ..core.font_manager import get_font_manager
 from ..core.font_service import get_font_service
@@ -211,8 +212,11 @@ class MainWindow(QMainWindow):
         # Add to main window (default: right side, initially hidden)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.settings_dock)
         self.settings_dock.setObjectName("SettingsDock")
-        # Set a reasonable minimum width to avoid snapping to 0 on first show
-        self.settings_dock.setMinimumWidth(220)
+        # Apply sidebar width constraints
+        if MIN_SIDEBAR_WIDTH is not None:
+            self.settings_dock.setMinimumWidth(MIN_SIDEBAR_WIDTH)
+        if MAX_SIDEBAR_WIDTH is not None:
+            self.settings_dock.setMaximumWidth(MAX_SIDEBAR_WIDTH)
         # Hide by default; width will be applied on first show via resizeDocks
         self.settings_dock.hide()
     
@@ -244,7 +248,10 @@ class MainWindow(QMainWindow):
         # Add to main window (default: right side, initially hidden)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.notebooks_dock)
         self.notebooks_dock.setObjectName("NotebooksDock")
-        self.notebooks_dock.setMinimumWidth(220)
+        if MIN_SIDEBAR_WIDTH is not None:
+            self.notebooks_dock.setMinimumWidth(MIN_SIDEBAR_WIDTH)
+        if MAX_SIDEBAR_WIDTH is not None:
+            self.notebooks_dock.setMaximumWidth(MAX_SIDEBAR_WIDTH)
         # Hide by default
         self.notebooks_dock.hide()
     
@@ -339,6 +346,23 @@ class MainWindow(QMainWindow):
         action = QAction(text, self)
         action.triggered.connect(slot)
         return action
+
+    def _compute_sidebar_width(self, desired_width: int = 300) -> int:
+        """Clamp the desired sidebar width within configured bounds."""
+        width = desired_width
+        if MIN_SIDEBAR_WIDTH is not None:
+            width = max(width, MIN_SIDEBAR_WIDTH)
+        if MAX_SIDEBAR_WIDTH is not None:
+            width = min(width, MAX_SIDEBAR_WIDTH)
+        return width
+
+    def _apply_sidebar_width(self, dock: QDockWidget, desired_width: int = 300) -> None:
+        """Request a dock resize within the sidebar width constraints."""
+        width = self._compute_sidebar_width(desired_width)
+        try:
+            self.resizeDocks([dock], [width], Qt.Orientation.Horizontal)
+        except Exception:
+            pass
     
     def _toggle_settings_sidebar(self) -> None:
         """Toggle the settings sidebar visibility."""
@@ -352,11 +376,7 @@ class MainWindow(QMainWindow):
         self.settings_dock.setVisible(is_visible)
         # If showing, set an initial reasonable width to avoid snapping to edge
         if is_visible:
-            try:
-                # Request ~300px width for the right dock area
-                self.resizeDocks([self.settings_dock], [300], Qt.Orientation.Horizontal)
-            except Exception:
-                pass
+            self._apply_sidebar_width(self.settings_dock)
         # Update the checked state of the settings button
         self.settings_button.setChecked(is_visible)
     
@@ -372,11 +392,7 @@ class MainWindow(QMainWindow):
         self.notebooks_dock.setVisible(is_visible)
         # If showing, set an initial reasonable width
         if is_visible:
-            try:
-                # Request ~300px width for the right dock area
-                self.resizeDocks([self.notebooks_dock], [300], Qt.Orientation.Horizontal)
-            except Exception:
-                pass
+            self._apply_sidebar_width(self.notebooks_dock)
         # Update the checked state of the notebooks button
         self.notebooks_button.setChecked(is_visible)
     
