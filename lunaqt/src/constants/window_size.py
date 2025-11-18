@@ -15,4 +15,4 @@ MAX_WINDOW_HEIGHT = None
 # Sidebar width constraints
 MIN_SIDEBAR_WIDTH = 220
 # None means no enforced maximum
-MAX_SIDEBAR_WIDTH = 420
+MAX_SIDEBAR_WIDTH = 1000
