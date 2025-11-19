@@ -196,6 +196,7 @@ class NotebookView(QWidget):
         """
         cell_widget.selected.connect(self._on_cell_widget_selected)
         cell_widget.content_changed.connect(self._on_cell_content_changed)
+        cell_widget.size_hint_changed.connect(self._on_cell_size_hint_changed)
         cell_widget.gutter_clicked.connect(self._on_cell_gutter_clicked)
 
     # ----- Public helpers per plan -----
@@ -464,6 +465,12 @@ class NotebookView(QWidget):
             except Exception:
                 pass
         # Ensure the item's size matches new content to keep click mapping correct
+        self._refresh_item_size_hint(cell_id)
+
+    def _on_cell_size_hint_changed(self, cell_id: str) -> None:
+        self._refresh_item_size_hint(cell_id)
+
+    def _refresh_item_size_hint(self, cell_id: str) -> None:
         try:
             item = self._id_to_item.get(cell_id)
             widget = self._id_to_widget.get(cell_id)

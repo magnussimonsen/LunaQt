@@ -1,26 +1,13 @@
 """CodeCell widget for executable code."""
 
 from __future__ import annotations
-from PySide6.QtWidgets import QWidget, QTextEdit
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
 from .base_cell import BaseCell
+from .python_editor import PythonCodeEditor
 from ....core.font_service import get_font_service
-
-
-class _CodeEditor(QTextEdit):
-    """Text editor that notifies about focus changes."""
-
-    focus_changed = Signal(bool)
-
-    def focusInEvent(self, event):  # type: ignore[override]
-        super().focusInEvent(event)
-        self.focus_changed.emit(True)
-
-    def focusOutEvent(self, event):  # type: ignore[override]
-        super().focusOutEvent(event)
-        self.focus_changed.emit(False)
 
 
 class CodeCell(BaseCell):
@@ -66,28 +53,24 @@ class CodeCell(BaseCell):
         Args:
             content: Initial content.
         """
-        # Code editor
-        self._editor = _CodeEditor()
+        # Code editor with syntax highlighting
+        self._editor = PythonCodeEditor()
         self._editor.setPlainText(content)
-        self._editor.setAcceptRichText(False)
-        self._editor.setTabStopDistance(40)  # 4 spaces
         
         # Set size policy to expand vertically, fit horizontally
-        from PySide6.QtWidgets import QSizePolicy
         self._editor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         
         # Set minimum height (approximately 2 lines)
         self._editor.setMinimumHeight(50)
         
-        # Enable vertical scrolling for content that exceeds visible area
-        self._editor.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        # Allow the widget to grow instead of showing a vertical scrollbar
+        self._editor.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self._editor.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         
         # Font will be set by font service in __init__
         
-        # Connect text changes to adjust height
+        # Connect text changes for content/height updates
         self._editor.textChanged.connect(self._on_text_changed)
-        self._editor.textChanged.connect(self._adjust_editor_height)
         self._editor.focus_changed.connect(self._on_editor_focus_changed)
         
         self._content_layout.addWidget(self._editor)
@@ -114,16 +97,24 @@ class CodeCell(BaseCell):
     def _adjust_editor_height(self) -> None:
         """Adjust editor height to fit content."""
         # Get document height
-        doc_height = self._editor.document().size().height()
-        # Add some padding for comfort
-        new_height = int(doc_height + 10)
-        # Respect minimum height
+        doc = self._editor.document()
+        block_count = max(1, doc.blockCount())
+        line_height = self._editor.fontMetrics().lineSpacing()
+        doc_height = line_height * block_count
+
+        margins = self._editor.contentsMargins()
+        frame = self._editor.frameWidth() * 2
+        padding = margins.top() + margins.bottom() + frame + int(doc.documentMargin() * 2) + 4
+        new_height = int(doc_height + padding)
         new_height = max(new_height, 50)
-        # Set fixed height to content size
         self._editor.setFixedHeight(new_height)
+        self._editor.updateGeometry()
+        self.updateGeometry()
+        self._notify_size_hint_changed()
     
     def _on_text_changed(self) -> None:
         """Handle text changes in editor."""
+        self._adjust_editor_height()
         content = self._editor.toPlainText()
         self._emit_content_changed(content)
     
@@ -178,4 +169,44 @@ class CodeCell(BaseCell):
         """
         font = QFont(family, size)
         font.setStyleHint(QFont.StyleHint.Monospace)
-        self._editor.setFont(font)
+        if hasattr(self._editor, "set_font"):
+            self._editor.set_font(font)
+        else:
+            self._editor.setFont(font)
+        self._adjust_editor_height()
+
+    # Qt sizing ----------------------------------------------------------
+    def sizeHint(self) -> QSize:  # type: ignore[override]
+        base = super().sizeHint()
+        base.setHeight(self._dynamic_height())
+        return base
+
+    def minimumSizeHint(self) -> QSize:  # type: ignore[override]
+        base = super().minimumSizeHint()
+        base.setHeight(self._dynamic_height())
+        return base
+
+    def _dynamic_height(self) -> int:
+        height = 0
+        layout = self._content_layout
+        count = layout.count()
+        spacing = max(0, layout.spacing())
+        for i in range(count):
+            item = layout.itemAt(i)
+            if not item:
+                continue
+            widget = item.widget()
+            if widget is self._editor:
+                child_height = self._editor.height()
+            elif widget is not None:
+                child_height = widget.sizeHint().height()
+            else:
+                child_height = item.sizeHint().height()
+            height += max(0, child_height)
+            if i < count - 1:
+                height += spacing
+
+        margins = layout.contentsMargins()
+        height += margins.top() + margins.bottom()
+        height += self.frameWidth() * 2
+        return height

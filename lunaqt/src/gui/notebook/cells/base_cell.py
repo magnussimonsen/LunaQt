@@ -25,6 +25,7 @@ class BaseCell(QFrame):
     selected = Signal(str, str)  # cell_id, cell_type
     deleted = Signal(str)  # cell_id
     content_changed = Signal(str, str)  # cell_id, new_content
+    size_hint_changed = Signal(str)  # cell_id
     gutter_clicked = Signal(str)  # cell_id
     
     def __init__(
@@ -141,6 +142,10 @@ class BaseCell(QFrame):
             content: New content.
         """
         self.content_changed.emit(self._cell_id, content)
+
+    def _notify_size_hint_changed(self) -> None:
+        """Notify listeners that this cell's preferred size changed."""
+        self.size_hint_changed.emit(self._cell_id)
 
     # --- Gutter API ---
     def set_index(self, index: int) -> None:

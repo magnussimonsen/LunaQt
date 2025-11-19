@@ -5,7 +5,8 @@ from typing import Callable
 
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDockWidget, 
-    QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy
+    QPushButton, QFormLayout, QComboBox, QSpinBox, QToolBar, QSizePolicy,
+    QMessageBox
 )
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QAction, QFont
@@ -28,6 +29,7 @@ from ..assets.fonts.font_lists import (
 )
 from .menu_actions import file_actions, edit_actions, view_actions
 from .menu_actions import notebook_actions, settings_actions, help_actions
+from .notebook.notebook_sidebar import NotebookSidebarWidget
 
 # Logger for MainWindow
 logger = logging.getLogger(__name__)
@@ -45,6 +47,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.config = config
         self.theme_manager = ThemeManager(config.theme)
+        self.notebooks_sidebar: NotebookSidebarWidget | None = None
         # Core window and base font
         self._setup_window()
         self._set_default_font()
@@ -231,19 +234,14 @@ class MainWindow(QMainWindow):
         # Remove title bar to prevent undocking, but keep resizable
         self.notebooks_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
 
-        # Create notebooks panel content (empty for now)
-        notebooks_widget = QWidget()
-        notebooks_layout = QVBoxLayout()
-        notebooks_widget.setLayout(notebooks_layout)
-        notebooks_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-
-        # Add placeholder label
-        placeholder_label = QLabel("Notebooks Panel\n(Coming Soon)")
-        placeholder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        notebooks_layout.addWidget(placeholder_label)
+        # Create notebooks panel content
+        self.notebooks_sidebar = NotebookSidebarWidget()
+        self.notebooks_sidebar.add_notebook_clicked.connect(self._on_sidebar_add_notebook)
+        self.notebooks_sidebar.notebook_selected.connect(self._on_sidebar_notebook_selected)
+        self.notebooks_sidebar.rename_notebook_requested.connect(self._on_sidebar_notebook_renamed)
 
         # Set the widget as dock content
-        self.notebooks_dock.setWidget(notebooks_widget)
+        self.notebooks_dock.setWidget(self.notebooks_sidebar)
 
         # Add to main window (default: right side, initially hidden)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.notebooks_dock)
@@ -254,6 +252,8 @@ class MainWindow(QMainWindow):
             self.notebooks_dock.setMaximumWidth(MAX_SIDEBAR_WIDTH)
         # Hide by default
         self.notebooks_dock.hide()
+        # Populate with current notebooks if managers are ready
+        self._refresh_notebook_sidebar()
     
     def _setup_menubar(self) -> None:
         """Set up the menu bar with all menus and actions."""
@@ -363,6 +363,120 @@ class MainWindow(QMainWindow):
             self.resizeDocks([dock], [width], Qt.Orientation.Horizontal)
         except Exception:
             pass
+
+    def _refresh_notebook_sidebar(self, selected_id: str | None = None) -> None:
+        """Refresh notebook list in the sidebar."""
+        if not self.notebooks_sidebar or not hasattr(self, "_notebook_manager"):
+            return
+        if not self._notebook_manager:
+            return
+        notebooks = self._notebook_manager.list_notebooks()
+        # Sort by modified timestamp descending, fallback to title
+        notebooks.sort(key=lambda nb: nb.get("modified_at", nb.get("title", "")), reverse=True)
+        active = selected_id or self._notebook_manager.get_active_notebook_id()
+        self.notebooks_sidebar.set_notebooks(notebooks, active)
+
+    def _generate_new_notebook_title(self) -> str:
+        base = "Untitled Notebook"
+        if not hasattr(self, "_notebook_manager") or not self._notebook_manager:
+            return base
+        existing_titles = { (nb.get("title") or base).strip() for nb in self._notebook_manager.list_notebooks() }
+        if base not in existing_titles:
+            return base
+        suffix = 2
+        while True:
+            candidate = f"{base} {suffix}"
+            if candidate not in existing_titles:
+                return candidate
+            suffix += 1
+
+    def _activate_notebook(self, notebook_id: str) -> None:
+        if not notebook_id or not hasattr(self, "_notebook_manager"):
+            return
+        if not self._notebook_manager:
+            return
+        data = self._notebook_manager.open_notebook(notebook_id)
+        if not data:
+            self.statusBar().showMessage("Notebook could not be opened.")
+            return
+        self.notebook_view.set_active_notebook(notebook_id)
+        if self.notebooks_sidebar:
+            self.notebooks_sidebar.set_active_notebook(notebook_id)
+
+    def _on_sidebar_add_notebook(self) -> None:
+        if not hasattr(self, "_notebook_manager") or not self._notebook_manager:
+            return
+        title = self._generate_new_notebook_title()
+        try:
+            new_id = self._notebook_manager.create_notebook(title)
+            self._activate_notebook(new_id)
+            self._refresh_notebook_sidebar(selected_id=new_id)
+            self.statusBar().showMessage("Notebook created", 3000)
+        except Exception as exc:
+            self.statusBar().showMessage(f"Unable to create notebook: {exc}")
+
+    def _on_sidebar_notebook_selected(self, notebook_id: str) -> None:
+        self._activate_notebook(notebook_id)
+
+    def _on_sidebar_notebook_renamed(self, notebook_id: str, new_title: str) -> None:
+        if not hasattr(self, "_notebook_manager") or not self._notebook_manager:
+            return
+        success = self._notebook_manager.rename_notebook(notebook_id, new_title)
+        if success:
+            self._refresh_notebook_sidebar(selected_id=notebook_id)
+            self.statusBar().showMessage("Notebook renamed", 3000)
+        else:
+            self.statusBar().showMessage("Rename failed", 4000)
+            self._refresh_notebook_sidebar(selected_id=notebook_id)
+
+    def delete_active_notebook(self) -> None:
+        """Delete the currently active notebook after confirmation."""
+        manager = getattr(self, "_notebook_manager", None)
+        store = getattr(self, "_data_store", None)
+        if not manager or not store:
+            self.statusBar().showMessage("Notebook system not initialized")
+            return
+        active_id = manager.get_active_notebook_id()
+        if not active_id:
+            self.statusBar().showMessage("No active notebook to delete", 4000)
+            return
+        data = store.load_notebook(active_id)
+        title = (data or {}).get("title") or "Untitled Notebook"
+
+        answer = QMessageBox.question(
+            self,
+            "Delete Notebook",
+            f"Delete '{title}'? This action cannot be undone.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+
+        cell_ids = (data or {}).get("cell_ids", [])
+        if not manager.delete_notebook(active_id):
+            self.statusBar().showMessage("Failed to delete notebook", 4000)
+            return
+
+        # Delete orphaned cells
+        cell_manager = getattr(self, "_cell_manager", None)
+        if cell_manager:
+            for cid in cell_ids:
+                try:
+                    cell_manager.delete_cell(cid)
+                except Exception:
+                    pass
+
+        # Determine next notebook to open (existing or brand new)
+        notebooks = manager.list_notebooks()
+        next_id = notebooks[0].get("notebook_id") if notebooks else None
+        if not next_id:
+            next_id = manager.create_notebook("Untitled Notebook")
+
+        if next_id:
+            self._activate_notebook(next_id)
+        self._refresh_notebook_sidebar(selected_id=next_id)
+        self.statusBar().showMessage("Notebook deleted", 4000)
     
     def _toggle_settings_sidebar(self) -> None:
         """Toggle the settings sidebar visibility."""
@@ -529,6 +643,7 @@ class MainWindow(QMainWindow):
         
         # Add reactive toolbar container
         from .notebook.notebook_toolbar_container import NotebookToolbarContainer
+        from .notebook.notebook_sidebar import NotebookSidebarWidget
         self.toolbar_container = NotebookToolbarContainer()
         layout.addWidget(self.toolbar_container)
         
@@ -560,6 +675,7 @@ class MainWindow(QMainWindow):
             self._notebook_manager.open_notebook(active_id)
             self.notebook_view.set_managers(self._notebook_manager, self._cell_manager)
             self.notebook_view.set_active_notebook(active_id)
+            self._refresh_notebook_sidebar(selected_id=active_id)
         except Exception as e:
             # Non-fatal: show message in status bar
             self.statusBar().showMessage(f"Notebook init failed: {e}")

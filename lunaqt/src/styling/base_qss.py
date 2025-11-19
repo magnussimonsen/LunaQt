@@ -181,7 +181,7 @@ class BaseQSS:
             /* ===== LIST WIDGETS ===== */
             
             QListWidget {{
-                border: 10px solid red;
+                border: 0px solid red;
                 outline: none;
                 /* Background/selection from QPalette */
             }}
