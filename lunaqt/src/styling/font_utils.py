@@ -3,8 +3,8 @@
 Keep GUI-specific font application in the GUI layer (not core),
 so window/menu/status/header updates remain close to widgets.
 """
-from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget
-from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QMenu
+from PySide6.QtGui import QFont, QAction
 
 
 def _compute_header_point_size(ui_point_size: int) -> int:
@@ -47,8 +47,19 @@ def apply_ui_font(
     window.setFont(app_font)
 
     # Apply font directly to menubar and statusbar (without overriding QSS styling)
-    window.menuBar().setFont(app_font)
+    menubar = window.menuBar()
+    menubar.setFont(app_font)
     window.statusBar().setFont(app_font)
+
+    # Ensure menus and their actions also inherit the font explicitly. When QSS is
+    # active (especially in dark mode), Qt can stop propagating fonts implicitly.
+    for action in menubar.actions():
+        _apply_font_to_action(app_font, action)
+        menu = action.menu()
+        if menu is not None:
+            menu.setFont(app_font)
+            for sub_action in menu.actions():
+                _apply_font_to_action(app_font, sub_action)
 
     # Apply font to menubar corner buttons if present
     if hasattr(window, 'settings_button') and window.settings_button is not None:
@@ -75,3 +86,17 @@ def apply_ui_font(
 
     _apply_font_to_dock("settings_dock")
     _apply_font_to_dock("notebooks_dock")
+
+
+def _apply_font_to_action(font: QFont, action: QAction | None) -> None:
+    """Apply font to a QAction if supported.
+
+    Some Qt styles ignore QAction fonts unless set directly, so we set them
+    defensively whenever the UI font changes.
+    """
+    if action is None:
+        return
+    try:
+        action.setFont(font)
+    except AttributeError:
+        pass
