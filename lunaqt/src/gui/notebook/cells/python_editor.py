@@ -126,6 +126,7 @@ class PythonCodeEditor(QPlainTextEdit):
     """Plain text editor tuned for Python editing."""
 
     focus_changed = Signal(bool)
+    execute_requested = Signal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -160,6 +161,11 @@ class PythonCodeEditor(QPlainTextEdit):
     def keyPressEvent(self, event):  # type: ignore[override]
         key = event.key()
         modifiers = event.modifiers()
+
+        if key in (Qt.Key_Return, Qt.Key_Enter) and modifiers == Qt.ShiftModifier:
+            event.accept()
+            self.execute_requested.emit()
+            return
 
         if key in (Qt.Key_Return, Qt.Key_Enter):
             indent = self._current_line_indent()

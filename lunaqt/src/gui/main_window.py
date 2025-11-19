@@ -287,6 +287,10 @@ class MainWindow(QMainWindow):
         insert_menu.addAction(self._create_action("Insert CAS Cell", lambda: edit_actions.on_insert_cas_cell(self)))
         insert_menu.addAction(self._create_action("Insert Python Cell", lambda: edit_actions.on_insert_python_cell(self)))
 
+        # Run menu
+        run_menu = menubar.addMenu("&Run")
+        run_menu.addAction(self._create_action("Run Selected Cell", lambda: edit_actions.on_run_selected_cell(self)))
+
         # View menu
         view_menu = menubar.addMenu("&View")
         view_menu.addAction(self._create_action("Light Theme", self.theme_manager.set_light_theme))
@@ -519,7 +523,8 @@ class MainWindow(QMainWindow):
         Args:
             theme: The new theme name ("light" or "dark")
         """
-        pass
+        if hasattr(self, "notebook_view") and self.notebook_view is not None:
+            self.notebook_view.set_plot_theme(theme)
     
     def _on_ui_font_family_changed(self, font_family: str) -> None:
         """Handle UI font family change."""
@@ -605,7 +610,7 @@ class MainWindow(QMainWindow):
         """Handle Run button click from code toolbar."""
         logger.info("Run code requested")
         self.statusBar().showMessage("Running code...")
-        # TODO: Implement code execution
+        edit_actions.on_run_selected_cell(self)
     
     def _on_reset_code_requested(self) -> None:
         """Handle Reset button click from code toolbar."""
@@ -655,6 +660,7 @@ class MainWindow(QMainWindow):
         # Add NotebookView as main content area
         from .notebook.notebook_view import NotebookView
         self.notebook_view = NotebookView()
+        self.notebook_view.set_plot_theme(self.theme_manager.current_theme)
         layout.addWidget(self.notebook_view)
         
         # Connect notebook selection changes to update toolbar

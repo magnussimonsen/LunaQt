@@ -13,6 +13,12 @@ def _nv(window: "QMainWindow"):
     return getattr(window, "notebook_view", None)
 
 
+def on_run_selected_cell(window: "QMainWindow") -> None:
+    nv = _nv(window)
+    if nv:
+        nv.run_selected_cell()
+
+
 def on_move_cell_up(window: "QMainWindow") -> None:
     nv = _nv(window)
     if nv:

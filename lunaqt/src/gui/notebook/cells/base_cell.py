@@ -27,6 +27,7 @@ class BaseCell(QFrame):
     content_changed = Signal(str, str)  # cell_id, new_content
     size_hint_changed = Signal(str)  # cell_id
     gutter_clicked = Signal(str)  # cell_id
+    run_requested = Signal(str)  # cell_id
     
     def __init__(
         self,
