@@ -25,6 +25,8 @@ def on_delete_notebook(window: "QMainWindow") -> None:
         window: Main window instance
     """
     logger.info("Delete notebook action triggered")
+    if hasattr(window, "delete_active_notebook"):
+        window.delete_active_notebook()
 
 
 def on_select_notebook(window: "QMainWindow") -> None:

@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
     QLabel,
 )
 from PySide6.QtCore import Signal, Qt
+from PySide6.QtGui import QWheelEvent
 import shiboken6
 import logging
 from typing import Any
@@ -26,9 +27,36 @@ from typing import Any
 from .cells.base_cell import BaseCell
 from .cells.code_cell import CodeCell
 from .cells.markdown_cell import MarkdownCell
+from ...core.execution.manager import NotebookExecutionManager
+from ...core.execution.messages import ExecutionRequest, ExecutionResult
+from ...constants.matplotlib_styles import (
+    DEFAULT_MPL_STYLE_NAME,
+    get_matplotlib_style,
+)
 
 # Logger for NotebookView
 logger = logging.getLogger(__name__)
+
+
+# Smooth scrolling list widget -----------------------------------------------
+class _SmoothListWidget(QListWidget):
+    """QListWidget variant that scrolls in pixel increments via mouse wheel."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._wheel_pixels = 30  # pixels per wheel step
+
+    def wheelEvent(self, event: QWheelEvent) -> None:  # type: ignore[override]
+        delta = event.angleDelta().y()
+        if delta == 0 and event.pixelDelta().y() != 0:
+            delta = event.pixelDelta().y()
+        if delta == 0:
+            super().wheelEvent(event)
+            return
+        step = int(self._wheel_pixels * (delta / 120))
+        new_value = self.verticalScrollBar().value() - step
+        self.verticalScrollBar().setValue(new_value)
+        event.accept()
 
 
 # Optional managers (set via set_managers). Lazy imports to avoid cycles at import time.
@@ -71,6 +99,17 @@ class NotebookView(QWidget):
         # Registries
         self._id_to_item = {}    # type: dict[str, QListWidgetItem]
         self._id_to_widget = {}  # type: dict[str, BaseCell]
+        self._running_cells: set[str] = set()
+
+        # Execution management
+        self._execution_manager = NotebookExecutionManager(self)
+        self._execution_manager.cell_started.connect(self._on_execution_started)
+        self._execution_manager.cell_finished.connect(self._on_execution_finished)
+        self._execution_manager.cell_failed.connect(self._on_execution_failed)
+        self.destroyed.connect(self._on_view_destroyed)
+        self._plot_theme = DEFAULT_MPL_STYLE_NAME
+        self._current_plot_style = get_matplotlib_style(self._plot_theme)
+        self._execution_manager.set_plot_style(self._current_plot_style)
 
         self._setup_ui()
     
@@ -84,7 +123,7 @@ class NotebookView(QWidget):
         layout.addWidget(self._placeholder)
 
         # QListWidget for cell widgets
-        self._cell_list = QListWidget()
+        self._cell_list = _SmoothListWidget()
         self._cell_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
         self._cell_list.itemSelectionChanged.connect(self._on_qt_selection_changed)
         # Prevent blue selection background from painting over embedded widgets
@@ -196,7 +235,9 @@ class NotebookView(QWidget):
         """
         cell_widget.selected.connect(self._on_cell_widget_selected)
         cell_widget.content_changed.connect(self._on_cell_content_changed)
+        cell_widget.size_hint_changed.connect(self._on_cell_size_hint_changed)
         cell_widget.gutter_clicked.connect(self._on_cell_gutter_clicked)
+        cell_widget.run_requested.connect(self._on_cell_run_requested)
 
     # ----- Public helpers per plan -----
     def get_selected_index(self) -> int | None:
@@ -236,6 +277,16 @@ class NotebookView(QWidget):
     def set_active_notebook(self, notebook_id: str) -> None:
         self._active_notebook_id = notebook_id
         self.load_notebook(notebook_id)
+        if notebook_id:
+            # Ensure execution manager uses distinct worker per notebook
+            logger.debug("NotebookView: active notebook set to %s", notebook_id)
+
+    def set_plot_theme(self, theme: str) -> None:
+        """Adjust matplotlib styling to match the current UI theme."""
+        if not theme:
+            theme = DEFAULT_MPL_STYLE_NAME
+        self._plot_theme = theme
+        self._update_plot_style(theme)
 
     def load_notebook(self, notebook_id: str) -> None:
         """Load cells from managers into the UI (if managers provided)."""
@@ -394,6 +445,48 @@ class NotebookView(QWidget):
 
         self._emit_state_changed()
 
+    # ----- Execution API -----
+    def run_selected_cell(self) -> None:
+        cell_id = self.get_selected_cell_id()
+        if not cell_id:
+            logger.debug("run_selected_cell: no selection")
+            return
+        self.run_cell(cell_id)
+
+    def run_cell(self, cell_id: str) -> None:
+        if not self._active_notebook_id:
+            logger.warning("run_cell: no active notebook, cell_id=%s", cell_id)
+            return
+        widget = self._get_code_cell_widget(cell_id)
+        if widget is None:
+            logger.debug("run_cell: widget unavailable or not code cell cell_id=%s", cell_id)
+            return
+
+        code = widget.get_content() or ""
+        prev_count = widget.get_execution_count() or 0
+        next_count = prev_count + 1
+
+        try:
+            widget.mark_execution_started(next_count)
+            self._running_cells.add(cell_id)
+            self._execution_manager.run_cell(
+                notebook_id=self._active_notebook_id,
+                cell_id=cell_id,
+                code=code,
+                execution_count=next_count,
+            )
+        except Exception as exc:  # pragma: no cover - defensive guard
+            logger.exception("run_cell: failed to dispatch execution cell_id=%s", cell_id)
+            self._running_cells.discard(cell_id)
+            widget.mark_execution_failed(
+                ExecutionResult(
+                    notebook_id=self._active_notebook_id,
+                    cell_id=cell_id,
+                    execution_count=next_count,
+                    error=str(exc),
+                )
+            )
+
     # ----- Internals -----
     def _remove_by_index(self, idx: int) -> None:
         item = self._cell_list.item(idx)
@@ -465,6 +558,14 @@ class NotebookView(QWidget):
         logger.debug("recreate_widget_for_cell: done")
         return new_widget
 
+    def _get_code_cell_widget(self, cell_id: str) -> CodeCell | None:
+        widget = self._id_to_widget.get(cell_id)
+        if not isinstance(widget, CodeCell) or not shiboken6.isValid(widget):
+            widget = self._recreate_widget_for_cell(cell_id)
+        if isinstance(widget, CodeCell):
+            return widget
+        return None
+
     def _create_widget(self, cell_type: str, cell_id: str, content: str) -> BaseCell:
         if cell_type == "code":
             exec_count = None
@@ -489,6 +590,15 @@ class NotebookView(QWidget):
             except Exception:
                 pass
         # Ensure the item's size matches new content to keep click mapping correct
+        self._refresh_item_size_hint(cell_id)
+
+    def _on_cell_run_requested(self, cell_id: str) -> None:
+        self.run_cell(cell_id)
+
+    def _on_cell_size_hint_changed(self, cell_id: str) -> None:
+        self._refresh_item_size_hint(cell_id)
+
+    def _refresh_item_size_hint(self, cell_id: str) -> None:
         try:
             item = self._id_to_item.get(cell_id)
             widget = self._id_to_widget.get(cell_id)
@@ -552,3 +662,46 @@ class NotebookView(QWidget):
         can_move_up = has_sel and idx is not None and idx > 0
         can_move_down = has_sel and idx is not None and idx < (count - 1)
         self.state_changed.emit(can_insert, can_delete, can_move_up, can_move_down, count, has_sel)
+
+    def _update_plot_style(self, theme: str) -> None:
+        style = get_matplotlib_style(theme)
+        self._current_plot_style = style
+        self._execution_manager.set_plot_style(style)
+
+    # ----- Execution signal handlers ---------------------------------
+    def _on_execution_started(self, payload: object) -> None:
+        if not isinstance(payload, ExecutionRequest):
+            return
+        if payload.notebook_id != self._active_notebook_id:
+            return
+        widget = self._get_code_cell_widget(payload.cell_id)
+        already_tracking = payload.cell_id in self._running_cells
+        self._running_cells.add(payload.cell_id)
+        if widget and not already_tracking:
+            widget.mark_execution_started(payload.execution_count)
+
+    def _on_execution_finished(self, payload: object) -> None:
+        if not isinstance(payload, ExecutionResult):
+            return
+        if payload.notebook_id != self._active_notebook_id:
+            return
+        widget = self._get_code_cell_widget(payload.cell_id)
+        if widget:
+            widget.apply_execution_result(payload)
+        self._running_cells.discard(payload.cell_id)
+
+    def _on_execution_failed(self, payload: object) -> None:
+        if not isinstance(payload, ExecutionResult):
+            return
+        if payload.notebook_id != self._active_notebook_id:
+            return
+        widget = self._get_code_cell_widget(payload.cell_id)
+        if widget:
+            widget.mark_execution_failed(payload)
+        self._running_cells.discard(payload.cell_id)
+
+    def _on_view_destroyed(self, *_args: object) -> None:
+        try:
+            self._execution_manager.shutdown()
+        except Exception:  # pragma: no cover - best effort cleanup
+            pass

@@ -6,8 +6,9 @@ Status: experimental / work in progress.
 
 ## Screenshots
 
-![LunaQt screenshot 1](lunaqt/screenshots/LunaQt-2025-11-08-1.png)
-![LunaQt screenshot 2](lunaqt/screenshots/LunaQt-2025-11-08-2.png)
+![LunaQt screenshot 1](lunaqt/screenshots/Luna-2025-11-19-1.png)
+![LunaQt screenshot 2](lunaqt/screenshots/Luna-2025-11-19-2.png)
+![LunaQt screenshot 2](lunaqt/screenshots/Luna-2025-11-19-3.png)
 
 ## Qt / PySide6
 

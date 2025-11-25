@@ -210,3 +210,32 @@ class NotebookManager:
         """
         return self._store.list_notebooks()
 
+    def rename_notebook(self, notebook_id: str, new_title: str) -> bool:
+        """Rename a notebook if it exists.
+
+        Args:
+            notebook_id: Notebook identifier.
+            new_title: Desired title (non-empty).
+
+        Returns:
+            True if rename succeeded.
+        """
+        new_title = new_title.strip()
+        if not new_title:
+            return False
+        data = self._store.load_notebook(notebook_id)
+        if not data:
+            return False
+        data["title"] = new_title
+        data["modified_at"] = datetime.now(timezone.utc).isoformat()
+        return self._store.save_notebook(data)
+
+    def delete_notebook(self, notebook_id: str) -> bool:
+        """Delete a notebook and clear active reference if needed."""
+        if not notebook_id:
+            return False
+        success = self._store.delete_notebook(notebook_id)
+        if success and self._active_notebook_id == notebook_id:
+            self._active_notebook_id = None
+        return success
+

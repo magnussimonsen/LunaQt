@@ -15,8 +15,8 @@ class NotebookQSS:
             /* ===== NOTEBOOK CELLS ===== */
             
             BaseCell {{
-                border: 10px solid {colors["border.default"]}; /*Has no effect*/
-                border-radius: 0px;
+                border: 0px solid {colors["border.default"]}; /*Has no effect*/
+                border-radius: 10px;
                 padding: 0px;
                 margin: 0px 0px;
                 /* Background from QPalette.Base */
@@ -37,7 +37,7 @@ class NotebookQSS:
             }}
             
             BaseCell[selected="true"] {{
-                border: 3px solid {colors["action.primary"]};
+                border: 1px solid {colors["action.primary"]};
                 /* Highlight background from QPalette.Highlight */
             }}
             
@@ -47,10 +47,16 @@ class NotebookQSS:
             
             /* ===== CODE CELLS ===== */
             
-            CodeCell QTextEdit {{
+            CodeCell QPlainTextEdit {{
                 background-color: {colors["code.background"]};
                 color: {colors["code.text"]};
-                border: none;
+                border: 1px solid {colors["border.subtle"]};
+                border-radius: 6px;
+            }}
+
+            CodeCell QPlainTextEdit::viewport {{
+                background-color: transparent;
+                color: inherit;
                 /* Font family controlled by FontService via Python setFont() */
             }}
             
@@ -66,7 +72,7 @@ class NotebookQSS:
             /* Notebook toolbar container (menubar-like) */
             NotebookToolbarContainer {{
                 background-color: {colors["surface.primary"]};
-                border-bottom: 1px solid {colors["border.default"]};
+                border: 1px solid {colors["border.default"]};
                 min-height: 32px;
                 max-height: 40px;
             }}
