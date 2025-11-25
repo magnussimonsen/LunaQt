@@ -344,6 +344,9 @@ class NotebookView(QWidget):
         
         # Get the cell_id being moved
         item = self._cell_list.item(idx)
+        if item is None:
+            logger.debug("move_selected: no QListWidgetItem at idx=%s", idx)
+            return
         cell_id = item.data(Qt.UserRole) if isinstance(item.data(Qt.UserRole), str) else None
         
         if not cell_id:
@@ -352,21 +355,43 @@ class NotebookView(QWidget):
         
         logger.debug("move_selected start: idx=%s new_index=%s cell_id=%s", idx, new_index, cell_id)
         
-        # Update persistence layer
+        # Update persistence layer when available
         if self._notebook_manager and self._active_notebook_id:
             self._notebook_manager.move_cell(self._active_notebook_id, cell_id, new_index)
             logger.debug("persist move: cell_id=%s new_index=%s", cell_id, new_index)
-        
-        # Reload the entire cell list from persistence to reflect the new order
-        if self._notebook_manager and self._active_notebook_id:
-            logger.debug("move_selected: reloading notebook to reflect new order")
-            self.load_notebook(self._active_notebook_id)
-            # Select the moved cell at its new position
-            self.select_index(new_index)
-            logger.debug("move_selected done: cell_id=%s new_index=%s", cell_id, new_index)
         else:
-            logger.debug("move_selected: no manager, cannot reload")
-        
+            logger.debug("move_selected: no manager context, performing UI-only move")
+
+        widget = self._cell_list.itemWidget(item)
+        if not widget or not shiboken6.isValid(widget):
+            widget = self._recreate_widget_for_cell(cell_id)
+
+        taken_item = self._cell_list.takeItem(idx)
+        if taken_item is None:
+            logger.debug("move_selected: takeItem returned None, aborting move")
+            return
+
+        insert_index = max(0, min(new_index, self._cell_list.count()))
+
+        # Reinsert the existing QListWidgetItem to avoid rebuilding the entire list
+        self._cell_list.insertItem(insert_index, taken_item)
+        if widget is not None:
+            self._cell_list.setItemWidget(taken_item, widget)
+            try:
+                taken_item.setSizeHint(widget.sizeHint())
+            except Exception:
+                pass
+        self._id_to_item[cell_id] = taken_item
+
+        self.select_index(insert_index)
+        self._refresh_indices()
+        try:
+            self._cell_list.doItemsLayout()
+            self._cell_list.viewport().update()
+        except Exception:
+            pass
+        logger.debug("move_selected done: cell_id=%s new_index=%s", cell_id, insert_index)
+
         self._emit_state_changed()
 
     # ----- Internals -----
