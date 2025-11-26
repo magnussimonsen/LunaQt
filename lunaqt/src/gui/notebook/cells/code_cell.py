@@ -19,6 +19,7 @@ from PySide6.QtGui import QFont, QPixmap
 from .base_cell import BaseCell
 from .python_editor import PythonCodeEditor
 from ....core.font_service import get_font_service
+from ....flags import execution_indicator_enabled
 
 if TYPE_CHECKING:  # pragma: no cover - import for typing only
     from ....core.execution.messages import ExecutionResult
@@ -53,6 +54,7 @@ class CodeCell(BaseCell):
         self._execution_count = execution_count
         self._pending_execution_count: int | None = None
         self._plot_scale = 100
+        self._show_execution_indicator = execution_indicator_enabled()
         self._setup_ui(content)
         
         # Subscribe to font service
@@ -62,6 +64,7 @@ class CodeCell(BaseCell):
         family, size = self._font_service.get_code_font()
         if family and size:
             self._apply_font(family, size)
+            self._show_execution_indicator = execution_indicator_enabled()  # New flag for execution indicator
     
     def _setup_ui(self, content: str) -> None:
         """Set up the UI components.
@@ -69,16 +72,12 @@ class CodeCell(BaseCell):
         Args:
             content: Initial content.
         """
-        # Execution count label mirrors classic notebook style
-        self._count_label = QLabel(self._format_count())
-        self._count_label.setObjectName("ExecutionCountLabel")
-        self._count_label.setAlignment(Qt.AlignLeft)
-        self._count_label.setProperty("monospace", True)
-        self._content_layout.addWidget(self._count_label)
-
         # Code editor with syntax highlighting
         self._editor = PythonCodeEditor()
         self._editor.setPlainText(content)
+        self._editor.set_execution_indicator_visible(self._show_execution_indicator)
+        if self._show_execution_indicator:
+            self._editor.set_execution_indicator(self._format_count())
         
         # Set size policy to expand vertically, fit horizontally
         self._editor.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -145,17 +144,16 @@ class CodeCell(BaseCell):
             super().focus_editor()
     
     def _format_count(self) -> str:
-        """Format execution count for display.
-        
-        Returns:
-            Formatted count string.
-        """
+        """Format execution state for gutter display."""
+        if self._pending_execution_count is not None:
+            return "[*]"
         if self._execution_count is None:
-            return "In [ ]:"
-        return f"In [{self._execution_count}]:"
+            return "[]"
+        return f"[{self._execution_count}]"
 
-    def _update_count_label(self) -> None:
-        self._count_label.setText(self._format_count())
+    def _update_execution_indicator(self) -> None:
+        if self._show_execution_indicator:
+            self._editor.set_execution_indicator(self._format_count())
     
     def _adjust_editor_height(self) -> None:
         """Adjust editor height to fit content."""
@@ -209,16 +207,17 @@ class CodeCell(BaseCell):
         if self._execution_count == count:
             return
         self._execution_count = count
-        self._update_count_label()
+        self._update_execution_indicator()
         self._notify_size_hint_changed()
 
     def mark_execution_started(self, execution_count: int | None) -> None:
-        self._pending_execution_count = execution_count
-        self._count_label.setText("In [*]:")
+        self._pending_execution_count = execution_count if execution_count is not None else -1
+        self._update_execution_indicator()
         self.clear_output()
 
     def apply_execution_result(self, result: "ExecutionResult") -> None:
         self._pending_execution_count = None
+        self._update_execution_indicator()
         if result.execution_count is not None:
             self.set_execution_count(result.execution_count)
         self._display_output(result.stdout, result.stderr, result.error)
@@ -226,6 +225,7 @@ class CodeCell(BaseCell):
 
     def mark_execution_failed(self, result: "ExecutionResult") -> None:
         self._pending_execution_count = None
+        self._update_execution_indicator()
         if result.execution_count is not None:
             self.set_execution_count(result.execution_count)
         fallback_error = result.error or "Execution failed"

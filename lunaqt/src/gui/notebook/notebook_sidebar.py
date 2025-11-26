@@ -57,7 +57,7 @@ class NotebookSidebarWidget(QWidget):
         self._is_updating = True
         self._list.clear()
         for notebook in notebooks:
-            title = notebook.get("title") or "Untitled Notebook"
+            title = notebook.get("title") or "Untitled Notebook (Clicked to Rename)"
             item = QListWidgetItem(title)
             item.setData(Qt.ItemDataRole.UserRole, notebook.get("notebook_id"))
             item.setFlags(item.flags() | Qt.ItemIsEditable)
@@ -98,9 +98,9 @@ class NotebookSidebarWidget(QWidget):
         if not new_title:
             # Revert empty titles immediately
             self._is_updating = True
-            item.setText("Untitled Notebook")
+            item.setText("Untitled Notebook (Clicked to Rename)")
             self._is_updating = False
-            new_title = "Untitled Notebook"
+            new_title = "Untitled Notebook (Clicked to Rename)"
         self.rename_notebook_requested.emit(notebook_id, new_title)
 
     def focus_add_button(self) -> None:

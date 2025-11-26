@@ -131,6 +131,10 @@ class PythonCodeEditor(QPlainTextEdit):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._tab_spaces = 4
+        self._execution_indicator = "[]"
+        self._indicator_padding = 6
+        self._indicator_width = 0
+        self._indicator_enabled = True
         self.setTabChangesFocus(False)
         self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         self.setFrameShape(QPlainTextEdit.Shape.NoFrame)
@@ -139,6 +143,7 @@ class PythonCodeEditor(QPlainTextEdit):
         self._line_number_area = _LineNumberArea(self)
         self.blockCountChanged.connect(self._update_line_number_area_width)
         self.updateRequest.connect(self._update_line_number_area)
+        self._indicator_width = self._calculate_indicator_width()
         self._update_line_number_area_width(0)
         self.cursorPositionChanged.connect(self._highlight_current_line)
         self._highlight_current_line()
@@ -213,9 +218,10 @@ class PythonCodeEditor(QPlainTextEdit):
     # Helpers --------------------------------------------------------------
     def _line_number_area_width(self) -> int:
         digits = len(str(max(1, self.blockCount())))
-        # Extra padding for readability
-        space = self.fontMetrics().horizontalAdvance('9') * digits + 12
-        return space
+        metrics = self.fontMetrics()
+        number_width = metrics.horizontalAdvance('9') * digits + 12
+        indicator_width = self._indicator_width if self._indicator_enabled else 0
+        return indicator_width + number_width
 
     def _update_line_number_area_width(self, _new_block_count: int) -> None:
         margins = self.viewportMargins()
@@ -245,20 +251,35 @@ class PythonCodeEditor(QPlainTextEdit):
         highlight = self.palette().color(QPalette.ColorRole.Highlight)
         painter.fillRect(event.rect(), bg)
 
+        indicator_rect = QRect(0, 0, self._indicator_width, self._line_number_area.height())
+        if (
+            self._indicator_enabled
+            and self._execution_indicator
+            and indicator_rect.intersects(event.rect())
+        ):
+            painter.setPen(highlight)
+            painter.drawText(
+                indicator_rect.adjusted(0, 4, -self._indicator_padding, -4),
+                Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop,
+                self._execution_indicator,
+            )
+
         block = self.firstVisibleBlock()
         block_number = block.blockNumber()
         top = int(self.blockBoundingGeometry(block).translated(self.contentOffset()).top())
         bottom = top + int(self.blockBoundingRect(block).height())
         current = self.textCursor().blockNumber()
+        number_x = self._indicator_width if self._indicator_enabled else 0
+        number_width = self._line_number_area.width() - number_x - 6
 
         while block.isValid() and top <= event.rect().bottom():
             if block.isVisible() and bottom >= event.rect().top():
                 number = str(block_number + 1)
                 painter.setPen(highlight if block_number == current else fg)
                 painter.drawText(
-                    0,
+                    number_x,
                     top,
-                    self._line_number_area.width() - 6,
+                    number_width,
                     self.fontMetrics().height(),
                     Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
                     number,
@@ -290,3 +311,32 @@ class PythonCodeEditor(QPlainTextEdit):
     def set_font(self, font: QFont) -> None:
         self.setFont(font)
         self.set_tab_width_spaces(self._tab_spaces)
+        if self._indicator_enabled:
+            self._indicator_width = self._calculate_indicator_width()
+        self._update_line_number_area_width(self.blockCount())
+
+    def set_execution_indicator(self, indicator: str) -> None:
+        text = indicator.strip() if indicator else ""
+        if not text:
+            text = "[]"
+        if text == self._execution_indicator:
+            return
+        self._execution_indicator = text
+        if self._indicator_enabled:
+            self._indicator_width = self._calculate_indicator_width()
+        self._update_line_number_area_width(self.blockCount())
+        self._line_number_area.update()
+
+    def _calculate_indicator_width(self) -> int:
+        if not self._execution_indicator:
+            return 0
+        metrics = self.fontMetrics()
+        return metrics.horizontalAdvance(self._execution_indicator) + self._indicator_padding * 2
+
+    def set_execution_indicator_visible(self, enabled: bool) -> None:
+        if self._indicator_enabled == enabled:
+            return
+        self._indicator_enabled = enabled
+        self._indicator_width = self._calculate_indicator_width() if enabled else 0
+        self._update_line_number_area_width(self.blockCount())
+        self._line_number_area.update()

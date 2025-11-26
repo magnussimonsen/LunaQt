@@ -7,8 +7,10 @@ ThemeMode = Literal["light", "dark"]
 
 class SemanticColors:
     """
-    Minimal, semantic color vocabulary.
+    Semantic color vocabulary.
     Each token defines both light and dark variants side-by-side.
+    The core idea is that developers can change the colors in one place
+    without touching the rest of the codebase.
     """
     
     # Define semantic roles with light/dark pairs
@@ -22,18 +24,29 @@ class SemanticColors:
             "light": "#FF0000",
             "dark": "#FF0000",
         },
+
         # === SURFACE COLORS (backgrounds) ===
-        "surface.primary": {
-            "light": "#f5f5f5",      # Main window background
+        "surface.primary": { ## Change to surface.first
+            #"light": "#f5f5f5",      # Main window background
+            "light": "#ffffff",      # Main window background
             "dark": "#121212",
         },
-        "surface.secondary": {
-            "light": "#dcdcdc",      # Sidebar, menubar, panels
+        "surface.secondary": { # change to surface.second
+            #"light": "#dcdcdc",      # Top menubar and statusbar
+            "light": "#ffffff",     
             "dark": "#1A1A1A",
         },
-        "surface.tertiary": {
-            "light": "#dcdcdc",      # Dropdowns 
+        "surface.tertiary": {  # change to surface.third
+            "light": "#dcdcdc",      # Toolbars, side panels
             "dark": "#2A2A2A",
+        },
+        "surface.quaternary": { # change to surface.fourth
+            "light": "#cfcfcf",      # Cell input backgrounds 
+            "dark": "#3A3A3A",
+        },
+        "surface.fifth": {
+            "light": "#e8e8e8",      # Cell output backgrounds
+            "dark": "#2E2E2E",
         },
         "surface.elevated": {
             "light": "#ababab",      # Dialogs, popups
