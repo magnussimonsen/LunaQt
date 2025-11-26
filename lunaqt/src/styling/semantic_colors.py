@@ -101,7 +101,7 @@ class SemanticColors:
         
         # === BORDER COLORS ===
         "border.default": {
-            "light": "#CCCCCC",      # Standard borders
+            "light": "#FFFFFF",      # Standard borders
             "dark": "#444444",
         },
         "border.subtle": {
