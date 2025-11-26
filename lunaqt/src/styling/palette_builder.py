@@ -19,9 +19,9 @@ class PaletteBuilder:
         colors = SemanticColors.get_all(theme)
         
         # === Window & Widget Backgrounds ===
-        palette.setColor(QPalette.Window, QColor(colors["surface.primary"]))
-        palette.setColor(QPalette.Base, QColor(colors["surface.secondary"]))
-        palette.setColor(QPalette.AlternateBase, QColor(colors["surface.tertiary"]))
+        palette.setColor(QPalette.Window, QColor(colors["surface.first"]))
+        palette.setColor(QPalette.Base, QColor(colors["surface.second"]))
+        palette.setColor(QPalette.AlternateBase, QColor(colors["surface.third"]))
         palette.setColor(QPalette.ToolTipBase, QColor(colors["surface.elevated"]))
         
         # === Text Colors ===

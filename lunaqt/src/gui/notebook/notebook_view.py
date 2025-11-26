@@ -116,7 +116,7 @@ class NotebookView(QWidget):
     def _setup_ui(self) -> None:
         """Set up the UI components."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(1, 1, 1, 1)
 
         # Placeholder (visible when no cells)
         self._placeholder = self._create_placeholder()

@@ -1,6 +1,7 @@
 """Minimal QSS for things QPalette cannot handle."""
 
 from .semantic_colors import SemanticColors, ThemeMode
+from .widget_styling import WidgetStyling
 
 
 class BaseQSS:
@@ -21,6 +22,7 @@ class BaseQSS:
         # Resolve themed arrow icons for spin boxes
         up_icon = "src/styling/theme_icons/up_light.svg" if theme == "light" else "src/styling/theme_icons/up_dark.svg"
         down_icon = "src/styling/theme_icons/down_light.svg" if theme == "light" else "src/styling/theme_icons/down_dark.svg"
+        widget_rules = WidgetStyling.build(theme)
         
         return f"""
             /* ===== GLOBAL OVERRIDES ===== */
@@ -33,6 +35,9 @@ class BaseQSS:
                 outline: none;
             }}
             
+            /* ===== WIDGET SHAPES (widget_styling.py) ===== */
+{widget_rules}
+
             /* ===== SCROLLBARS ===== */
             /* QPalette doesn't style these well, so we use QSS */
             
@@ -145,39 +150,6 @@ class BaseQSS:
             }}
 
             
-            /* ===== BUTTONS ===== */
-            
-            QPushButton {{
-                border: 0px solid {colors["border.default"]};
-                border-radius: 4px;
-                padding: 6px 8px;
-                min-height: 14px;
-                color: {colors["text.primary"]};
-                /* Background from QPalette */
-            }}
-            
-            QPushButton:hover {{
-                background-color: {colors["action.hover"]};
-                border-color: {colors["action.hover"]};
-                color: {colors["text.inverted"]};
-            }}
-            
-            QPushButton:pressed {{
-                background: {colors["action.pressed"]};
-                color: {colors["text.inverted"]};
-                border-color: {colors["action.pressed"]};
-            }}
-            
-            QPushButton:checked {{
-                background-color: {colors["action.primary"]};
-                color: {colors["text.inverted"]};
-                border-color: {colors["border.focus"]};
-            }}
-            
-            QPushButton:disabled {{
-                /* Handled by QPalette.Disabled */
-            }}
-            
             /* ===== LIST WIDGETS ===== */
             
             QListWidget {{
@@ -200,42 +172,6 @@ class BaseQSS:
                 border: none;
                 background-color: {colors["action.primary"]};
                 color: {colors["text.inverted"]};
-            }}
-            
-            /* ===== TEXT EDITORS ===== */
-            
-            QTextEdit, QPlainTextEdit {{
-                border: 1px solid {colors["border.default"]};
-                border-radius: 4px;
-                padding: 4px;
-                /* Background/text from QPalette */
-            }}
-            
-            QTextEdit:focus, QPlainTextEdit:focus {{
-                border-color: {colors["border.focus"]};
-            }}
-            
-            /* ===== LINE EDITS ===== */
-            
-            QLineEdit {{
-                border: 1px solid {colors["border.default"]};
-
-            }}
-            
-            QLineEdit:focus {{
-                border-color: {colors["border.focus"]};
-            }}
-            
-            /* ===== COMBO BOXES ===== */
-            
-            QComboBox {{
-                border: 1px solid {colors["border.default"]};
-                padding: 4px 8px 4px 8px; /* Adjust padding for better touch targets */
-                /*min-width: 150px;*/
-            }}
-            
-            QComboBox:hover {{
-                border-color: {colors["action.hover"]};
             }}
             
             QComboBox QAbstractItemView {{
@@ -261,18 +197,7 @@ class BaseQSS:
                 outline: none;
             }}
             
-            /* ===== SPIN BOXES ===== */
-            
-            QSpinBox {{
-                border: 1px solid {colors["border.default"]};
-                border-radius: 4px;
-                padding: 4px;
-                padding-right: 18px;
-            }}
-            
-            QSpinBox:hover {{
-                border-color: {colors["action.hover"]};
-            }}
+            /* ===== SPIN BOXES (arrows/icons) ===== */
             
             QSpinBox::up-button {{
                 subcontrol-origin: padding;

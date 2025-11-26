@@ -14,11 +14,11 @@ class NotebookQSS:
         return f"""
             /* ===== NOTEBOOK CELLS ===== */
             
-            BaseCell {{
-                border: 0px solid {colors["border.default"]}; /*Has no effect*/
-                border-radius: 10px;
-                padding: 0px;
-                margin: 0px 0px;
+                BaseCell {{
+                    border: 1px solid {colors["border.default"]}; /* Has no effect */
+                /* Border radius set in base_cell.py */
+                /* Padding set in base_cell.py */
+                /* Margin set in base_cell.py */
                 /* Background from QPalette.Base */
                 /* Text from QPalette.Text */
             }}

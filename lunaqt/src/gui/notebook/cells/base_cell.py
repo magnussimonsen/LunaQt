@@ -9,7 +9,7 @@ Provides common functionality:
 
 from __future__ import annotations
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal, Qt, QMargins
 from PySide6.QtGui import QMouseEvent
 
 
@@ -21,6 +21,13 @@ class BaseCell(QFrame):
         deleted: Emitted when cell requests deletion (cell_id).
         content_changed: Emitted when content changes (cell_id, new_content).
     """
+
+    # Layout knobs (edit once, affect every cell)
+    GUTTER_WIDTH = 40
+    BORDER_RADIUS = 10
+    CELL_MARGIN = QMargins(0, 0, 0, 4)
+    CELL_PADDING = QMargins(8, 8, 8, 8)
+    CELL_SPACING = 4
     
     selected = Signal(str, str)  # cell_id, cell_type
     deleted = Signal(str)  # cell_id
@@ -54,20 +61,26 @@ class BaseCell(QFrame):
 
         # Main layout: left gutter + right content
         main_layout = QHBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        margins = self.CELL_MARGIN
+        main_layout.setContentsMargins(
+            margins.left(), margins.top(), margins.right(), margins.bottom()
+        )
         main_layout.setSpacing(0)
 
         # Gutter widget
         self._gutter = _Gutter()
-        self._gutter.setFixedWidth(40)
+        self._gutter.setFixedWidth(self.GUTTER_WIDTH)
         self._gutter.clicked.connect(lambda: self.gutter_clicked.emit(self._cell_id))
         main_layout.addWidget(self._gutter)
 
         # Content container with padding
         self._content_container = QWidget()
         self._content_layout = QVBoxLayout(self._content_container)
-        self._content_layout.setContentsMargins(8, 8, 8, 8)
-        self._content_layout.setSpacing(4)
+        padding = self.CELL_PADDING
+        self._content_layout.setContentsMargins(
+            padding.left(), padding.top(), padding.right(), padding.bottom()
+        )
+        self._content_layout.setSpacing(self.CELL_SPACING)
         main_layout.addWidget(self._content_container, 1)
     
     @property

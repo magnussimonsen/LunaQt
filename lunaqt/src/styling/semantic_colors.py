@@ -5,6 +5,27 @@ from typing import Dict, Literal
 ThemeMode = Literal["light", "dark"]
 
 
+_SURFACE_FIRST: Dict[ThemeMode, str] = {
+    "light": "#ffffff",      # Main window background
+    "dark": "#121212",
+}
+
+_SURFACE_SECOND: Dict[ThemeMode, str] = {
+    "light": "#ffffff",      # Menubar/statusbar background
+    "dark": "#1A1A1A",
+}
+
+_SURFACE_THIRD: Dict[ThemeMode, str] = {
+    "light": "#dcdcdc",      # Toolbars, side panels
+    "dark": "#2A2A2A",
+}
+
+_SURFACE_FOURTH: Dict[ThemeMode, str] = {
+    "light": "#cfcfcf",      # Cell input background
+    "dark": "#3A3A3A",
+}
+
+
 class SemanticColors:
     """
     Semantic color vocabulary.
@@ -26,24 +47,14 @@ class SemanticColors:
         },
 
         # === SURFACE COLORS (backgrounds) ===
-        "surface.primary": { ## Change to surface.first
-            #"light": "#f5f5f5",      # Main window background
-            "light": "#ffffff",      # Main window background
-            "dark": "#121212",
-        },
-        "surface.secondary": { # change to surface.second
-            #"light": "#dcdcdc",      # Top menubar and statusbar
-            "light": "#ffffff",     
-            "dark": "#1A1A1A",
-        },
-        "surface.tertiary": {  # change to surface.third
-            "light": "#dcdcdc",      # Toolbars, side panels
-            "dark": "#2A2A2A",
-        },
-        "surface.quaternary": { # change to surface.fourth
-            "light": "#cfcfcf",      # Cell input backgrounds 
-            "dark": "#3A3A3A",
-        },
+        "surface.first": _SURFACE_FIRST,
+        "surface.primary": _SURFACE_FIRST,  # Legacy alias
+        "surface.second": _SURFACE_SECOND,
+        "surface.secondary": _SURFACE_SECOND,  # Legacy alias
+        "surface.third": _SURFACE_THIRD,
+        "surface.tertiary": _SURFACE_THIRD,  # Legacy alias
+        "surface.fourth": _SURFACE_FOURTH,
+        "surface.quaternary": _SURFACE_FOURTH,  # Legacy alias
         "surface.fifth": {
             "light": "#e8e8e8",      # Cell output backgrounds
             "dark": "#2E2E2E",
